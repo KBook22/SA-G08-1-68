@@ -26,7 +26,7 @@ const PostBoard: React.FC = () => {
         <div
           key={post.id}
           className="bg-post"
-          onClick={() => navigate(`/post-detail/${post.id}`)}
+          onClick={() => navigate(`/Job/post-detail/${post.id}`)}
           style={{ cursor: "pointer" }}
         >
           <img src={post.image} alt={post.title} className="post-image" />

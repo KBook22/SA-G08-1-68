@@ -1,0 +1,146 @@
+// src/layout/FullLayout/index.tsx
+import React from "react";
+import { Link, useLocation, Outlet } from "react-router-dom";
+import {
+  Layout,
+  Menu,
+  theme,
+  Button,
+  Flex,
+  Space,
+  Dropdown,
+} from "antd";
+import { DownOutlined, BellOutlined } from "@ant-design/icons";
+import type { MenuProps } from "antd";
+import logoImage from '../../assets/logo.svg';
+
+const { Header, Content, Footer } = Layout;
+
+type MenuItem = Required<MenuProps>["items"][number];
+
+const createMenuItem = (key: string, label: React.ReactNode): MenuItem => {
+  const path = key === "home" ? "/" : `/${key}`;
+  return {
+    key,
+    label: <Link to={path}>{label}</Link>,
+    style: { paddingInline: "20px" },
+  } as MenuItem;
+};
+
+const navItems: MenuItem[] = [
+  createMenuItem("Homepage", "Home"),
+  createMenuItem("Job/Board", "Jobs"),
+  createMenuItem("my-jobs", "My Job"),
+  createMenuItem("payment-report", "Payment Report"),
+  createMenuItem("help", "Help"),
+  createMenuItem("chat", "Chat"),
+  createMenuItem("interview","Interview Table"),
+  createMenuItem("students","Students List"),
+
+  createMenuItem("report","Report"),
+];
+
+const FullLayout: React.FC = () => {
+  const {
+    token: { colorText },
+  } = theme.useToken();
+  const location = useLocation();
+  const currentPageKey = location.pathname.split("/")[1] || "Homepage";
+
+  return (
+    <Layout style={{ minHeight: "auto" }}>
+      <Header
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          backgroundColor: "#fff",
+          padding: "0 24px",
+          height: "64px",
+          borderBottom: "1px solid #f0f0f0",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            flex: 1,
+            minWidth: 0,
+          }}
+        >
+          <div className="website-logo" style={{ marginRight: "24px" }}>
+            <Link to="/">
+              <img
+                src={logoImage}
+                alt="SUT Career Logo"
+                style={{
+                  height: "35px", 
+                  width: "auto", 
+                  display: "block",
+                }}
+              />
+            </Link>
+          </div>
+          <Menu
+            theme="light"
+            mode="horizontal"
+            selectedKeys={[currentPageKey]}
+            items={navItems}
+            style={{
+              borderBottom: "none",
+              flex: 1,
+              minWidth: 0,
+              justifyContent: "flex-start",
+            }}
+          />
+        </div>
+        <Flex align="center">
+          <Space size="middle">
+            <BellOutlined style={{ fontSize: "20px", color: colorText }} />
+            <Dropdown
+              menu={{
+                items: [
+                  {
+                    key: "th",
+                    label: "TH",
+                  },
+                ],
+              }}
+            >
+              <Button type="text" style={{
+                  fontSize: "16px",
+                  color: colorText
+                }}>
+                <Space>
+                  TH
+                  <DownOutlined />
+                </Space>
+              </Button>
+            </Dropdown>
+            <Link to="/profile">
+              <Button
+                type="text"
+                style={{
+                  fontSize: "20px",
+                  border: "1px solid #d9d9d9",
+                  borderRadius: "6px",
+                  color: "#0088FF",
+                }}
+              >
+                Profile
+              </Button>
+            </Link>
+          </Space>
+        </Flex>
+      </Header>
+      <Content style={{ padding: "24px 48px" }}>
+        <Outlet />
+      </Content>
+      <Footer style={{ textAlign: "center" }}>
+        SUT Career ©{new Date().getFullYear()} Created with Ant Design
+      </Footer>
+    </Layout>
+  );
+};
+
+export default FullLayout;

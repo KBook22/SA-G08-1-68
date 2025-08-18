@@ -7,10 +7,8 @@ import {
   Row,
   Col,
   Modal,
-  Badge
 } from 'antd';
 import { 
-  BellOutlined, 
   LeftOutlined, 
   RightOutlined,
   CheckCircleOutlined,
@@ -148,25 +146,6 @@ const Interview: React.FC = () => {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
       {/* Header */}
-      <div style={{ 
-        backgroundColor: 'white', 
-        padding: '16px 24px', 
-        borderBottom: '1px solid #f0f0f0',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
-        
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <Text style={{ color: '#666', fontWeight: 500 }}>นัดสัมภาษณ์</Text>
-          <Badge count={2}>
-            <BellOutlined style={{ fontSize: '18px', color: '#666' }} />
-          </Badge>
-          <span style={{ fontSize: '24px' }}>🇹🇭</span>
-          <Text style={{ color: '#1890ff', fontWeight: 500 }}>Profile</Text>
-        </div>
-      </div>
-
       <div style={{ padding: '24px' }}>
         <Row gutter={24}>
           <Col span={16}>

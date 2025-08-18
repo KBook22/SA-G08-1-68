@@ -8,13 +8,6 @@ import { useState } from 'react'
 import "./Modal"
 import TimeRecordModal from './Modal'
 
-
-
-  
-
-
-  
-
 /*==========================================*/
 const students = [
   { id: 1, name: "นาย มานะ วันนี้" },
@@ -23,9 +16,6 @@ const students = [
   { id: 4, name: "นาย มานะ วันนี้" },
   { id: 5, name: "นาย มานะ วันนี้" },
   { id: 6, name: "นาย มานะ วันนี้" },
-  { id: 7, name: "นาย มานะ วันนี้" },
-  { id: 8, name: "นาย มานะ วันนี้" },
-  { id: 9, name: "นาย มานะ วันนี้" },
 ];
 
 const StudentListPage: React.FC = () => {

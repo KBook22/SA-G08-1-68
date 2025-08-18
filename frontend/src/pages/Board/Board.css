@@ -8,7 +8,6 @@
   min-height: 250px; /* ความสูงขั้นต่ำ 250px */
   height: auto; /* ความสูงอัตโนมัติ ตามเนื้อหา */
   background: linear-gradient(90deg, #1976d3 0%, #64b5f6 100%); /* ไล่สีพื้นหลังจากซ้ายไปขวา */
-  margin-top: 65px; /* เว้นระยะห่างด้านบน 65px */
   padding: 40px 0; /* ช่องว่างบน-ล่าง 40px ไม่มีซ้าย-ขวา */
   box-sizing: border-box; /* รวม padding และ border ในขนาด */
   display: flex; /* ตั้ง container เป็น flex */

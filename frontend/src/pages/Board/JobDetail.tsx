@@ -131,7 +131,7 @@ const PostLayout: React.FC = () => {
             className="btn-Job-Application"
             type="primary"
             onClick={() =>
-              navigate("/ApplyJob", { state: { post: selectedPost } })
+              navigate("/Job/ApplyJob", { state: { post: selectedPost } })
             }
           >
             ยื่นสมัครงาน

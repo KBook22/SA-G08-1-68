@@ -5,20 +5,18 @@ import {
   Avatar,
   Input,
   Button,
-  Badge,
   Space,
   Typography,
   Row,
   Col,
 } from 'antd';
 import {
-  BellOutlined,
   PictureOutlined,
   FontSizeOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 
-const { Header, Sider, Content } = Layout;
+const { Sider, Content } = Layout;
 const { Text, Title } = Typography;
 
 interface Message {
@@ -102,26 +100,6 @@ const Chat: React.FC = () => {
 
   return (
     <Layout style={{ height: '90vh' }}>
-      {/* Top Header */}
-      <Header 
-        style={{ 
-          backgroundColor: '#fff', 
-          borderBottom: '1px solid #f0f0f0',
-          padding: '0 24px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}
-      >
-        <Space size="large">
-          <Text style={{ color: '#666', fontWeight: 500 }}>Chat</Text>
-          <Badge count={5}>
-            <BellOutlined style={{ fontSize: '18px', color: '#666' }} />
-          </Badge>
-          <span style={{ fontSize: '24px' }}>🇹🇭</span>
-          <Text style={{ color: '#1890ff', fontWeight: 500 }}>Profile</Text>
-        </Space>
-      </Header>
 
       <Layout>
         {/* Chat Title Header */}

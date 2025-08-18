@@ -21,7 +21,7 @@ const Board: React.FC = () => {
               <Button
                 type="primary"
                 className="btn-startpost"
-                onClick={() => navigate("/post-job")}
+                onClick={() => navigate("/Job/post-job")}
               >
                 เริ่มโพสต์ได้เลย
               </Button>
@@ -41,7 +41,7 @@ const Board: React.FC = () => {
               <Button
                 type="primary"
                 className="no-border-button"
-                onClick={() => navigate("/post-job")}
+                onClick={() => navigate("/Job/post-job")}
               >
                 เริ่มโพสต์ได้เลย
               </Button>
