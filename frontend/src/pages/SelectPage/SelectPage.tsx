@@ -17,6 +17,7 @@ const SelectPage: React.FC = () => {
         }}>
         <Title level={3}>Select Page</Title>
         <Space direction="vertical" style={{ width: '100%' }} size="large">
+            Bookieee
         {/*link to Interview*/}
           <Link to="/interview">
             <Button type="primary" block>
@@ -29,12 +30,27 @@ const SelectPage: React.FC = () => {
               Chat
             </Button>
           </Link>
+          LookTao 1,2,3,4,5,6
         {/*link to Board*/}
         <Link to="/Home">
             <Button type="primary" block>
               Home
             </Button>
           </Link>
+          Tung Tung Tung Sahur
+        {/*link to Report Page*/}
+        <Link to="/report">
+            <Button type="primary" block>
+              Report
+            </Button>
+          </Link>
+        {/*link to Student*/}
+        <Link to="/students">
+            <Button type="primary" block>
+              Student
+            </Button>
+          </Link>
+          Plaboo
         </Space>
       </Card>
     </div>

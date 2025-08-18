@@ -9,12 +9,14 @@ import ApplyJob from "../pages/ApplyJob/ApplyJob";
 import SelectPage from "../pages/SelectPage/SelectPage";
 import Interview from '../pages/Interview/Interview';
 import Chat from '../pages/Chat/Chat';
+import StudentListPage from "../pages/StudentListpage/StudentListPage";
+import Reportpage from '../pages/Reportpage/report'
 
 const MainRoutes: React.FC = () => {
   return (
     <Routes>
       <Route path="/" element={<SelectPage />} />
-      
+
       <Route path="/Home" element={<Home />} />
       <Route path="/Board" element={<Board />} />
       <Route path="/post-detail" element={<JobDetail />} />
@@ -24,6 +26,8 @@ const MainRoutes: React.FC = () => {
       <Route path="/interview" element={<Interview />} />
       <Route path="/chat" element={<Chat />} />
 
+      <Route path="/students" element={<StudentListPage/>} />
+      <Route path="/report" element={<Reportpage/>}/>
     </Routes>
   );
 };
