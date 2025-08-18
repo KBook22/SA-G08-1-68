@@ -1,15 +1,15 @@
 .page-container {
-  padding-top: 50px;
-  box-sizing: border-box;
-  width: 100%;
-}
-
-.pageHeader {
-  text-align: center;
-  font-size: 28px;
-  font-weight: 500;
-  font-family: 'Kanit', 'Sarabun', sans-serif;
-  color: #1F2937;
-  margin-bottom: 10px;
-}
-
+    padding-top: 50px;
+    box-sizing: border-box;
+    width: 100%;
+  }
+  
+  .pageHeader {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 500;
+    font-family: 'Kanit', 'Sarabun', sans-serif;
+    color: #1F2937;
+    margin-bottom: 10px;
+  }
+  

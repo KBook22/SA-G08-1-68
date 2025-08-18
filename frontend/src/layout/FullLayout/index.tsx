@@ -28,7 +28,7 @@ const createMenuItem = (key: string, label: React.ReactNode): MenuItem => {
 };
 
 const navItems: MenuItem[] = [
-  createMenuItem("Homepage", "Home"),
+  createMenuItem("home", "Home"),
   createMenuItem("Job/Board", "Jobs"),
   createMenuItem("my-jobs", "My Job"),
   createMenuItem("payment-report", "Payment Report"),

@@ -27,7 +27,7 @@ const MainRoutes: React.FC = () => {
       
       <Route path="/" element={<FullLayout />} >
         {/* Component want navbar */}
-        <Route path="Homepage" element={<Homepage />} />
+        <Route index element={<Homepage />} />
 
         <Route path="Job/post-detail" element={<JobDetail />} />
         <Route path="Job/post-detail/:id" element={<JobDetail />} />
