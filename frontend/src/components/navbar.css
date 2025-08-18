@@ -1,0 +1,130 @@
+.header-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: #fff;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 64px;
+  box-sizing: border-box;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  flex-wrap: nowrap; /* ไม่ให้ wrap */
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0; /* ไม่ย่อโลโก้ */
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* ช่องว่างเมนูกับปุ่ม */
+  flex-grow: 1; /* ขยายเต็มพื้นที่ที่เหลือ */
+  justify-content: flex-end; /* ชิดขวา */
+  overflow-x: auto; /* เลื่อนเมนูได้ถ้ายาวเกิน */
+  scrollbar-width: none; /* Firefox ซ่อน scrollbar */
+}
+
+.header-right::-webkit-scrollbar {
+  display: none; /* Chrome ซ่อน scrollbar */
+}
+
+.btn-profile {
+  background-color: transparent;
+  color: #1976D3;
+  border: 1.5px solid #D1D6D9;
+  border-radius: 4px;
+  padding: 6px 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Kanit', 'Sarabun', Arial, sans-serif;
+  z-index: 1050;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-profile:hover {
+  background-color: #4096ff;
+  color: white;
+  border-color: #4096ff;
+}
+
+.header-menu {
+  font-family: 'Kanit', 'Sarabun', Arial, sans-serif;
+}
+
+.menu-item-font {
+  font-family: 'Kanit', 'Sarabun', sans-serif;
+  font-weight: 300;
+  white-space: nowrap; /* ห้ามขึ้นบรรทัดใหม่ */
+  overflow: visible;
+  min-width: 100px;
+}
+
+/* ===================== Responsive ===================== */
+
+/* หน้าจอเล็ก (มือถือ) */
+@media (max-width: 768px) {
+  .header-top {
+    padding: 0 10px;
+  }
+
+  .header-left img {
+    height: 32px; /* ลดขนาดโลโก้ */
+  }
+
+  .header-right {
+    gap: 6px;
+    justify-content: flex-end;
+  }
+
+  .menu-item-font {
+    min-width: 80px; /* เล็กลง */
+    font-size: 14px;
+  }
+
+  .btn-profile {
+    padding: 5px 12px;
+    font-size: 14px;
+  }
+}
+
+/* หน้าจอเล็กมาก (มือถือแนวตั้ง) */
+@media (max-width: 480px) {
+  .header-top {
+    flex-wrap: wrap; /* ให้เมนูและโปรไฟล์ขึ้นบรรทัดใหม่ถ้าพื้นที่น้อย */
+    height: auto;
+    padding: 8px 10px;
+  }
+
+  .header-left {
+    flex: 1 1 100%;
+    justify-content: center;
+    margin-bottom: 6px;
+  }
+
+  .header-right {
+    flex: 1 1 100%;
+    justify-content: center;
+    gap: 8px;
+    overflow-x: visible;
+  }
+
+  .menu-item-font {
+    min-width: 70px;
+    font-size: 13px;
+  }
+
+  .btn-profile {
+    padding: 5px 10px;
+    font-size: 13px;
+  }
+}

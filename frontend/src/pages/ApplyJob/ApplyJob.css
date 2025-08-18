@@ -1,0 +1,87 @@
+/* กรอบตรงยื่นสมัครงานกับdetail */
+.apply-job-container {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 64px;
+}
+/* กรอบตรงสี่เหลี่ยมdetail */
+.apply-job-content {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  border: 1px solid #D1D6D9;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  height: auto;
+  position: relative;
+  margin-top: 30px;
+}
+/* img */
+.apply-job-image {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150px;
+  height: auto;
+  margin: 0;
+  margin-top: 15px;
+  border-radius: 12px;
+  z-index: 10;
+}
+/* กรอบข้อความ */
+.apply-detail-container {
+  margin-top: 60px;  
+  text-align: center;
+}
+/* ปรับข้อความทั่วไปใน apply-detail */
+.apply-detail h2,
+.apply-detail p {
+  font-family: "Kanit", "Sarabun", sans-serif; /* ฟอนต์ */
+    font-size: 14px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  line-height: 1;
+  color: #2D2D2D;
+  margin: 4px 0;
+}
+/* ลดขนาดตัวอักษร strong และเปลี่ยนสี */
+.apply-detail p strong {
+  font-size: 14px;
+  color: #2D2D2D; 
+  font-weight: 600;
+}
+
+.post-title-AppJob {
+  font-size: 24px !important; /* หรือขนาดตามต้องการ เช่น 1.5rem, 30px */
+  font-weight: bold; /* เพิ่มถ้าต้องการให้หนา */
+  margin-top: 10px; /* ปรับตำแหน่งห่างจากรูป */
+  text-align: center; /* หรือ left/right ตามต้องการ */
+}
+
+
+/* ✅ Responsive: สำหรับจอเล็ก (มือถือ) */
+@media (max-width: 480px) {
+  .apply-job-content {
+    padding: 20px;
+  }
+
+  .apply-job-image {
+    width: 120px;
+    margin-top: -30px;
+  }
+
+  .apply-job-content h2 {
+    font-size: 18px;
+  }
+
+  .apply-job-content p {
+    font-size: 14px;
+  }
+    .post-title-AppJob {
+    font-size: 20px;
+  }
+}

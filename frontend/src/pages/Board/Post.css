@@ -1,0 +1,60 @@
+/* --- กล่องพื้นหลังของโพสต์งาน --- */
+.bg-post {
+  width: 100%;                            /* กว้างเต็ม container ที่ครอบอยู่ */
+  max-width: 900px;                       /* จำกัดความกว้างไม่เกิน 900px เพื่อความสวยงาม */
+  height: 200px;                          /* ความสูงกล่องโพสต์ */
+  padding: 20px;                          /* เว้นขอบรอบ ๆ */
+  margin: 40px auto;                      /* เว้นระยะห่างด้านบน-ล่าง และจัดกึ่งกลางแนวนอน */
+  border-radius: 15px;                    /* มุมมน */
+  border: 1px solid #d1d6d9;              /* เส้นขอบบาง สีเทาอ่อน */
+  background-color: #fff;                 /* พื้นหลังขาว */
+  box-sizing: border-box;                 /* รวม padding และ border ในขนาดกล่อง */
+  
+  display: flex;                          /* ใช้ Flex จัด layout แนวนอน (default) */
+  justify-content: flex-end;             /* จัดเนื้อหาชิดขวา */
+  align-items: center;                    /* จัดให้อยู่กึ่งกลางแนวตั้ง */
+
+  overflow: visible;  /* ให้ลูกที่เกินขอบกล่องแสดงได้ */
+  position: relative;    /* ต้องมี เพื่อเป็น reference ให้ลูก position */
+  z-index: 1;            /* ให้อยู่ด้านล่าง */
+
+  cursor: pointer;                        /* เปลี่ยนเป็นรูปมือเมื่อ hover */
+  transition: transform 0.2s ease;        /* เพิ่ม animation ตอน hover นุ่มนวล */
+}
+
+/* --- ขยายเล็กน้อยเมื่อ hover เพื่อสร้าง feedback --- */
+.bg-post:hover {
+  transform: scale(1.02);
+}
+
+/* --- รูปภาพในโพสต์ --- */
+.post-image {
+  width: 200px !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: contain;
+  flex-shrink: 0; /* ป้องกัน flex ย่อรูป */
+}
+
+
+/* --- ส่วนครอบข้อความหรือเนื้อหาโพสต์ --- */
+.wrap-title-detail {
+  width: 100%;                            /* ขยายเต็มความกว้างที่เหลือ */
+}
+
+
+/* --- Responsive สำหรับหน้าจอเล็ก (มือถือ/แท็บเล็ต) --- */
+@media (max-width: 768px) {
+  .bg-post {
+    flex-direction: column;              /* จัดวางเนื้อหาแนวตั้ง */
+    align-items: center;                 /* จัดกึ่งกลางแนวนอน */
+    padding: 15px;                       /* ลด padding รอบนอก */
+    width: 90%;                          /* จำกัดไม่ให้เต็มจอ เหลือ margin ข้าง */
+    margin: 20px auto;                   /* ลดระยะห่างเมื่ออยู่บนมือถือ */
+  }
+
+  .post-image {
+    width: 150px;                        /* ลดขนาดภาพให้เหมาะกับมือถือ */
+  }
+}

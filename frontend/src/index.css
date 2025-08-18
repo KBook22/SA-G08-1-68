@@ -1,0 +1,19 @@
+/* รีเซ็ต margin, padding และตั้ง box-sizing ให้กับทุก element */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* ตั้งฟอนต์และน้ำหนักตัวอักษรสำหรับปุ่มของ Ant Design */
+  button.ant-btn {
+    font-family: "Kanit", "Sarabun", Arial, sans-serif !important;
+    font-weight: 400;
+  }
+  
+  
+  
+  /* หมายเหตุ: 
+     - class ชื่อ "containner" มีสะกดผิด ควรแก้เป็น "container" 
+     - ส่วน comment outline สีแดง ใช้สำหรับ debug เท่านั้น จึงถูก comment ไว้ */
+  
