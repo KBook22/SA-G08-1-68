@@ -36,8 +36,8 @@ const navItems: MenuItem[] = [
   createMenuItem("chat", "Chat"),
   createMenuItem("interview","Interview Table"),
   createMenuItem("students","Students List"),
-
   createMenuItem("report","Report"),
+  
 ];
 
 const FullLayout: React.FC = () => {
