@@ -20,11 +20,11 @@ import ReviewPage from '../pages/review';
 import PaymentPage from '../pages/payment';
 import Homepage from '../pages/Home/Home';
 
+import JobPost from "../pages/JobPost/JobPost";
+
 const MainRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route path="/SelectPage" element={<SelectPage />} />
-      
       <Route path="/" element={<FullLayout />} >
         {/* Component want navbar */}
         <Route index element={<Homepage />} />
@@ -32,6 +32,8 @@ const MainRoutes: React.FC = () => {
         <Route path="Job/post-detail" element={<JobDetail />} />
         <Route path="Job/post-detail/:id" element={<JobDetail />} />
         <Route path="Job/ApplyJob" element={<ApplyJob/>} />
+
+        <Route path="Job/post-job" element={<JobPost />} />
 
         <Route path="interview" element={<Interview />} />
         <Route path="chat" element={<Chat />} />
@@ -48,6 +50,7 @@ const MainRoutes: React.FC = () => {
         <Route path="help" element={<div>404 not found page</div>} />
       </Route>
       {/* Component don't want navbar */}
+      <Route path="/SelectPage" element={<SelectPage />} />
     </Routes>
   );
 };

@@ -1,6 +1,5 @@
 import React from "react";
 import MainRoutes from "./MainRoutes";
-import AdminRoutes from "./EmAdminRoutes";
 import { Layout } from "antd";
 
 const AllRoutes: React.FC = () => {
@@ -10,7 +9,6 @@ const AllRoutes: React.FC = () => {
       {/* container สำหรับแสดง MainRoutes และ AdminRoutes */}
       <div className="container">
         <MainRoutes />
-        <AdminRoutes />
       </div>
 
     </Layout>
