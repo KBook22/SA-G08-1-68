@@ -51,6 +51,10 @@ const FullLayout: React.FC = () => {
     <Layout style={{ minHeight: "auto" }}>
       <Header
         style={{
+          position: "sticky", //  <-- เพิ่มบรรทัดนี้
+          top: 0,             //  <-- เพิ่มบรรทัดนี้
+          zIndex: 1,          //  <-- เพิ่มบรรทัดนี้
+          width: "100%",      //  <-- เพิ่มบรรทัดนี้
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
