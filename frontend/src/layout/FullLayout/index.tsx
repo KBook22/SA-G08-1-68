@@ -51,6 +51,8 @@ const FullLayout: React.FC = () => {
     <Layout style={{ minHeight: "auto" }}>
       <Header
         style={{
+          position: "fixed",
+          width: "100%",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -58,6 +60,7 @@ const FullLayout: React.FC = () => {
           padding: "0 24px",
           height: "64px",
           borderBottom: "1px solid #f0f0f0",
+          zIndex:"10"
         }}
       >
         <div
@@ -133,7 +136,7 @@ const FullLayout: React.FC = () => {
           </Space>
         </Flex>
       </Header>
-      <Content style={{ padding: "24px 48px" }}>
+      <Content style={{ padding: "24px 48px",paddingTop: "88px",}}>
         <Outlet />
       </Content>
       <Footer style={{ textAlign: "center" }}>

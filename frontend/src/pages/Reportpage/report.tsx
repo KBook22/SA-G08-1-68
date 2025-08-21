@@ -2,6 +2,8 @@
 import React from 'react';
 import "./report .css"
 
+
+
 const Reportpage: React.FC = () => {
     return (
         <div className='report-overlay'>
