@@ -1,7 +1,10 @@
+
 // src/routes/index.tsx
+
 
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+
 
 // Import Pages and Routes
 import MainRoutes from './MainRoutes';
