@@ -1,6 +1,7 @@
 // src/layout/FullLayout/index.tsx
 import React from "react";
-import { Link, useLocation, Outlet } from "react-router-dom";
+// 1. เพิ่ม import 'useOutletContext' เข้ามา
+import { Link, useLocation, Outlet, useOutletContext } from "react-router-dom";
 import {
   Layout,
   Menu,
@@ -36,8 +37,9 @@ const navItems: MenuItem[] = [
   createMenuItem("chat", "Chat"),
   createMenuItem("interview","Interview Table"),
   createMenuItem("students","Students List"),
-
   createMenuItem("report","Report"),
+  // Link ไปยังหน้าของนักศึกษา (ส่วนที่รวมเข้ามาใหม่)
+  createMenuItem("feed", "Students Post"),
 ];
 
 const FullLayout: React.FC = () => {
@@ -45,7 +47,10 @@ const FullLayout: React.FC = () => {
     token: { colorText },
   } = theme.useToken();
   const location = useLocation();
-  const currentPageKey = location.pathname.split("/")[1] || "Homepage";
+  const currentPageKey = location.pathname.split("/")[1] || "home"; // แก้ไข default key เป็น 'home'
+
+  // 2. รับ context ที่ส่งมาจาก App.tsx
+  const context = useOutletContext();
 
   return (
     <Layout style={{ minHeight: "auto" }}>
@@ -78,9 +83,10 @@ const FullLayout: React.FC = () => {
                 src={logoImage}
                 alt="SUT Career Logo"
                 style={{
-                  height: "35px", 
-                  width: "auto", 
+                  height: "50px",
+                  width: "auto",
                   display: "block",
+                  // ลบ position ที่ทำให้โลโก้ลอยออกไป
                 }}
               />
             </Link>
@@ -138,7 +144,8 @@ const FullLayout: React.FC = () => {
         </Flex>
       </Header>
       <Content style={{ padding: "24px 48px" }}>
-        <Outlet />
+        {/* 3. ส่งต่อ context ที่ได้รับไปยังหน้าเว็บลูกๆ */}
+        <Outlet context={context} />
       </Content>
       <Footer style={{ textAlign: "center" }}>
         SUT Career ©{new Date().getFullYear()} Created with Ant Design
