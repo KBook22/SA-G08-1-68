@@ -1,0 +1,85 @@
+/* src/pages/StudentPost/HelpCenter.css */
+
+.help-center-container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  .help-center-header {
+    text-align: center;
+    padding: 48px 24px;
+    background-color: #f0f5ff;
+    border-radius: 16px;
+    margin-bottom: 32px;
+  }
+  
+  .help-center-header .ant-typography {
+    margin-bottom: 16px !important;
+    color: #1d39c4;
+  }
+  
+  .help-center-search .ant-input-group-wrapper {
+    max-width: 500px;
+    margin: 0 auto 24px auto;
+  }
+  
+  .help-center-search .ant-input,
+  .help-center-search .ant-btn {
+    height: 48px;
+    font-size: 16px;
+  }
+  
+  .help-center-tabs .ant-tabs-nav {
+    margin-bottom: 24px;
+  }
+  
+  .faq-collapse .ant-collapse-item {
+    margin-bottom: 16px;
+    border-radius: 8px !important;
+    border: 1px solid #d9d9d9 !important;
+    overflow: hidden;
+  }
+  
+  .faq-collapse .ant-collapse-header {
+    font-size: 16px;
+    font-weight: 500;
+    color: #001529;
+    background-color: #fafafa;
+    padding: 16px !important;
+  }
+  
+  .faq-collapse .ant-collapse-content {
+    border-top: 1px solid #d9d9d9;
+  }
+  
+  .faq-collapse .ant-collapse-content-box {
+    padding: 20px;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  
+  .my-requests-list .ant-list-item {
+    transition: background-color 0.3s;
+    border-radius: 8px;
+  }
+  
+  .my-requests-list .ant-list-item:hover {
+    background-color: #f7f7f7;
+  }
+  
+  .request-item-status .ant-tag {
+    font-size: 12px;
+    padding: 2px 8px;
+  }
+/* เพิ่มโค้ดส่วนนี้เข้าไป */
+.help-center-wrapper {
+    position: relative;
+    padding-top: 24px; /* เพิ่มพื้นที่ด้านบนเล็กน้อย */
+  }
+  
+  .new-request-button-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10;
+  }

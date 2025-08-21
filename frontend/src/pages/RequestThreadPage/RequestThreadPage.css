@@ -1,0 +1,171 @@
+```css
+/* /Users/phonsirithabunsri/Desktop/frontend/src/pages/RequestThreadPage/RequestThreadPage.css */
+
+/* สไตล์พื้นฐานของ Card และหน้าเว็บ */
+.request-thread-card {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    height: 80vh; /* กำหนดความสูงเพื่อให้สามารถ Scroll ได้ */
+}
+
+/* สไตล์สำหรับเมื่อหน้ากำลังโหลด */
+.request-thread-spin {
+    text-align: center;
+    padding: 50px;
+}
+
+/* หัวข้อคำร้อง */
+.thread-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.thread-title {
+    margin-bottom: 4px !important;
+}
+
+.thread-subtitle {
+    color: #888;
+    margin: 0;
+}
+
+/* เส้นคั่น */
+.thread-divider {
+    border-bottom: 1px solid #f0f0f0;
+    margin: 16px 0;
+}
+
+/* ส่วนแสดงข้อความแชท */
+.thread-messages {
+    flex-grow: 1; /* ทำให้ส่วนนี้ขยายเต็มพื้นที่ที่เหลือ */
+    overflow-y: auto; /* เปิดใช้งานการ Scroll */
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* สไตล์ข้อความแต่ละข้อความ */
+.message-bubble {
+    display: flex;
+    max-width: 80%;
+}
+
+/* สไตล์ข้อความที่ส่งโดยผู้ใช้งาน (ชิดขวา) */
+.user-message {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+/* สไตล์ข้อความที่ส่งโดยแอดมิน (ชิดซ้าย) */
+.staff-message {
+    align-self: flex-start;
+    flex-direction: row;
+}
+
+/* สไตล์พื้นหลังข้อความ */
+.message-content {
+    padding: 12px;
+    border-radius: 18px;
+    line-height: 1.4;
+    text-align: left;
+    white-space: pre-wrap;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.user-message .message-content {
+    background-color: #0084ff;
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.staff-message .message-content {
+    background-color: #e4e6eb;
+    color: #212529;
+    border-bottom-left-radius: 4px;
+}
+
+/* ข้อมูลผู้ส่งและเวลา */
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 4px;
+}
+
+.user-message .message-header {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.message-author {
+    font-weight: bold;
+}
+
+.message-time {
+    font-size: 11px;
+}
+
+/* ส่วน input สำหรับพิมพ์ข้อความ */
+.thread-input-area {
+    padding-top: 24px;
+    border-top: 1px solid #f0f0f0;
+    margin-top: 16px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+.input-with-button-container {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    border: 1px solid #d9d9d9;
+    border-radius: 20px;
+    padding-right: 4px; /* Space for the button */
+    background-color: white;
+}
+
+.reply-input {
+    flex-grow: 1;
+    border: none !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+    padding: 8px 12px;
+    border-radius: 20px 0 0 20px !important;
+    transition: none;
+    resize: none;
+}
+
+.reply-input:focus, .reply-input:hover {
+    box-shadow: none !important;
+    border-color: transparent !important;
+}
+
+.reply-input textarea {
+    padding: 0;
+    background-color: transparent !important;
+}
+
+.icon-button {
+    border: none;
+    box-shadow: none;
+    background-color: transparent;
+    cursor: pointer;
+    margin: 0 4px;
+}
+
+.send-button-design {
+    border-radius: 20px !important;
+    padding: 8px 24px;
+    height: auto;
+    background-color: #0084ff;
+    transition: background-color 0.3s;
+}
+
+.send-button-design:hover {
+    background-color: #006ddb;
+}

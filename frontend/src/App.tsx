@@ -1,4 +1,6 @@
-import './App.css'
+// src/App.tsx
+
+import './App.css';
 import React from 'react';
 import AllRoutes from './routes';
 // edit by chompoo
