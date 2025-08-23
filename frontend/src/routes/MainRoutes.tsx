@@ -86,7 +86,6 @@ const RequestStatusPageRoute = () => {
     return <RequestStatusPage questions={questions} />;
 };
 
-import JobPost from "../pages/JobPost/JobPost";
 
 const MainRoutes: React.FC = () => {
     return (
