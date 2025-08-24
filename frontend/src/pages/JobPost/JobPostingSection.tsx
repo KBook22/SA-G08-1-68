@@ -159,17 +159,7 @@ const JobDescriptionSection: React.FC = () => {
         style={{ marginTop: 16, width: "100%" }}
       />
 
-      {/* ปุ่มยืนยัน */}
-      <div className="submit-button-wrapper">
-        <Button
-          type="primary"
-          size="large"
-          className="submit-button"
-          htmlType="submit"
-        >
-          ยืนยัน
-        </Button>
-      </div>
+
     </div>
   );
 };
