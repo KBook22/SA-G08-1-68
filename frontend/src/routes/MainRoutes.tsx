@@ -9,8 +9,9 @@ import SelectPage from "../pages/SelectPage/SelectPage";
 import Interview from '../pages/Interview/Interview';
 import Chat from '../pages/Chat/Chat';
 //tung tung tung sahur
-import StudentListPage from "../pages/StudentListpage/StudentListPage";
+import StudentListPage from "../pages/worklog/StudentListPage";
 import Reportpage from '../pages/Reportpage/report'
+import Worklog from '../pages/worklog/worklog'
 //Plabooooooo
 import FullLayout from '../layout/FullLayout';
 import JobsPage from '../pages/myjob';
@@ -38,6 +39,7 @@ const MainRoutes: React.FC = () => {
 
         <Route path="students" element={<StudentListPage/>} />
         <Route path="report" element={<Reportpage/>}/>
+        <Route path="worklog" element={<Worklog/>}/>
         
         <Route path="Job/Board" element={<Board/>} />
         <Route path="my-jobs" element={<JobsPage />} />

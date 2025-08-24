@@ -1,0 +1,156 @@
+.title{
+    display: flex;
+    justify-content: start; 
+}
+
+.subtitle{
+
+}
+body {
+    background-color: #f0f2f5;
+    font-family: Arial, sans-serif;
+}
+
+.workhour-tracker-container {
+    padding: 20px;
+}
+
+/* .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+} */
+
+.header h1 {
+    font-size: 24px;
+    color: #333;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.form-section, .history-section {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-section h2, .history-section h2 {
+    font-size: 20px;
+    color: #004d99;
+    margin-bottom: 10px;
+}
+
+.form-section p, .history-section p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.form-group input, .form-group select, .form-group textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.form-group.full-width {
+    flex: 2;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-group small {
+    color: #999;
+    margin-top: 5px;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.checkbox-group input {
+    margin-right: 10px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.form-actions button {
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.cancel-btn {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.submit-btn {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}
+
+/* History section specific styling */
+.history-section {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.history-section svg {
+    font-size: 60px;
+    color: #ccc;
+    margin-bottom: 10px;
+}
+
+.history-section h2 {
+    color: #999;
+}

@@ -61,7 +61,7 @@ const TimeRecordModal: React.FC<TimeRecordModalProps> = ({ isOpen, onClose }) =>
                     <div className="modal-input">
 
 
-                        <div className="form-group label">
+                        <div className="form-group ">
                             <label >จำนวนชั่วโมงทำงาน</label>
                             <Space style={{ marginRight: "150px" }}>
                                 <InputNumber min={1} max={8} value={value} onChange={setValue} />
@@ -81,8 +81,8 @@ const TimeRecordModal: React.FC<TimeRecordModalProps> = ({ isOpen, onClose }) =>
                             <label>รายละเอียดงาน</label>
                             <textarea rows={10} placeholder="กรอกรายละเอียดงาน..."></textarea>
                         </div>
-                        <div className='submit-button-index'>
-                            <button className="submit-button" onClick={()=>{onClose(); saveData();}} style={{ alignContent: "center" }}>ยืนยันบันทึก</button>
+                        <div>{/*className='submit-button-index*/}
+                            <button className="buttonsubmit" onClick={()=>{onClose(); saveData();}} >ยืนยันบันทึก</button>{/**/}
                         </div>
                     </div>
 
