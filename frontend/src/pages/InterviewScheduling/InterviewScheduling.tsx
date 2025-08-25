@@ -1,8 +1,8 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
-import { Button, Card, Typography, Space, Row, Col, Modal, TimePicker, Form } from "antd"
+import { useState, useEffect } from "react"
+import { Button, Card, Typography, Space, Row, Col, Modal, TimePicker, Form, message } from "antd"
 import {
   LeftOutlined,
   RightOutlined,
@@ -16,13 +16,35 @@ import "dayjs/locale/th"
 const { Title, Text } = Typography
 const { RangePicker } = TimePicker
 
-interface TimeSlot {
-  startTime: string
-  endTime: string
-  status: "available" | "booked" | "unavailable"
+// สร้าง Interface ให้สอดคล้องกับโครงสร้างจาก Database
+interface InterviewSlot {
+  id: string; // ใช้ ID ที่ไม่ซ้ำกันเหมือนมาจาก Database
+  startTime: string;
+  endTime: string;
+  status: "available" | "booked" | "unavailable";
+  intervieweeId?: string;
 }
 
 type DateStatus = "available" | "booked" | "selected" | "default"
+
+// --- Mock API Functions for Database Interaction ---
+// ฟังก์ชันจำลองเพื่อดึงข้อมูลจาก Database
+const fetchTimeSlots = async (): Promise<Record<string, InterviewSlot[]>> => {
+  return Promise.resolve({
+    "2024-12-08": [
+      { id: "slot1", startTime: "09:00", endTime: "10:00", status: "available" },
+      { id: "slot2", startTime: "10:00", endTime: "11:00", status: "booked", intervieweeId: "std1" },
+      { id: "slot3", startTime: "13:00", endTime: "14:00", status: "available" },
+      { id: "slot4", startTime: "15:00", endTime: "16:00", status: "booked", intervieweeId: "std2" },
+    ],
+  });
+};
+
+// ฟังก์ชันจำลองเพื่อบันทึกข้อมูลลง Database
+const updateTimeSlots = async (newSlots: Record<string, InterviewSlot[]>) => {
+  console.log("Saving to database...", newSlots);
+  return Promise.resolve(newSlots);
+};
 
 const EmployerSchedule: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null)
@@ -33,24 +55,22 @@ const EmployerSchedule: React.FC = () => {
   const [form] = Form.useForm()
   const [selectedTimeSlotForDeletion, setSelectedTimeSlotForDeletion] = useState<string | null>(null)
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
+  
+  // โหลดข้อมูลจาก "ฐานข้อมูล" เมื่อโหลดหน้าครั้งแรก
+  const [timeSlots, setTimeSlots] = useState<Record<string, InterviewSlot[]>>({});
+  useEffect(() => {
+    const loadSlots = async () => {
+      const slots = await fetchTimeSlots();
+      setTimeSlots(slots);
+    };
+    loadSlots();
+  }, []);
 
-  // Mock data for existing time slots
-  const [timeSlots, setTimeSlots] = useState<Record<string, TimeSlot[]>>({
-    "2024-12-08": [
-      { startTime: "09:00", endTime: "10:00", status: "available" },
-      { startTime: "10:00", endTime: "11:00", status: "booked" },
-      { startTime: "13:00", endTime: "14:00", status: "available" },
-      { startTime: "15:00", endTime: "16:00", status: "booked" },
-    ],
-  })
-
-  // Mock data for calendar status
   const getDateStatus = (date: Dayjs): DateStatus => {
     const dateKey = date.format("YYYY-MM-DD")
     const isCurrentMonth = date.month() === currentMonth.month()
 
     if (!isCurrentMonth) return "default"
-
     if (selectedDate && date.isSame(selectedDate, "day")) return "selected"
 
     const daySlots = timeSlots[dateKey]
@@ -58,8 +78,8 @@ const EmployerSchedule: React.FC = () => {
       const hasBooked = daySlots.some((slot) => slot.status === "booked")
       const hasAvailable = daySlots.some((slot) => slot.status === "available")
 
-      if (hasBooked && !hasAvailable) return "booked" // All slots booked
-      if (hasAvailable) return "available" // Has available slots
+      if (hasBooked && !hasAvailable) return "booked"
+      if (hasAvailable) return "available"
     }
 
     return "default"
@@ -72,9 +92,69 @@ const EmployerSchedule: React.FC = () => {
     }
   }
 
+  const handleAddTimeSlot = async () => {
+    if (selectedDate && selectedTimeRange) {
+      const dateKey = selectedDate.format("YYYY-MM-DD")
+      const newSlot: InterviewSlot = {
+        id: `slot-${Date.now()}`, // สร้าง ID ใหม่ เหมือนมาจาก Database
+        startTime: selectedTimeRange[0].format("HH:mm"),
+        endTime: selectedTimeRange[1].format("HH:mm"),
+        status: "available",
+      }
+
+      const updatedSlots = {
+        ...timeSlots,
+        [dateKey]: [...(timeSlots[dateKey] || []), newSlot],
+      };
+      
+      try {
+        await updateTimeSlots(updatedSlots); // บันทึกข้อมูล
+        setTimeSlots(updatedSlots);
+        setShowAddTimeModal(false);
+        setShowSuccessModal(true);
+        setSelectedTimeRange(null);
+        form.resetFields();
+      } catch (error) {
+        message.error("Failed to add time slot.");
+      }
+    }
+  }
+
+  const handleDeleteTimeSlot = async () => {
+    if (selectedDate && selectedTimeSlotForDeletion) {
+      const dateKey = selectedDate.format("YYYY-MM-DD");
+      const updatedSlotsForDay = timeSlots[dateKey]?.filter(
+        (slot) => slot.id !== selectedTimeSlotForDeletion
+      );
+
+      const updatedSlots = {
+        ...timeSlots,
+        [dateKey]: updatedSlotsForDay || [],
+      };
+      
+      try {
+        await updateTimeSlots(updatedSlots);
+        setTimeSlots(updatedSlots);
+        setShowDeleteModal(false);
+        setSelectedTimeSlotForDeletion(null);
+        message.success("ลบช่วงเวลาสำเร็จ");
+      } catch (error) {
+        message.error("Failed to delete time slot.");
+      }
+    }
+  }
+
+  const getCurrentDateSlots = () => {
+    if (!selectedDate) return []
+    const dateKey = selectedDate.format("YYYY-MM-DD")
+    return timeSlots[dateKey] || []
+  }
+  
+  // (ส่วน render HTML อื่นๆ ไม่มีการเปลี่ยนแปลง)
+
   const dateCellRender = (date: Dayjs) => {
-    const status = getDateStatus(date)
-    const isCurrentMonth = date.month() === currentMonth.month()
+    const status = getDateStatus(date);
+    const isCurrentMonth = date.month() === currentMonth.month();
 
     if (!isCurrentMonth) return null
 
@@ -130,53 +210,10 @@ const EmployerSchedule: React.FC = () => {
     setSelectedDate(null)
   }
 
-  const handleAddTimeSlot = () => {
-    if (selectedDate && selectedTimeRange) {
-      const dateKey = selectedDate.format("YYYY-MM-DD")
-      const newSlot: TimeSlot = {
-        startTime: selectedTimeRange[0].format("HH:mm"),
-        endTime: selectedTimeRange[1].format("HH:mm"),
-        status: "available",
-      }
-
-      setTimeSlots((prev) => ({
-        ...prev,
-        [dateKey]: [...(prev[dateKey] || []), newSlot],
-      }))
-
-      setShowAddTimeModal(false)
-      setShowSuccessModal(true)
-      setSelectedTimeRange(null)
-      form.resetFields()
-    }
+  const handleTimeSlotClick = (slotId: string) => {
+    setSelectedTimeSlotForDeletion(slotId === selectedTimeSlotForDeletion ? null : slotId)
   }
-
-  const handleTimeSlotClick = (slotIndex: number) => {
-    const slotKey = `${selectedDate?.format("YYYY-MM-DD")}-${slotIndex}`
-    setSelectedTimeSlotForDeletion(selectedTimeSlotForDeletion === slotKey ? null : slotKey)
-  }
-
-  const handleDeleteTimeSlot = () => {
-    if (selectedDate && selectedTimeSlotForDeletion) {
-      const dateKey = selectedDate.format("YYYY-MM-DD")
-      const slotIndex = Number.parseInt(selectedTimeSlotForDeletion.split("-").pop() || "0")
-
-      setTimeSlots((prev) => ({
-        ...prev,
-        [dateKey]: prev[dateKey]?.filter((_, index) => index !== slotIndex) || [],
-      }))
-
-      setShowDeleteModal(false)
-      setSelectedTimeSlotForDeletion(null)
-    }
-  }
-
-  const getCurrentDateSlots = () => {
-    if (!selectedDate) return []
-    const dateKey = selectedDate.format("YYYY-MM-DD")
-    return timeSlots[dateKey] || []
-  }
-
+  
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f5f5f5" }}>
       <div style={{ padding: "24px" }}>
@@ -333,19 +370,7 @@ const EmployerSchedule: React.FC = () => {
                         borderRadius: "50%",
                       }}
                     />
-                    <Text>ช่วงเวลาที่คุณได้ใส่</Text>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <div
-                      style={{
-                        width: "16px",
-                        height: "16px",
-                        backgroundColor: "transparent",
-                        border: "1px solid #d9d9d9",
-                        borderRadius: "50%",
-                      }}
-                    />
-                    <Text>ให้เลือกวันที่นัดสัมภาษณ์แล้ว</Text>
+                    <Text>ช่วงเวลาที่คุณได้ใส่แล้ว</Text>
                   </div>
                 </Space>
               </Card>
@@ -361,13 +386,12 @@ const EmployerSchedule: React.FC = () => {
                   style={{ backgroundColor: "#e6f4ff" }}
                 >
                   <Space direction="vertical" size="small" style={{ width: "100%" }}>
-                    {getCurrentDateSlots().map((slot, index) => {
-                      const slotKey = `${selectedDate?.format("YYYY-MM-DD")}-${index}`
-                      const isSelected = selectedTimeSlotForDeletion === slotKey
+                    {getCurrentDateSlots().map((slot) => {
+                      const isSelected = selectedTimeSlotForDeletion === slot.id
 
                       return (
                         <div
-                          key={index}
+                          key={slot.id}
                           style={{
                             display: "flex",
                             justifyContent: "space-between",
@@ -393,7 +417,7 @@ const EmployerSchedule: React.FC = () => {
                               cursor: "pointer",
                               border: isSelected ? "2px solid #389e0d" : "none",
                             }}
-                            onClick={() => handleTimeSlotClick(index)}
+                            onClick={() => handleTimeSlotClick(slot.id)}
                           />
                         </div>
                       )
@@ -654,4 +678,4 @@ const EmployerSchedule: React.FC = () => {
   )
 }
 
-export default EmployerSchedule
+export default EmployerSchedule;

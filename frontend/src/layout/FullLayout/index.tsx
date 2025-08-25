@@ -40,6 +40,7 @@ const navItems: MenuItem[] = [
   createMenuItem("report","Report"),
   // Link ไปยังหน้าของนักศึกษา (ส่วนที่รวมเข้ามาใหม่)
   createMenuItem("feed", "Students Post"),
+  createMenuItem("Interview-Schedule","Interview Schedule")
 ];
 
 const FullLayout: React.FC = () => {
