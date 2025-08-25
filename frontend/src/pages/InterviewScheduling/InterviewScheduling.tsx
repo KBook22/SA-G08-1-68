@@ -2,14 +2,12 @@
 
 import type React from "react"
 import { useState } from "react"
-import { Button, Card, Typography, Space, Avatar, Row, Col, Modal, TimePicker, Form } from "antd"
+import { Button, Card, Typography, Space, Row, Col, Modal, TimePicker, Form } from "antd"
 import {
-  BellOutlined,
   LeftOutlined,
   RightOutlined,
   CheckCircleOutlined,
   CloseOutlined,
-  ArrowLeftOutlined,
 } from "@ant-design/icons"
 import type { Dayjs } from "dayjs"
 import dayjs from "dayjs"
@@ -181,47 +179,6 @@ const EmployerSchedule: React.FC = () => {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f5f5f5" }}>
-      {/* Header */}
-      <div
-        style={{
-          backgroundColor: "white",
-          padding: "16px 24px",
-          borderBottom: "1px solid #f0f0f0",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <img src="/assets/logo.svg" alt="SUT Career" style={{ height: "40px" }} />
-        </div>
-
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <Text>จัดการตาราง</Text>
-          <Text>นัดสัมภาษณ์</Text>
-          <BellOutlined style={{ fontSize: "20px" }} />
-          <Avatar style={{ backgroundColor: "#ff4d4f" }}>TH</Avatar>
-          <Text strong>Profile</Text>
-        </div>
-      </div>
-
-      {/* Sub Header */}
-      <div
-        style={{
-          backgroundColor: "white",
-          padding: "16px 24px",
-          borderBottom: "1px solid #f0f0f0",
-          display: "flex",
-          alignItems: "center",
-          gap: "16px",
-        }}
-      >
-        <ArrowLeftOutlined style={{ fontSize: "20px", cursor: "pointer" }} />
-        <Title level={4} style={{ margin: 0 }}>
-          จัดการตารางนัดสัมภาษณ์
-        </Title>
-      </div>
-
       <div style={{ padding: "24px" }}>
         <Row gutter={24}>
           <Col span={16}>
