@@ -1,21 +1,24 @@
 // src/types.ts
 
-// --- Post & Comment Types (จาก src2) ---
+// ===== Comment =====
 export interface Comment {
   id: number;
   author: string;
+  authorId: string;
   text: string;
   createdAt?: number;
   imageUrl?: string;
+  parentId?: number;
   replies?: Comment[];
 }
 
+// ===== Post =====
 export interface Post {
   id: number;
   author: string;
+  authorId: string;
   content: string;
-  file?: File;
-  image?: File;
+  skills: string[];                // ✅ ใช้ array เสมอ (ค่าว่าง = [])
   fileUrl?: string;
   fileName?: string;
   imageUrl?: string;
@@ -24,11 +27,22 @@ export interface Post {
   likes: number;
   isLiked: boolean;
   comments: Comment[];
-  createdAt?: number;
+  createdAt: number;
   privacy: 'public' | 'private';
 }
 
-// --- Q&A Types (รวมจาก src และ src2) ---
+// ===== Q&A =====
+export interface Answer {
+  id: number;
+  author: string;
+  text: string;
+  isStaff: boolean;
+  parentId?: number;
+  createdAt?: number;
+  imageUrl?: string;
+  replyTo?: Answer;
+}
+
 export interface Question {
   id: number;
   title: string;
@@ -39,18 +53,7 @@ export interface Question {
   isFAQ?: boolean;
 }
 
-export interface Answer {
-  id: number;
-  author: string;
-  text: string;
-  isStaff: boolean;
-  parentId?: number; // สำหรับการตอบกลับคอมเมนต์ย่อย
-  createdAt?: number;
-  imageUrl?: string;
-  replyTo?: Answer; // สำหรับอ้างอิงข้อความที่ถูกตอบกลับ
-}
-
-// --- System Types (จาก src2) ---
+// ===== Notification / Report =====
 export interface Notification {
   id: number;
   message: string;

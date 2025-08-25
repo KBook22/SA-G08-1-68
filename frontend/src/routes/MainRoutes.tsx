@@ -1,15 +1,11 @@
 // src/routes/MainRoutes.tsx
 
+// ... (imports และ Helper components อื่นๆ เหมือนเดิม) ...
 import React from 'react';
 import { Route, Routes, useOutletContext } from 'react-router-dom';
 
-// Layout
-import FullLayout from '../layout/FullLayout';
-
-// Parent Component for Student Section
+import FullLayout from '../layouts/FullLayout';
 import StudentPostManager from '../pages/StudentPost';
-
-// (Import Pages ทั้งหมดเหมือนเดิม)
 import FeedPage from '../components/QA/FeedPage';
 import PostCreator from '../components/QA/PostCreator';
 import ProfilePageV2 from '../pages/ProfilePage2/ProfilePage';
@@ -33,7 +29,7 @@ import ReviewPage from '../pages/review';
 import PaymentPage from '../pages/payment';
 import JobPost from "../pages/JobPost/JobPost";
 
-// --- สร้าง Helper Components เพื่อรับ Context จาก StudentPostManager ---
+
 const FeedPageRoute = () => {
     const context: any = useOutletContext();
     return <FeedPage
@@ -53,6 +49,9 @@ const PostCreatorRoute = () => {
 
 const ProfilePageV2Route = () => {
   const context: any = useOutletContext();
+  if (!context) {
+    return <div>Loading profile...</div>;
+  }
   return <ProfilePageV2
       posts={context.posts}
       handleAddPost={context.handleAddPost}
@@ -64,8 +63,13 @@ const ProfilePageV2Route = () => {
 }
 
 const FAQPageRoute = () => {
-    const { faqQuestions, handleLikeQuestion }: any = useOutletContext();
-    return <FAQPage questions={faqQuestions} onLike={handleLikeQuestion} />;
+    // แก้ไขโดยพรศิริ: รับ myRequests จาก context
+    const { faqQuestions, myRequests, handleLikeQuestion }: any = useOutletContext();
+    return <FAQPage
+        questions={faqQuestions}
+        myRequests={myRequests}
+        onLike={handleLikeQuestion}
+    />;
 };
 
 const AskQuestionPageRoute = () => {
@@ -86,10 +90,10 @@ const RequestStatusPageRoute = () => {
     return <RequestStatusPage questions={questions} />;
 };
 
+
 const MainRoutes: React.FC = () => {
     return (
       <Routes>
-        {/* ใช้ FullLayout เป็น Layout หลักสำหรับทุกหน้า */}
         <Route element={<FullLayout />}>
             {/* --- ส่วนของผู้ประกอบการ/ทั่วไป --- */}
             <Route path="/" element={<Homepage />} />
@@ -105,14 +109,17 @@ const MainRoutes: React.FC = () => {
             <Route path="/my-jobs" element={<JobsPage />} />
             <Route path="/payment-report" element={<PaymentReportPage />} />
             <Route path="/payment" element={<PaymentPage />} />
-            <Route path="/profile" element={<ProfilePageV1 />} />
             <Route path="/review" element={<ReviewPage />} />
+            <Route path="/profile-v1" element={<ProfilePageV1 />} />
+            <Route path="/review-page" element={<ReviewPage />} />
+
 
             {/* --- ส่วนของนักศึกษา (จะถูกจัดการ State โดย StudentPostManager) --- */}
             <Route element={<StudentPostManager />}>
               <Route path="/feed" element={<FeedPageRoute />} />
               <Route path="/create" element={<PostCreatorRoute />} />
-              <Route path="/profile-v2" element={<ProfilePageV2Route />} />
+              <Route path="/profile/:userId" element={<ProfilePageV2Route />} />
+              <Route path="/profile" element={<ProfilePageV2Route />} />
               <Route path="/help" element={<FAQPageRoute />} />
               <Route path="/help/ask" element={<AskQuestionPageRoute />} />
               <Route path="/help/question/:id" element={<QuestionDetailPageRoute />} />

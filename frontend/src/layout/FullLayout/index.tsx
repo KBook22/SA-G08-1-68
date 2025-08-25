@@ -143,7 +143,7 @@ const FullLayout: React.FC = () => {
           </Space>
         </Flex>
       </Header>
-      <Content>
+      <Content style={{ padding: "24px 48px" }}>
         {/* 3. ส่งต่อ context ที่ได้รับไปยังหน้าเว็บลูกๆ */}
         <Outlet context={context} />
       </Content>

@@ -1,10 +1,11 @@
 // src/components/QA/FeedPage.tsx
 import React, { useState } from 'react';
-import { Button, Modal, Card } from 'antd'; // <<< แก้ไขบรรทัดนี้: เพิ่ม Card เข้ามา
-import { PlusOutlined } from '@ant-design/icons';
+import { Button, Modal, Card, Avatar, Space, Input } from 'antd';
+import { UserOutlined, SearchOutlined } from '@ant-design/icons';
 import PostCard from './PostCard';
 import PostCreator from './PostCreator';
-import type { Post } from '../types';
+import type { Post } from '../../types';
+import './FeedPage.css';
 
 interface FeedPageProps {
   posts: Post[];
@@ -12,7 +13,9 @@ interface FeedPageProps {
   onLike: (id: number) => void;
   onAddComment: (postId: number, text: string, image?: File, parentId?: number) => void;
   onAddReport: (post: Post, reason: string, details: string) => void;
-  onAddPost: (content: string, privacy: Post['privacy'], file?: File, image?: File, location?: { lat: number, lng: number }) => void;
+  onAddPost: (content: string, privacy: Post['privacy'], skills: string[], file?: File, image?: File, location?: { lat: number, lng: number }) => void;
+  onEdit: (id: number, newContent: string, newSkills: string[]) => void; // ✅ เพิ่ม Prop สำหรับ onEdit
+  showCreatePostButton?: boolean;
 }
 
 const FeedPage: React.FC<FeedPageProps> = ({
@@ -22,62 +25,85 @@ const FeedPage: React.FC<FeedPageProps> = ({
   onAddComment,
   onAddReport,
   onAddPost,
+  onEdit, // ✅ รับ onEdit prop
+  showCreatePostButton = true,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
+  const showModal = () => setIsModalVisible(true);
+  const handleCancel = () => setIsModalVisible(false);
 
-  const handleCancel = () => {
+  const handlePostSubmit = (content: string, privacy: Post['privacy'], skills: string[], file?: File, image?: File, location?: { lat: number, lng: number }) => {
+    onAddPost(content, privacy, skills, file, image, location);
     setIsModalVisible(false);
   };
 
-  const handlePostSubmit = (content: string, privacy: Post['privacy'], file?: File, image?: File, location?: { lat: number, lng: number }) => {
-    onAddPost(content, privacy, file, image, location);
-    setIsModalVisible(false);
-  };
-
+  const filteredPosts = posts.filter(post =>
+    post.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    post.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    post.skills?.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
   return (
-    <main className="feed-container">
-      <Card style={{ marginBottom: 16, width: '100%', maxWidth: 600 }}>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={showModal}
-          size="large"
-          block
-        >
-          สร้างโพสต์
-        </Button>
-      </Card>
+    <div className="feed-page-layout">
+      <main className="feed-main-content">
 
-      <Modal
-        title="สร้างโพสต์ใหม่"
-        open={isModalVisible}
-        onCancel={handleCancel}
-        footer={null}
-        destroyOnClose
-      >
-        <PostCreator onAddPost={handlePostSubmit} />
-      </Modal>
-
-      {posts.length > 0 ? (
-        posts.map((post) => (
-          <PostCard
-            key={post.id}
-            post={post}
-            onDelete={onDelete}
-            onLike={onLike}
-            onAddComment={onAddComment}
-            onAddReport={onAddReport}
+        <div className="feed-search-bar">
+          <Input
+            placeholder="ค้นหาโพสต์จากเนื้อหา, ผู้เขียน, หรือทักษะ..."
+            size="large"
+            allowClear
+            prefix={<SearchOutlined style={{ color: 'rgba(0,0,0,.45)' }} />}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{ borderRadius: '20px' }}
           />
-        ))
-      ) : (
-        <p>ยังไม่มีโพสต์...</p>
-      )}
-    </main>
+        </div>
+
+        {showCreatePostButton && (
+          <Card className="feed-post-creator-card">
+              <Space style={{ width: '100%' }} align="center">
+                  <Avatar size="large" icon={<UserOutlined />} />
+                  <Input
+                    placeholder="คุณกำลังหางานอะไรอยู่..."
+                    size="large"
+                    readOnly
+                    onClick={showModal}
+                    style={{ cursor: 'pointer', borderRadius: '20px', backgroundColor: '#f0f2f5' }}
+                  />
+              </Space>
+          </Card>
+        )}
+
+        <Modal
+          title="สร้างโพสต์ใหม่"
+          open={isModalVisible}
+          onCancel={handleCancel}
+          footer={null}
+          destroyOnClose
+        >
+          <PostCreator onAddPost={handlePostSubmit} />
+        </Modal>
+
+        <Space direction="vertical" size="large" style={{ display: 'flex' }}>
+            {filteredPosts.length > 0 ? (
+            filteredPosts.map((post) => (
+                <PostCard
+                    key={post.id}
+                    post={post}
+                    onDelete={onDelete}
+                    onLike={onLike}
+                    onAddComment={onAddComment}
+                    onAddReport={onAddReport}
+                    onEdit={onEdit} // ✅ ส่ง onEdit ไปยัง PostCard
+                />
+            ))
+            ) : (
+            <Card><p>ไม่พบโพสต์ที่ตรงกับการค้นหาของคุณ</p></Card>
+            )}
+        </Space>
+      </main>
+    </div>
   );
 };
 

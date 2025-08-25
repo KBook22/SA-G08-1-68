@@ -1,3 +1,4 @@
+// src/components/QA/Header.tsx
 import React, { useState, useEffect } from "react";
 import {
   Layout,
@@ -110,7 +111,8 @@ const AppHeader = ({ username = "Profile", logoSize = "250px" }) => {
   const profileMenuItems = [
     { key: "1", icon: <UserOutlined />, label: <Link to="/profile">ข้อมูลส่วนตัว</Link> },
     { key: "2", icon: <SettingOutlined />, label: <Link to="/settings">ตั้งค่า</Link> },
-    { key: "3", icon: <PlusOutlined />, label: <Link to="/qa">Q&A</Link> },
+    // ✅ แก้ไขโดยพรศิริ: ลิงก์ Q&A เดิมใช้ /qa/
+    { key: "3", icon: <PlusOutlined />, label: <Link to="/help">Q&A</Link> },
     { type: 'divider' },
     { key: "4", icon: <LogoutOutlined />, label: 'ออกจากระบบ', onClick: showLogoutConfirm }
   ];
@@ -123,7 +125,7 @@ const AppHeader = ({ username = "Profile", logoSize = "250px" }) => {
         backgroundColor: "#fff",
         padding: "0 24px",
         boxShadow: "0 1px 4px rgba(0, 21, 41, 0.08)",
-        height: '80px', 
+        height: '80px',
       }}
     >
       <div className="logo" style={{ marginRight: "auto" }}>
@@ -135,7 +137,7 @@ const AppHeader = ({ username = "Profile", logoSize = "250px" }) => {
               height: logoSize,
               display: "block",
               position: "relative",
-              top: "-86px", 
+              top: "-86px",
             }}
           />
         </Link>
@@ -149,7 +151,7 @@ const AppHeader = ({ username = "Profile", logoSize = "250px" }) => {
         </Link>
         {/* ✅ แก้ไข: เปลี่ยน overlay เป็น menu */}
         <Dropdown
-          popupRender={() => notificationMenu} 
+          popupRender={() => notificationMenu}
           trigger={["click"]}
           placement="bottomRight"
         >
@@ -167,10 +169,13 @@ const AppHeader = ({ username = "Profile", logoSize = "250px" }) => {
           trigger={["click"]}
           placement="bottomRight"
         >
-          <Space style={{ cursor: "pointer" }}>
-            <Avatar icon={<UserOutlined />} />
-            <span>{username}</span>
-          </Space>
+          {/* ✅ แก้ไขโดยพรศิริ: ลิงก์ไปที่หน้า profile */}
+          <Link to="/profile">
+              <Space style={{ cursor: "pointer" }}>
+                  <Avatar icon={<UserOutlined />} />
+                  <span>{username}</span>
+              </Space>
+          </Link>
         </Dropdown>
       </Space>
     </AntHeader>

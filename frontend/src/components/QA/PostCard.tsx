@@ -1,4 +1,7 @@
-import React, { useMemo, useState, useRef } from 'react';
+// src/components/QA/PostCard.tsx
+
+import React, { useMemo, useState, useRef, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaUserCircle } from 'react-icons/fa';
 import { FiHeart, FiMessageSquare, FiMoreHorizontal } from 'react-icons/fi';
 import {
@@ -11,9 +14,13 @@ import {
   PictureOutlined,
   CloseCircleFilled,
   GlobalOutlined,
+  EditOutlined,
+  MessageOutlined,
+  PlusOutlined,
+  CloseOutlined
 } from '@ant-design/icons';
-import { Dropdown, Menu, Modal, Input, Button, Space, Avatar, Upload, type UploadFile, message, type InputRef, Form, Radio, Tooltip } from 'antd';
-import type { Post, Comment } from '../types';
+import { Dropdown, Menu, Modal, Input, Button, Space, Avatar, Upload, type UploadFile, message, type InputRef, Form, Radio, Tooltip, Tag } from 'antd';
+import type { Post, Comment } from '../../types';
 
 interface PostCardProps {
   post: Post;
@@ -21,21 +28,37 @@ interface PostCardProps {
   onLike: (id: number) => void;
   onAddComment: (id: number, text: string, image?: File, parentId?: number) => void;
   onAddReport: (post: Post, reason: string, details: string) => void;
+  onEdit: (id: number, newContent: string, newSkills: string[]) => void;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddComment, onAddReport }) => {
+const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddComment, onAddReport, onEdit }) => {
+  const navigate = useNavigate();
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [editingContent, setEditingContent] = useState(post.content);
+
+  // State สำหรับจัดการแก้ไข Skills ใน Modal
+  const [editingSkills, setEditingSkills] = useState<string[]>(post.skills);
+  const [skillInput, setSkillInput] = useState('');
+
   const [isCommentOpen, setIsCommentOpen] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [commentFileList, setCommentFileList] = useState<UploadFile[]>([]);
   const [replyingTo, setReplyingTo] = useState<Comment | null>(null);
   const mainInputRef = useRef<InputRef>(null);
-
   const [isReportModalVisible, setIsReportModalVisible] = useState(false);
   const [reportForm] = Form.useForm();
-  
-  const imageSrc = post.imageUrl ?? (post.image ? URL.createObjectURL(post.image) : null);
-  const fileHref = post.fileUrl ?? (post.file ? URL.createObjectURL(post.file) : null);
-  const fileLabel = post.fileName ?? post.file?.name ?? 'ไฟล์แนบ';
+  const imageSrc = post.imageUrl;
+  const fileHref = post.fileUrl;
+  const fileLabel = post.fileName ?? 'ไฟล์แนบ';
+
+  const loggedInUserId = 'johndoe';
+  const isMyPost = post.authorId === loggedInUserId;
+
+  // อัปเดต State เมื่อ post prop เปลี่ยน (กรณีข้อมูลโพสต์ถูกแก้ไขจากภายนอก)
+  useEffect(() => {
+    setEditingContent(post.content);
+    setEditingSkills(post.skills);
+  }, [post]);
 
   const formatTime = (ts?: number) => {
     if (!ts) return 'เมื่อสักครู่';
@@ -61,31 +84,58 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddCommen
     });
   };
 
-  const handleShowReportModal = () => {
-    setIsReportModalVisible(true);
-  };
-
+  const handleShowReportModal = () => setIsReportModalVisible(true);
   const handleCancelReportModal = () => {
     setIsReportModalVisible(false);
     reportForm.resetFields();
   };
-
   const handleFinishReport = (values: { reason: string; details: string }) => {
     onAddReport(post, values.reason, values.details);
     message.success('ขอบคุณสำหรับรายงาน ทางเราจะดำเนินการตรวจสอบโดยเร็วที่สุด');
     handleCancelReportModal();
   };
+
+  // --- ฟังก์ชันสำหรับ Modal แก้ไข ---
+  const showEditModal = () => {
+    setEditingContent(post.content);
+    setEditingSkills(post.skills);
+    setSkillInput('');
+    setIsEditModalVisible(true);
+  };
+
+  const handleCancelEditModal = () => setIsEditModalVisible(false);
+
+  const handleSaveEdit = () => {
+    onEdit(post.id, editingContent, editingSkills);
+    message.success("แก้ไขโพสต์สำเร็จ!");
+    setIsEditModalVisible(false);
+  };
   
-  const menu = (
-    <Menu>
-      <Menu.Item key="delete" icon={<DeleteOutlined />} onClick={showDeleteConfirm}>
-        ลบโพสต์
-      </Menu.Item>
-      <Menu.Item key="report" icon={<FlagOutlined />} onClick={handleShowReportModal}>
-        รายงาน
-      </Menu.Item>
-    </Menu>
-  );
+    // --- ฟังก์ชันสำหรับจัดการ Skill ใน Modal แก้ไข ---
+  const handleAddSkillInModal = () => {
+      const trimmedInput = skillInput.trim();
+      if (trimmedInput && !editingSkills.includes(trimmedInput)) {
+          setEditingSkills([...editingSkills, trimmedInput]);
+      }
+      setSkillInput('');
+  };
+
+  const handleRemoveSkillInModal = (removedSkill: string) => {
+      setEditingSkills(editingSkills.filter(skill => skill !== removedSkill));
+  };
+
+
+  const menuItems = isMyPost
+    ? [
+        { key: 'edit', icon: <EditOutlined />, label: 'แก้ไขโพสต์', onClick: showEditModal },
+        { key: 'delete', icon: <DeleteOutlined />, label: 'ลบโพสต์', onClick: showDeleteConfirm, danger: true },
+      ]
+    : [
+        { key: 'report', icon: <FlagOutlined />, label: 'รายงาน', onClick: handleShowReportModal },
+        { key: 'chat', icon: <MessageOutlined />, label: 'แชท', onClick: () => navigate('/chat') },
+      ];
+
+  const menu = <Menu items={menuItems} />;
 
   const grabFirstFile = (list: UploadFile[]) => {
     const f = list[0]?.originFileObj;
@@ -99,17 +149,15 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddCommen
       return;
     }
     const image = grabFirstFile(commentFileList);
-    
-    onAddComment(post.id, text, image, replyingTo?.id); 
-  
+    onAddComment(post.id, text, image, replyingTo?.id);
     setCommentText('');
     setCommentFileList([]);
-    setReplyingTo(null); 
+    setReplyingTo(null);
   };
 
   const handleSetReply = (comment: Comment) => {
     setReplyingTo(comment);
-    mainInputRef.current?.focus(); 
+    mainInputRef.current?.focus();
   };
 
   const handleCancelReply = () => {
@@ -121,6 +169,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddCommen
     return f ? URL.createObjectURL(f) : undefined;
   }, [commentFileList]);
 
+  // นี่คือคอมเมนต์ของคุณที่ผมจะไม่ลบครับ
   const renderComment = (c: Comment) => {
     return (
       <div key={c.id} style={{ marginBottom: 12 }}>
@@ -140,13 +189,11 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddCommen
                 />
               )}
             </div>
-            
             <div style={{ paddingLeft: '12px', display: 'flex', gap: '8px', fontSize: '12px', color: '#65676b' }}>
                 <span style={{ fontWeight: 'bold', cursor: 'pointer' }}>ถูกใจ</span>
                 <span style={{ fontWeight: 'bold', cursor: 'pointer' }} onClick={() => handleSetReply(c)}>ตอบกลับ</span>
                 <span>{formatTime(c.createdAt)}</span>
             </div>
-
             {c.replies?.length ? (
               <div style={{ marginTop: 8 }}>
                 {c.replies.map((r) => renderComment(r))}
@@ -162,9 +209,13 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddCommen
     <>
       <div className="post-card fb-style">
         <div className="post-header" style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', width: '100%' }}>
-          <FaUserCircle size={40} className="user-avatar" />
+          <Link to={`/profile/${post.authorId}`}>
+            <FaUserCircle size={40} className="user-avatar" />
+          </Link>
           <div className="post-author-info" style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left' }}>
-            <span className="user-name" style={{ fontWeight: 'bold' }}>{post.author}</span>
+            <Link to={`/profile/${post.authorId}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+              <span className="user-name" style={{ fontWeight: 'bold' }}>{post.author}</span>
+            </Link>
             <div className="meta-line" style={{ fontSize: '12px', color: '#8a8d91', display: 'flex', alignItems: 'center', gap: '4px' }}>
               <span>{formatTime(post.createdAt)}</span>
               <span>·</span>
@@ -177,23 +228,28 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddCommen
               <Button type="text" shape="circle" icon={<FiMoreHorizontal size={20} />} />
           </Dropdown>
         </div>
-        
-        <p className="post-content" style={{ textAlign: 'left', width: '100%', margin: '8px 0' }}>{post.content}</p>
+
+        <p className="post-content" style={{ textAlign: 'left', width: '100%', margin: '8px 0', whiteSpace: 'pre-wrap' }}>{post.content}</p>
+
+        {post.skills && post.skills.length > 0 && (
+          <div className="post-skills" style={{ textAlign: 'left', marginTop: '8px' }}>
+            <Space size={[0, 8]} wrap>
+              {post.skills.map(skill => (
+                <Tag key={skill}>{skill}</Tag>
+              ))}
+            </Space>
+          </div>
+        )}
 
         {imageSrc && (<img src={imageSrc} alt="Post attachment" className="post-image" />)}
         {fileHref && (<div className="post-attachment" style={{ textAlign: 'left' }}><a href={fileHref} target="_blank" rel="noopener noreferrer"><PaperClipOutlined /> {fileLabel}</a></div>)}
         {post.location && (<div className="post-location" style={{ textAlign: 'left' }}><a href={`http://googleusercontent.com/maps/google.com/1{post.location.lat},${post.location.lng}`} target="_blank" rel="noopener noreferrer"><EnvironmentOutlined /> ดูตำแหน่งที่ตั้งบนแผนที่</a></div>)}
 
         <div className="post-footer">
-          <Button 
-            type="text" 
-            icon={
-                <FiHeart 
-                    fill={post.isLiked ? '#ff4d4f' : 'none'} 
-                    stroke={post.isLiked ? '#ff4d4f' : 'currentColor'}
-                />
-            } 
-            className={post.isLiked ? 'action-liked' : ''} 
+          <Button
+            type="text"
+            icon={<FiHeart fill={post.isLiked ? '#ff4d4f' : 'none'} stroke={post.isLiked ? '#ff4d4f' : 'currentColor'} />}
+            className={post.isLiked ? 'action-liked' : ''}
             onClick={() => onLike(post.id)}
             style={{ color: post.isLiked ? '#ff4d4f' : 'inherit' }}
           >
@@ -216,7 +272,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddCommen
         <div style={{ maxHeight: '60vh', overflowY: 'auto', padding: '16px' }}>
             {post.comments.length > 0 ? post.comments.map(renderComment) : <p>ยังไม่มีความคิดเห็น</p>}
         </div>
-        
         <div className="comment-input-area" style={{ padding: '16px', borderTop: '1px solid #f0f0f0' }}>
             {replyingTo && (
                 <div style={{ marginBottom: '8px', padding: '4px 8px', backgroundColor: '#e6f7ff', border: '1px solid #91d5ff', borderRadius: '4px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -268,6 +323,50 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddCommen
             <Input.TextArea rows={4} placeholder="อธิบายเพิ่มเติมเกี่ยวกับปัญหาที่พบ..." />
           </Form.Item>
         </Form>
+      </Modal>
+
+      <Modal
+        title="แก้ไขโพสต์"
+        open={isEditModalVisible}
+        onCancel={handleCancelEditModal}
+        onOk={handleSaveEdit}
+        okText="บันทึก"
+        cancelText="ยกเลิก"
+        width={600}
+      >
+        <Space direction="vertical" style={{ width: '100%' }} size="large">
+            <Input.TextArea
+              rows={5}
+              value={editingContent}
+              onChange={(e) => setEditingContent(e.target.value)}
+              placeholder="คุณกำลังหางานอะไรอยู่..."
+            />
+            <div>
+                <p style={{marginBottom: '8px', fontWeight: 500}}>แก้ไขทักษะ:</p>
+                <Space.Compact style={{ width: '100%' }}>
+                    <Input
+                        placeholder="เพิ่มทักษะที่เกี่ยวข้อง..."
+                        value={skillInput}
+                        onChange={(e) => setSkillInput(e.target.value)}
+                        onPressEnter={handleAddSkillInModal}
+                    />
+                    <Button icon={<PlusOutlined />} onClick={handleAddSkillInModal} />
+                </Space.Compact>
+                <div style={{ marginTop: '12px' }}>
+                    {editingSkills.map(skill => (
+                        <Tag
+                            closable
+                            onClose={() => handleRemoveSkillInModal(skill)}
+                            key={skill}
+                            closeIcon={<CloseOutlined />}
+                            style={{margin: '4px'}}
+                        >
+                            {skill}
+                        </Tag>
+                    ))}
+                </div>
+            </div>
+        </Space>
       </Modal>
     </>
   );

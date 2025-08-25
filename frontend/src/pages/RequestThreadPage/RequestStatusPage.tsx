@@ -1,7 +1,10 @@
+// src/pages/RequestThreadPage/RequestStatusPage.tsx
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Typography, Spin, Result, Button, Space, Tag } from 'antd';
-import { UserOutlined, MessageOutlined, ClockCircleOutlined } from '@ant-design/icons';
+// แก้ไขโดยพรศิริ: เพิ่มไอคอน HomeOutlined
+import { UserOutlined, MessageOutlined, ClockCircleOutlined, HomeOutlined } from '@ant-design/icons';
 import type { Question } from '../../types';
 
 const { Title, Paragraph } = Typography;
@@ -16,40 +19,19 @@ const RequestStatusPage: React.FC<RequestStatusPageProps> = ({ questions }) => {
     const [request, setRequest] = useState<Question | null>(null);
     const requestId = parseInt(id as string);
 
-    // ตรวจสอบสถานะคำร้องและเปลี่ยนเส้นทางเมื่อมีคำตอบจากแอดมิน
-    const checkStatusAndRedirect = () => {
+    useEffect(() => {
         const storedRequests = JSON.parse(localStorage.getItem('userRequests') || '[]');
         const foundRequest = storedRequests.find((q: Question) => q.id === requestId);
         
         if (foundRequest) {
             setRequest(foundRequest);
-            // ตรวจสอบว่ามีคำตอบจากแอดมินหรือยัง
-            const hasAdminReply = foundRequest.answers.some(ans => ans.isStaff);
-            if (hasAdminReply) {
-                // ถ้ามีคำตอบแล้ว ให้นำทางไปยังหน้าแชท
-                navigate(`/qa/request/${foundRequest.id}`);
-            }
         }
-    };
-
-    useEffect(() => {
-        // เรียกใช้ฟังก์ชันตรวจสอบสถานะเมื่อ Component ถูก mount ครั้งแรก
-        checkStatusAndRedirect();
-        
-        // เพิ่ม Listener เพื่อตรวจสอบการเปลี่ยนแปลงของ LocalStorage
-        window.addEventListener('storage', checkStatusAndRedirect);
-        
-        // Cleanup listener เมื่อ Component ถูก unmount
-        return () => {
-            window.removeEventListener('storage', checkStatusAndRedirect);
-        };
-    }, [questions, requestId]);
+    }, [requestId, questions]); // อัปเดตเมื่อ questions เปลี่ยน
 
     if (!request) {
         return <Result status="404" title="404" subTitle="ไม่พบคำร้องที่ท่านต้องการ" />;
     }
     
-    // ดึงรายละเอียดของผู้ใช้ที่ส่งคำร้อง
     const userRequestDetails = request.answers[0]?.text;
 
     return (
@@ -77,6 +59,18 @@ const RequestStatusPage: React.FC<RequestStatusPageProps> = ({ questions }) => {
                     </pre>
                 </Paragraph>
             </Card>
+
+            {/* แก้ไขโดยพรศิริ: เพิ่มปุ่มกลับไปหน้าหลัก */}
+            <div style={{ textAlign: 'center', marginTop: '24px' }}>
+                <Button 
+                    type="primary" 
+                    icon={<HomeOutlined />} 
+                    size="large"
+                    onClick={() => navigate('/')}
+                >
+                    กลับไปหน้าหลัก
+                </Button>
+            </div>
         </Card>
     );
 };
