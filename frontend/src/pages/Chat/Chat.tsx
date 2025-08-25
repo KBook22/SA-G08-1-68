@@ -1,237 +1,102 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Layout, List, Avatar, Input, Button, Space, Typography, Row, Col } from "antd"
 import { PictureOutlined, FontSizeOutlined, UserOutlined } from "@ant-design/icons"
 
 const { Sider, Content } = Layout
 const { Text, Title } = Typography
 
-interface Message {
+// Interface สำหรับข้อมูลข้อความ (ควรตรงกับ entity ChatHistory ใน Backend)
+interface ChatHistory {
   id: number
-  sender: string
-  content: string
-  time: string
+  chatRoomId: number
+  message: string
   isOwn: boolean
-  avatar?: string
+  sender: string
+  time: string
+  // ถ้ามี field อื่นๆ เช่น image_url, message_type ให้เพิ่มที่นี่
 }
 
-interface ChatUser {
+// Interface สำหรับข้อมูลห้องแชท (ควรตรงกับ entity ChatRoom ใน Backend)
+interface ChatRoom {
   id: number
   name: string
   avatar: string
-  isActive?: boolean
   lastMessage?: string
 }
 
-// ข้อมูลข้อความแยกตามห้องแชท
-interface ChatRooms {
-  [userId: number]: Message[]
-}
-
 const Chat: React.FC = () => {
-  const [selectedUser, setSelectedUser] = useState<number>(1)
+  const [selectedUser, setSelectedUser] = useState<number | null>(null)
   const [newMessage, setNewMessage] = useState<string>("")
-
-  const chatUsers: ChatUser[] = [
-    {
-      id: 1,
-      name: "นายจ้าง A",
-      avatar: "🏢",
-      isActive: true,
-      lastMessage: "ไม่มีครับ",
-    },
-    {
-      id: 2,
-      name: "นายจ้าง B",
-      avatar: "",
-      lastMessage: "สวัสดีครับ",
-    },
-    {
-      id: 3,
-      name: "นายจ้าง C",
-      avatar: "",
-      lastMessage: "ขอบคุณครับ",
-    },
-    {
-      id: 4,
-      name: "นายจ้าง D",
-      avatar: "",
-      lastMessage: "ยินดีครับ",
-    },
-    {
-      id: 5,
-      name: "นายจ้าง E",
-      avatar: "",
-      lastMessage: "โอเคครับ",
-    },
-    {
-      id: 6,
-      name: "นายจ้าง F",
-      avatar: "",
-      lastMessage: "ได้ครับ",
-    },
-    {
-      id: 7,
-      name: "นายจ้าง G",
-      avatar: "",
-      lastMessage: "เข้าใจแล้วครับ",
-    },
-  ]
-
-  // ข้อความแยกตามห้องแชท
-  const [chatRooms, setChatRooms] = useState<ChatRooms>({
-    1: [
-      {
-        id: 1,
-        sender: "นักศึกษา C",
-        content: "สวัสดีครับ ที่บริษัทมีที่จอดรถยนต์ในอาคารไหมครับ",
-        time: "13.03",
-        isOwn: true,
-      },
-      {
-        id: 2,
-        sender: "นายจ้าง A",
-        content: "ไม่มีครับ",
-        time: "13.10",
-        isOwn: false,
-        avatar: "🏢",
-      },
-      {
-        id: 3,
-        sender: "นักศึกษา C",
-        content: "ขอบคุณครับ",
-        time: "13.15",
-        isOwn: true,
-      },
-    ],
-    2: [
-      {
-        id: 1,
-        sender: "นักศึกษา C",
-        content: "สวัสดีครับ สนใจตำแหน่งงานครับ",
-        time: "14.00",
-        isOwn: true,
-      },
-      {
-        id: 2,
-        sender: "นายจ้าง B",
-        content: "สวัสดีครับ ยินดีต้อนรับครับ",
-        time: "14.05",
-        isOwn: false,
-        avatar: "🏢",
-      },
-    ],
-    3: [
-      {
-        id: 1,
-        sender: "นายจ้าง C",
-        content: "สวัสดีครับ เรามีตำแหน่งงานที่เหมาะกับคุณ",
-        time: "15.00",
-        isOwn: false,
-        avatar: "🏢",
-      },
-      {
-        id: 2,
-        sender: "นักศึกษา C",
-        content: "ขอบคุณครับ สนใจมากเลยครับ",
-        time: "15.05",
-        isOwn: true,
-      },
-    ],
-    4: [
-      {
-        id: 1,
-        sender: "นักศึกษา C",
-        content: "สวัสดีครับ ขอสอบถามเรื่องสวัสดิการครับ",
-        time: "16.00",
-        isOwn: true,
-      },
-      {
-        id: 2,
-        sender: "นายจ้าง D",
-        content: "ยินดีครับ มีสวัสดิการครบครันครับ",
-        time: "16.10",
-        isOwn: false,
-        avatar: "🏢",
-      },
-    ],
-    5: [
-      {
-        id: 1,
-        sender: "นายจ้าง E",
-        content: "สวัสดีครับ เห็นประวัติของคุณแล้ว น่าสนใจมากครับ",
-        time: "17.00",
-        isOwn: false,
-        avatar: "🏢",
-      },
-      {
-        id: 2,
-        sender: "นักศึกษา C",
-        content: "โอเคครับ ขอบคุณครับ",
-        time: "17.05",
-        isOwn: true,
-      },
-    ],
-    6: [
-      {
-        id: 1,
-        sender: "นักศึกษา C",
-        content: "สวัสดีครับ ขอสอบถามเรื่องเงินเดือนครับ",
-        time: "18.00",
-        isOwn: true,
-      },
-      {
-        id: 2,
-        sender: "นายจ้าง F",
-        content: "ได้ครับ เงินเดือนเริ่มต้น 25,000 บาทครับ",
-        time: "18.10",
-        isOwn: false,
-        avatar: "🏢",
-      },
-    ],
-    7: [
-      {
-        id: 1,
-        sender: "นายจ้าง G",
-        content: "สวัสดีครับ เรามีโปรเจกต์ที่น่าสนใจสำหรับคุณ",
-        time: "19.00",
-        isOwn: false,
-        avatar: "🏢",
-      },
-      {
-        id: 2,
-        sender: "นักศึกษา C",
-        content: "เข้าใจแล้วครับ ขอดูรายละเอียดเพิ่มเติมครับ",
-        time: "19.05",
-        isOwn: true,
-      },
-    ],
-  })
-
-  // ฟังก์ชันเพิ่มข้อความใหม่
-  const handleSendMessage = () => {
-    if (newMessage.trim()) {
-      const currentTime = new Date().toLocaleTimeString("th-TH", {
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-
-      const newMsg: Message = {
-        id: Date.now(),
-        sender: "นักศึกษา C",
-        content: newMessage,
-        time: currentTime,
-        isOwn: true,
+  const [chatRooms, setChatRooms] = useState<ChatRoom[]>([])
+  const [currentMessages, setCurrentMessages] = useState<ChatHistory[]>([])
+  
+  // ✅ (1) แทนที่ Mock Data ด้วยการเรียก API เพื่อดึงรายชื่อห้องแชท
+  useEffect(() => {
+    // สมมติฟังก์ชัน fetchChatRooms() เรียก API ไปที่ backend
+    // ตัวอย่าง: axios.get('/api/chat/rooms').then(response => setChatRooms(response.data))
+    const fetchChatRooms = async () => {
+      // **โค้ดจำลอง: แทนที่ด้วยการเรียก API จริง**
+      const mockRooms = [
+        { id: 1, name: "นายจ้าง A", avatar: "🏢", lastMessage: "สวัสดีครับ" },
+        { id: 2, name: "นายจ้าง B", avatar: "🏢", lastMessage: "ขอบคุณครับ" },
+      ]
+      setChatRooms(mockRooms)
+      // เลือกห้องแรกเป็นค่าเริ่มต้น
+      if (mockRooms.length > 0) {
+        setSelectedUser(mockRooms[0].id)
       }
+    }
+    fetchChatRooms()
+  }, [])
+  
+  // ✅ (2) ใช้ useEffect เพื่อโหลดข้อความของห้องแชทที่เลือก
+  useEffect(() => {
+    if (selectedUser) {
+      // สมมติฟังก์ชัน fetchMessages() เรียก API ไปที่ backend ด้วย id ห้องแชท
+      // ตัวอย่าง: axios.get(`/api/chat/rooms/${selectedUser}/messages`).then(response => setCurrentMessages(response.data))
+      const fetchMessages = async () => {
+        // **โค้ดจำลอง: แทนที่ด้วยการเรียก API จริง**
+        const mockMessages: ChatHistory[] = [
+            { id: 1, chatRoomId: 1, sender: "นักศึกษา C", message: "สวัสดีครับ", time: "13:03", isOwn: true },
+            { id: 2, chatRoomId: 1, sender: "นายจ้าง A", message: "สวัสดีครับ", time: "13:05", isOwn: false },
+        ]
+        setCurrentMessages(mockMessages)
+      }
+      fetchMessages()
+    }
+  }, [selectedUser])
 
-      setChatRooms((prev) => ({
-        ...prev,
-        [selectedUser]: [...(prev[selectedUser] || []), newMsg],
-      }))
-
-      setNewMessage("")
+  // ✅ (3) แก้ไขฟังก์ชันส่งข้อความให้เรียก API เพื่อบันทึกข้อมูล
+  const handleSendMessage = async () => {
+    if (newMessage.trim() && selectedUser) {
+      const newMsg = {
+        chatRoomId: selectedUser,
+        message: newMessage,
+        // เพิ่มข้อมูลอื่นๆ ที่จำเป็นสำหรับ backend
+      }
+      try {
+        // สมมติว่า API สำหรับส่งข้อความคือ /api/chat/send
+        // ตัวอย่าง: await axios.post('/api/chat/send', newMsg)
+        
+        // **โค้ดจำลอง: แทนที่ด้วยการเรียก API จริง**
+        const savedMessage = {
+          id: Date.now(),
+          chatRoomId: selectedUser,
+          sender: "นักศึกษา C",
+          message: newMessage,
+          time: new Date().toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" }),
+          isOwn: true,
+        }
+        
+        setCurrentMessages(prev => [...prev, savedMessage])
+        setNewMessage("")
+      } catch (error) {
+        console.error("Failed to send message:", error)
+        // แสดงข้อความ error ให้ผู้ใช้ทราบ
+      }
     }
   }
 
@@ -242,9 +107,8 @@ const Chat: React.FC = () => {
     }
   }
 
-  const selectedUserData = chatUsers.find((user) => user.id === selectedUser)
-  const currentMessages = chatRooms[selectedUser] || []
-
+  const selectedUserData = chatRooms.find((user) => user.id === selectedUser)
+  
   return (
     <Layout style={{ height: "90vh" }}>
       <Layout>
@@ -273,7 +137,7 @@ const Chat: React.FC = () => {
           >
             <div style={{ padding: "16px" }}>
               <List
-                dataSource={chatUsers}
+                dataSource={chatRooms}
                 renderItem={(user) => (
                   <List.Item
                     onClick={() => setSelectedUser(user.id)}
@@ -409,7 +273,7 @@ const Chat: React.FC = () => {
                                 wordWrap: "break-word",
                               }}
                             >
-                              {message.content}
+                              {message.message}
                             </div>
 
                             <div
