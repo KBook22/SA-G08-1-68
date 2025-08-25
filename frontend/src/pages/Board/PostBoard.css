@@ -1,82 +1,101 @@
-/* ส่วนหัวของหน้า เช่น แถบชื่อเรื่อง */
-.title-bg {
-  background-color: #ffffff;                     /* พื้นหลังสีขาว */
-  height: 60px;                                  /* ความสูงของแถบ */
-  width: 100%;                                   /* กว้างเต็มหน้าจอ */
-  max-width: 100%;                               /* ป้องกันการเกินขนาดจอ */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);      /* เงาเล็กน้อยใต้แถบ */
-  display: flex;                                 /* ใช้ Flexbox จัดตำแหน่งภายใน */
-  align-items: center;                           /* จัดให้อยู่กึ่งกลางแนวตั้ง */
-  justify-content: center;                       /* จัดให้อยู่กึ่งกลางแนวนอน */
-  padding: 0 10px;                               /* ระยะห่างด้านซ้ายขวา */
-  box-sizing: border-box;                        /* คำนวณ padding อยู่ภายใน width/height */
-  overflow-x: hidden;                            /* ป้องกันการเลื่อนแนวนอน */
-}
-
-/* ชื่อเรื่องที่อยู่ตรงกลางของ title-bg */
-.name-title {
-  font-family: "Kanit", "Sarabun", sans-serif;   /* ฟอนต์ไทย + สำรอง */
-  text-align: center;                            /* จัดชิดกลางข้อความ */
-  color: #2d2d2d;                                /* สีเทาเข้ม */
-  font-size: 2rem;                               /* ขนาดใหญ่ (responsive ด้วย rem) */
-  white-space: nowrap;                           /* ไม่ให้ตัดบรรทัด */
-  overflow: hidden;                              /* ซ่อนข้อความเกินขอบ */
-  text-overflow: ellipsis;                       /* แสดง ... หากข้อความยาวเกิน */
-}
-
-/* ส่วนพื้นหลังสีเทาเต็มหน้าจอ */
-.bg-gray {
-  position: relative;                            /* ใช้เพื่อจัดวางภายในระบบ layout */
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;                            /* เทคนิคกลางจอเต็มขอบแบบไม่เหลือ margin */
-  margin-right: -50vw;
-  width: 100vw;                                  /* กว้างเท่าจอแนวนอน */
-  background-color: #F8F8F8;                     /* สีพื้นหลังเทาอ่อน */
-  min-height: 100vh;                             /* สูงอย่างน้อยเท่าจอ */
-  padding: 0;
-  box-sizing: border-box;                        /* ให้ padding อยู่ภายในขนาดกล่อง */
-  overflow-x: hidden;                            /* ป้องกันการเลื่อนแนวนอน */
-  z-index: 1;                                    /* จัดลำดับซ้อน (กรณีมี fixed หรือ absolute ซ้อนทับ) */
-}
-
-
-/* เว้นพื้นที่ด้านบน content ไม่ให้ติดกับ Navbar (ถ้ามี) */
-.postboard-container {
-  margin-top: 64px;                              /* ปรับตามความสูงของ Navbar จริง */
-}
-
-/* Reset ค่าเริ่มต้นของ html และ body */
-html, body {
-  margin: 0;
-  padding: 0;
+/* ---------------- card งาน ---------------- */
+.job-card {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin: 16px auto;
+  max-width: 800px;
   width: 100%;
-  height: 100%;
-  overflow-x: hidden;                            /* ป้องกันเลื่อนแนวนอนถ้ามี overflow */
+  display: flex;
+  justify-content: space-between;   /* ข้อมูลไปซ้าย โลโก้ไปขวา */
+  align-items: center;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  font-family: 'Kanit', sans-serif;   /* ใช้ฟอนต์เดียว統一 */
+}
+.container {
+  height: auto;  /* กันไม่ให้ footer ทับ card ล่างสุด */
 }
 
-/* ---------------- RESPONSIVE MEDIA QUERIES ---------------- */
+.postboard-container {
+  margin-top: 30px;                              /* ปรับตามความสูงของ Navbar จริง */
+}
 
-/* สำหรับหน้าจอขนาดเล็ก (เช่น แท็บเล็ตแนวตั้ง, โทรศัพท์แนวนอน) */
+.job-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #d0d0d0;
+}
+
+/* ---------------- ข้อมูลฝั่งซ้าย ---------------- */
+.job-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  text-align: left;
+}
+
+.job-title {
+  font-size: 32px;
+  font-weight: 500;
+  padding-left: 20px;
+
+  color: #2d2d2d;
+}
+
+.company {
+  font-size: 18px;   /* ใหญ่กว่าพวก meta */
+  font-weight: 400;
+  padding-left: 20px;
+  color: #2D2D2D;
+  margin: 0 0 10px 0;
+}
+
+.job-meta {
+  display: flex;
+  flex-direction: column;
+    padding-left: 20px;
+  gap: 4px;
+  font-size: 14px;
+  color: #2D2D2D;
+}
+
+.job-meta span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---------------- โลโก้ฝั่งขวา ---------------- */
+.job-logo img {
+  width: 120px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* ---------------- Responsive ---------------- */
 @media (max-width: 768px) {
-  .title-bg {
-    height: 50px;                                /* ลดความสูงลง */
-    padding: 0 5px;                              /* ลด padding ซ้ายขวา */
+  .job-card {
+    flex-direction: column;
+    align-items: flex-start;
   }
-
-  .name-title {
-    font-size: 1.5rem;                           /* ลดขนาด font ให้เหมาะกับหน้าจอเล็ก */
+  .job-logo {
+    margin-top: 12px;
+    align-self: center;
   }
 }
 
-/* สำหรับหน้าจอขนาดเล็กมาก (โทรศัพท์แนวตั้ง) */
 @media (max-width: 480px) {
-  .title-bg {
-    height: 40px;                                /* ลดความสูงลงอีก */
-    padding: 0 5px;
+  .job-title {
+    font-size: 16px;
   }
-
-  .name-title {
-    font-size: 1.2rem;                           /* ลดขนาด font มากขึ้น */
+  .company {
+    font-size: 16px;  /* ยังคงเด่นบนมือถือ */
+  }
+  .job-meta {
+    font-size: 13px;
+  }
+  .job-logo img {
+    width: 90px;
   }
 }

@@ -6,21 +6,45 @@ import WorkTimeAndDeadline from "./WorkTimeAndDeadline";
 import JobPostingSection from "./JobPostingSection";
 import "./JobPost.css";
 import PageHeader from "../../components/PageHeader";
+import lahui from "../../assets/lahui.svg"; // ✅ default logo
 
 const JobPost: React.FC = () => {
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  // เวลากดยืนยันฟอร์ม
+  // เมื่อกด submit
   const handleFinish = (values: any) => {
-    console.log("ค่าที่กรอก:", values);
-    // TODO: call API บันทึกประกาศงาน
+    const oldPosts = JSON.parse(localStorage.getItem("posts") || "[]");
+
+    const newPost = {
+      id: oldPosts.length + 1,
+      title: values.Name,
+      salary: values.Salary || "12,000 บาท/เดือน",
+      location: values.Location || "มทส. ประตู 4",
+      image: imagePreview || lahui,   // ✅ ถ้าไม่อัปโหลด ใช้ default logo
+    };
+
+    localStorage.setItem("posts", JSON.stringify([...oldPosts, newPost]));
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
-    // form.resetFields(); // ถ้าอยากล้างฟอร์มหลังโพสต์เสร็จ
+    setImagePreview(null);
+    // form.resetFields(); // ถ้าอยากล้างฟอร์มหลังโพสต์
+  };
+
+  // เมื่อเลือกไฟล์รูป → แปลงเป็น base64
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string); // ✅ base64 string
+      };
+      reader.readAsDataURL(file); // แปลงเป็น base64
+    }
   };
 
   return (
@@ -58,6 +82,18 @@ const JobPost: React.FC = () => {
         <WorkTimeAndDeadline />
         <JobPostingSection />
 
+        {/* upload รูป */}
+        <Form.Item label="เลือกรูปโลโก้ร้าน (ถ้ามี)">
+          <input type="file" accept="image/*" onChange={handleImageChange} />
+          {imagePreview && (
+            <img
+              src={imagePreview}
+              alt="preview"
+              style={{ marginTop: "10px", width: "120px", borderRadius: "8px" }}
+            />
+          )}
+        </Form.Item>
+
         {/* ปุ่มยืนยัน */}
         <div className="submit-button-wrapper">
           <Button
@@ -78,7 +114,6 @@ const JobPost: React.FC = () => {
         footer={null}
         centered
         width={450}
-        
         className="success-modal"
       >
         <Result
@@ -91,11 +126,6 @@ const JobPost: React.FC = () => {
               หรือแก้ไขข้อมูลได้ตลอดเวลา
             </>
           }
-          // extra={[
-          //   <Button type="primary" key="close" onClick={handleClose}>
-          //     ปิด
-          //   </Button>,
-          // ]}
         />
       </Modal>
     </div>

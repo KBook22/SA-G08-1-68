@@ -147,7 +147,7 @@ const FullLayout: React.FC = () => {
         {/* 3. ส่งต่อ context ที่ได้รับไปยังหน้าเว็บลูกๆ */}
         <Outlet context={context} />
       </Content>
-      <Footer style={{ textAlign: "center" }}>
+      <Footer style={{ textAlign: "center"}}>
         SUT Career ©{new Date().getFullYear()} Created with Ant Design
       </Footer>
     </Layout>
