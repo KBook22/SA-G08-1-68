@@ -8,20 +8,20 @@ import (
 type Reviews struct {
 	gorm.Model
 
-	Comment        	string        	`json:"comment"`
-	Datetime       	time.Time     	`json:"datetime"`
+	Comment        	string        		`json:"comment"`
+	Datetime       	time.Time     		`json:"datetime"`
 
 	//FK
-	WorkID         	uint          	`json:"work_id"`
-	Work           	*Work	    	`gorm:"foreignKey: work_id" json:"work"`
+	JobpostID         	uint         	`json:"jobpost_id"`
+	Jobpost           	*Jobpost	  	`gorm:"foreignKey: jobpost_id" json:"jobpost"`
 
 	EmployerID     	uint        		`json:"employer_id"`
 	Employer       	*Employer   		`gorm:"foreignKey: employer_id" json:"employer"`
 
-	StudentID      	uint          	`json:"student_id"`
-	Student        	*Student     	`gorm:"foreignKey: student_id" json:"student"`
+	StudentID      	uint          		`json:"student_id"`
+	Student        	*Student     		`gorm:"foreignKey: student_id" json:"student"`
 
-	Ratingscore_ID 	uint          	`json:"ratingscore_id"`
-	Ratingscore    	*Ratingscores 	`gorm:"foreignKey: ratingscore_id" json:"ratingscore"`
+	Ratingscore_ID 	uint          		`json:"ratingscore_id"`
+	Ratingscore    	*Ratingscores 		`gorm:"foreignKey: ratingscore_id" json:"ratingscore"`
 	
 }
