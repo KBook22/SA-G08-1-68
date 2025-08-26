@@ -1,41 +1,59 @@
 /* ---------------- พื้นหลังส่วนหัวบอร์ด ---------------- */
 .bg-gray {
-  position: relative;
   width: 100%;
   background-color: #f8f8f8;
-  min-height: 100%;      /* ✅ จากเดิมอาจใช้ 100vh */
-  padding: 0;
+  padding: 0 0 40px 0; /* เผื่อพื้นที่ให้ footer */
   box-sizing: border-box;
-  overflow: visible;     /* ✅ ให้ scroll ออกมาที่ body */
 }
 
 .board-container {
-  width: 100%;  /* ✅ แทน 100vw */
+  width: 100%;
   background: linear-gradient(90deg, #1976d3 0%, #64b5f6 100%);
   padding: 40px 0;
   display: flex;
   justify-content: center;
   box-sizing: border-box;
-  /* overflow-x: hidden; ✅ กันไม่ให้เลื่อนข้าง */
 }
 
 .postboard-container {
-  padding-top: 80px;   /* ✅ ใช้ padding แทน margin */
-    margin-top: 0;        /* ลบ margin-top ออก */
+  margin-top: 20px; /* กัน header ทับ */
+}
+
+.pageHeader {
+  margin-top: 40px;
+  font-size: 28px;
+  font-weight: 600;
+  text-align: center;
 }
 
 .job-list {
-  margin-top: 32px; /* ✅ เพิ่มระยะห่างระหว่างหัวข้อกับ card */
+  margin-top: 32px;
+}
+
+/* ---------------- Layout & Footer ---------------- */
+.ant-layout {
+  min-height: 100vh; /* Layout เต็มหน้าจอ */
+  display: flex;
+  flex-direction: column; /* เรียง header → content → footer */
+}
+
+.ant-layout-content {
+  flex: 1; /* ขยาย content ดัน footer ลง */
+}
+
+.ant-layout-footer {
+  margin-top: auto; /* ดัน footer ไปท้ายสุด */
+  text-align: center;
 }
 
 /* ---------------- wrapper ด้านใน ---------------- */
 .container {
   width: 100%;
-  max-width: 1200px;    /* ✅ คุมความกว้างสูงสุด */
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 16px;      /* เว้นขอบซ้าย-ขวา */
+  padding: 0 16px;
   box-sizing: border-box;
-  overflow-x: hidden;
+  height: auto; /* กันไม่ให้ footer ทับ card ล่างสุด */
 }
 
 /* ---------------- การ์ดงาน ---------------- */
@@ -45,14 +63,14 @@
   border-radius: 10px;
   padding: 16px;
   margin: 16px auto;
-  max-width: 800px;       /* ✅ ไม่ให้เกิน */
+  max-width: 800px;
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   transition: box-shadow 0.2s ease, border-color 0.2s ease;
-  font-family: 'Kanit', sans-serif;
-  box-sizing: border-box; /* ✅ รวม padding เข้าไปใน width */
+  font-family: "Kanit", sans-serif;
+  box-sizing: border-box;
 }
 
 .job-card:hover {
@@ -74,13 +92,15 @@
   font-weight: 600;
   color: #2d2d2d;
   margin: 0 0 8px 0;
+  margin-left: 30px;
 }
 
 .company {
   font-size: 18px;
   font-weight: 500;
-  color: #2D2D2D;
+  color: #2d2d2d;
   margin: 0 0 10px 0;
+  margin-left: 30px;
 }
 
 .job-meta {
@@ -88,7 +108,8 @@
   flex-direction: column;
   gap: 4px;
   font-size: 14px;
-  color: #2D2D2D;
+  color: #2d2d2d;
+  margin-left: 30px;
 }
 
 .job-meta span {
@@ -143,10 +164,11 @@
   }
 }
 
-/* ---------------- กันทุกหน้าชัวร์ ---------------- */
-html, body {
+/* ---------------- Global ---------------- */
+html,
+body {
   margin: 0;
   padding: 0;
   width: 100%;
-  overflow-x: hidden;  /* ✅ ปิด scroll ข้างแบบ global */
+  overflow-x: hidden; /* กัน scroll ข้าง */
 }
