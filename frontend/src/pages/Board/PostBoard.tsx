@@ -23,43 +23,41 @@ const PostBoard: React.FC = () => {
 
   return (
     <div className="bg-gray">
-      <div className="postboard-container">
-        <PageHeader title="บอร์ดโพสต์งาน" />
-      </div>
-
       <div className="container">
-        {posts.length === 0 ? (
-          <p style={{ textAlign: "center" }}>ยังไม่มีโพสต์งาน</p>
-        ) : (
-          posts.map((post) => (
-            <div
-              key={post.id}
-              className="job-card"
-              onClick={() => navigate(`/Job/post-detail/${post.id}`)}
-              style={{ cursor: "pointer" }}
-            >
-              {/* ข้อมูลฝั่งซ้าย */}
-              <div className="job-info">
-                <h3 className="job-title">{post.title}</h3>
-                <p className="company">ร้านอาหารญาล่า LAHUI MALATANG</p>
-                <div className="job-meta">
-                  <span>📅 วันนี้ - จนกว่าจะปิดรับสมัคร</span>
-                  <span>💰 เงินเดือน: {post.salary}</span>
-                  <span>📍 สถานที่: {post.location}</span>
-                </div>
-              </div>
+  <PageHeader title="บอร์ดโพสต์งาน" />
 
-              {/* โลโก้ร้านฝั่งขวา */}
-              <div className="job-logo">
-                <img
-                  src={post.image || lahui} // ✅ base64 หรือ default
-                  alt={post.title || "default-logo"}
-                />
-              </div>
+  <div className="job-list">
+    {posts.length === 0 ? (
+      <p style={{ textAlign: "center" }}>ยังไม่มีโพสต์งาน</p>
+    ) : (
+      posts.map((post) => (
+        <div
+          key={post.id}
+          className="job-card"
+          onClick={() => navigate(`/Job/post-detail/${post.id}`)}
+          style={{ cursor: "pointer" }}
+        >
+          <div className="job-info">
+            <h3 className="job-title">{post.title}</h3>
+            <p className="company">ร้านอาหารญาล่า LAHUI MALATANG</p>
+            <div className="job-meta">
+              <span>📅 วันนี้ - จนกว่าจะปิดรับสมัคร</span>
+              <span>💰 เงินเดือน: {post.salary}</span>
+              <span>📍 สถานที่: {post.location}</span>
             </div>
-          ))
-        )}
-      </div>
+          </div>
+          <div className="job-logo">
+            <img
+              src={post.image || lahui}
+              alt={post.title || "default-logo"}
+            />
+          </div>
+        </div>
+      ))
+    )}
+  </div>
+</div>
+
     </div>
   );
 };
