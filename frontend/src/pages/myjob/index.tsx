@@ -1,160 +1,147 @@
-import React from "react";
-import { Typography, Flex, Button, Space, Avatar, Card } from "antd";
-import { UserOutlined } from "@ant-design/icons";
-import { Link } from 'react-router-dom';
-import lahuiLogo from '../../assets/lahui.svg';
+import React, { useState, useEffect } from "react";
+import {
+  Table,
+  Button,
+  Typography,
+  Flex,
+  message,
+  Spin,
+  Result,
+  Space,
+} from "antd";
+import { useNavigate } from "react-router-dom";
+import { jobpostAPI } from "../../services/https/index";
+import type { Jobpost } from "../../interfaces/jobpost";
 
-const { Title, Text } = Typography;
+import "./myjob.css";
 
-interface Job {
-  id: number;
-  isPlaceholder: boolean;
-  logo?: string;
-  title?: string;
-  company?: string;
-  status?: string;
-}
+const { Title } = Typography;
 
-const jobsData: Job[] = [
-  {
-    id: 1,
-    isPlaceholder: false,
-    logo: lahuiLogo,
-    title: "งานหาพนักงานพาร์ทไทม์",
-    company: "ร้านล่าฮุยหม่าล่าทัง LAHUI MALATANG",
-    status: "กำลังดำเนินการ",
-  },
-  { id: 2, isPlaceholder: true },
-  { id: 3, isPlaceholder: true },
-  { id: 4, isPlaceholder: true },
-];
+const MyJobPage: React.FC = () => {
+  const navigate = useNavigate();
+  const [jobs, setJobs] = useState<Jobpost[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-const PlaceholderBlock: React.FC<{
-  width: string;
-  height: string;
-  margin?: string;
-}> = ({ width, height, margin }) => (
-  <div
-    style={{
-      backgroundColor: "#EAEAEA",
-      width,
-      height,
-      borderRadius: "4px",
-      margin,
-    }}
-  />
-);
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await jobpostAPI.getAll();
+        if (response && response.data) {
+          setJobs(response.data);
+        } else {
+          setJobs([]);
+          console.warn("Could not find job data in response:", response);
+          message.warning("ไม่พบข้อมูลงาน");
+        }
+      } catch (err) {
+        console.error("Failed to fetch jobs:", err);
+        setError("ไม่สามารถโหลดข้อมูลงานได้ กรุณาลองใหม่อีกครั้ง");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-const JobCard: React.FC<Job> = ({
-  isPlaceholder,
-  logo,
-  title,
-  company,
-  status,
-}) => {
-  if (isPlaceholder) {
-    return (
-      <Card className="job-card" style={{ marginBottom: "16px" }}>
-        <Flex justify="space-between" align="center">
-          <Flex align="center" gap="middle" style={{ flex: "2 1 0%" }}>
-            <Avatar
-              size={64}
-              icon={<UserOutlined />}
-              className="placeholder-avatar"
-            />
-            <div>
-              <PlaceholderBlock
-                width="200px"
-                height="22px"
-                margin="0 0 8px 0"
-              />
-              <PlaceholderBlock width="120px" height="18px" />
-            </div>
-          </Flex>
-          <Flex justify="center" style={{ flex: "1 1 0%" }}>
-            <PlaceholderBlock width="100px" height="20px" />
-          </Flex>
-          <Flex justify="flex-end" style={{ flex: "1 1 0%" }}>
+    fetchJobs();
+  }, []);
+
+  const columns = [
+    {
+      title: "ชื่องาน",
+      dataIndex: "Title",
+      key: "title",
+    },
+    {
+      title: "สถานะ",
+      dataIndex: "status",
+      key: "status",
+    },
+    {
+      title: "ชำระเงิน",
+      key: "payment",
+      render: (_: any, record: Jobpost) => {
+        const isApproved = record.status === "อนุมัติ";
+        return (
+          <Space>
+            {isApproved && (
+              <Button
+                type="primary"
+                onClick={() => {
+                  if (record.id) {
+                    navigate(`/payment/${record.id}`);
+                  } else {
+                    message.error("ไม่พบรหัสงาน ไม่สามารถดำเนินการชำระเงินได้");
+                  }
+                }}
+              >
+                ชำระเงิน
+              </Button>
+            )}
+          </Space>
+        );
+      },
+    },
+    { title: "รีวิว",
+      key: "review",
+      render: (_: any, record: Jobpost) => {
+        const isCompleted = record.status === "เสร็จสิ้น";
+        return (
             <Space>
-              <div
-                className="placeholder-button-default"
-                style={{
-                  width: "60px",
-                  height: "32px",
-                  backgroundColor: "#f0f0f0",
-                  borderRadius: "6px",
-                }}
-              ></div>
-              <div
-                className="placeholder-button-primary"
-                style={{
-                  width: "80px",
-                  height: "32px",
-                  backgroundColor: "#d9d9d9",
-                  borderRadius: "6px",
-                }}
-              ></div>
+              {isCompleted && (
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    if (record.id) {
+                      navigate(`/review/${record.id}`);
+                    } else {
+                      message.error("ไม่พบรหัสงาน ไม่สามารถให้คะแนนได้");
+                    }
+                  }}
+                >
+                รีวิวการทำงาน
+                </Button>
+              )}
             </Space>
-          </Flex>
-        </Flex>
-      </Card>
+        );
+      },
+    },
+  ];
+
+  if (loading) {
+    return (
+      <Flex justify="center" align="center" style={{ minHeight: "85vh" }}>
+        <Spin tip="กำลังโหลดข้อมูลงาน..." size="large" />
+      </Flex>
     );
   }
 
+  if (error) {
+    return <Result status="warning" title="เกิดข้อผิดพลาด" subTitle={error} />;
+  }
+
   return (
-    <Card hoverable className="job-card" style={{ marginBottom: "16px" }}>
-      <Flex justify="space-between" align="center" wrap="wrap">
-        <Flex
-          align="center"
-          gap="middle"
-          style={{ flex: "2 1 250px", minWidth: "250px" }}
-        >
-          <Avatar src={logo} shape="square" size={64} />
-          <div>
-            <Text strong style={{ fontSize: "16px" }}>
-              {title}
-            </Text>
-            <br />
-            <Text type="secondary">{company}</Text>
-          </div>
+    <div className="myjob-page-container">
+      <div style={{ background: "#fff", padding: 24, minHeight: "85vh" }}>
+        <Flex justify="space-between" align="center" style={{ maxWidth: 1000, margin: "0 auto 24px auto" }}>
+          <Title
+            level={2}
+            style={{ marginBottom: 0, color: "#1E3A5F" }}
+          >
+            งานของฉัน
+          </Title>
+          <Button type="default" onClick={() => navigate("/payment-report")}>
+            รายงานการชำระเงิน
+          </Button>
         </Flex>
-        <Flex
-          justify="center"
-          align="center"
-          style={{ flex: "1 1 150px", margin: "10px 0" }}
-        >
-          <Text>{status}</Text>
-        </Flex>
-        <Flex justify="flex-end" align="center" style={{ flex: "1 1 200px" }}>
-          <Space>
-            <Link to="/review">
-              <Button size="middle">
-                รีวิว
-              </Button>
-            </Link>
-            <Link to="/payment">
-              <Button type="primary" size="middle">
-                ชำระเงิน
-              </Button>
-            </Link>
-          </Space>
-        </Flex>
-      </Flex>
-    </Card>
+        <Table
+          columns={columns}
+          dataSource={jobs}
+          rowKey="id" // This should match the unique key from your data, which is 'ID'
+          style={{ maxWidth: 1000, margin: "0 auto" }}
+        />
+      </div>
+    </div>
   );
 };
-
-const MyJobPage: React.FC = () => (
-  <div style={{ background: '#fff', padding: 24, minHeight: '85vh' }}>
-    <Title level={2} style={{ textAlign: 'center', marginBottom: 24, color: "#1E3A5F" }}>
-      งาน
-    </Title>
-    <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-      {jobsData.map((job) => (
-        <JobCard key={job.id} {...job} />
-      ))}
-    </Space>
-  </div>
-);
 
 export default MyJobPage;

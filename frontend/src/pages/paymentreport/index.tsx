@@ -8,6 +8,8 @@ import {
 } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 
+import './paymentreport.css';
+
 const { Title, Text } = Typography;
 
 interface PaymentRecord {
@@ -50,7 +52,6 @@ const initialData: PaymentRecord[] = [
 ];
 
 const PaymentReportPage: React.FC = () => {
-  // เราจะใช้ข้อมูล `initialData` โดยตรง ไม่ต้องมี state สำหรับ loading
   const [data] = useState<PaymentRecord[]>(initialData);
 
   return (
@@ -60,7 +61,7 @@ const PaymentReportPage: React.FC = () => {
       </Title>
       <List
         itemLayout="horizontal"
-        dataSource={data} // ใช้ data โดยตรง
+        dataSource={data}
         renderItem={(item) => {
           const record = item as PaymentRecord;
           return (

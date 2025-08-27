@@ -86,7 +86,7 @@ const RequestStatusPageRoute = () => {
     return <RequestStatusPage questions={questions} />;
 };
 
-import JobPost from "../pages/JobPost/JobPost";
+// import JobPost from "../pages/JobPost/JobPost";
 
 const MainRoutes: React.FC = () => {
     return (
@@ -108,7 +108,7 @@ const MainRoutes: React.FC = () => {
             <Route path="/payment-report" element={<PaymentReportPage />} />
             <Route path="/payment" element={<PaymentPage />} />
             <Route path="/profile" element={<ProfilePageV1 />} />
-            <Route path="/review" element={<ReviewPage />} />
+            <Route path="/review/:id" element={<ReviewPage />} />
 
             {/* --- ส่วนของนักศึกษา (จะถูกจัดการ State โดย StudentPostManager) --- */}
             <Route element={<StudentPostManager />}>
