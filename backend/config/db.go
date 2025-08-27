@@ -2,11 +2,11 @@ package config
 
 import (
 	"time"
+
 	"github.com/KBook22/System-Analysis-and-Design/entity"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 var db *gorm.DB
@@ -26,6 +26,10 @@ func ConnectionDB() {
 func SetupDatabase() {
 	// Migrate the schema
 	db.AutoMigrate(
+		&entity.User{},
+		&entity.Genders{},
+		&entity.Employer{},
+		&entity.Student{},
 		&entity.Jobpost{},
 		&entity.Reviews{},
 		&entity.Ratingscores{},
@@ -38,21 +42,23 @@ func SetupDatabase() {
 		&entity.Discounts{},
 		&entity.Orders{},
 		&entity.AddonServices{},
-		&entity.Genders{},
 	)
 }
 
 func SeedDatabase() {
-	// Gender
-	gender := []entity.Genders{
+	// --- Master Data (ข้อมูลหลัก) ---
+
+	// Genders
+	genders := []entity.Genders{
 		{Model: gorm.Model{ID: 1}, Gender: "ชาย"},
 		{Model: gorm.Model{ID: 2}, Gender: "หญิง"},
 		{Model: gorm.Model{ID: 3}, Gender: "ไม่ระบุ"},
 	}
-	for _, g := range gender {
+	for _, g := range genders {
 		db.FirstOrCreate(&g, g.ID)
 	}
-	// Rating Score
+
+	// Rating Scores
 	ratingScores := []entity.Ratingscores{
 		{Model: gorm.Model{ID: 1}, Ratingscorename: "แย่มาก"},
 		{Model: gorm.Model{ID: 2}, Ratingscorename: "แย่"},
@@ -63,13 +69,15 @@ func SeedDatabase() {
 	for _, rs := range ratingScores {
 		db.FirstOrCreate(&rs, rs.ID)
 	}
+
 	// Payment Method
 	paymentMethod := entity.PaymentMethods{
 		Model:      gorm.Model{ID: 1},
 		Methodname: "คิวอาร์โค้ด พร้อมเพย์",
 	}
 	db.FirstOrCreate(&paymentMethod, paymentMethod.ID)
-	// Bank
+
+	// Banks
 	banks := []entity.Banks{
 		{Model: gorm.Model{ID: 1}, Bankname: "ธนาคารกรุงเทพ"},
 		{Model: gorm.Model{ID: 2}, Bankname: "ธนาคารออมสิน"},
@@ -81,8 +89,9 @@ func SeedDatabase() {
 	for _, b := range banks {
 		db.FirstOrCreate(&b, b.ID)
 	}
-	// Status
-	paymentStatuses := []entity.Statuses {
+
+	// Statuses
+	paymentStatuses := []entity.Statuses{
 		{Model: gorm.Model{ID: 1}, StatusName: "ค้างชำระ"},
 		{Model: gorm.Model{ID: 2}, StatusName: "รอตรวจสอบ"},
 		{Model: gorm.Model{ID: 3}, StatusName: "สำเร็จ"},
@@ -91,11 +100,12 @@ func SeedDatabase() {
 	for _, ps := range paymentStatuses {
 		db.FirstOrCreate(&ps, ps.ID)
 	}
-	// Discount
+
+	// Discounts
 	discounts := []entity.Discounts{
 		{
 			Model:         gorm.Model{ID: 1},
-			DiscountName:  "10% off for first time on August",
+			DiscountName:  "ส่วนลด 10%",
 			DiscountValue: 10,
 			Discounttype:  "percentage",
 			ValidFrom:     time.Date(2024, 8, 1, 0, 0, 0, 0, time.UTC),
@@ -103,7 +113,7 @@ func SeedDatabase() {
 		},
 		{
 			Model:         gorm.Model{ID: 2},
-			DiscountName:  "10% off for first time on September",
+			DiscountName:  "ส่วนลด 15%",
 			DiscountValue: 10,
 			Discounttype:  "percentage",
 			ValidFrom:     time.Date(2024, 9, 1, 0, 0, 0, 0, time.UTC),
@@ -113,49 +123,86 @@ func SeedDatabase() {
 	for _, d := range discounts {
 		db.FirstOrCreate(&d, d.ID)
 	}
-	password, _ := bcrypt.GenerateFromPassword([]byte("123456"), 14)
-	
-	userForEmployer := entity.User{
-		Model:    gorm.Model{ID: 1},
-		Username: "hormok_hr",
-		Password: string(password),
-		Role: "Employer",
-	}
-	db.FirstOrCreate(&userForEmployer, userForEmployer.ID)
 
-	birthday, _ := time.Parse("2006-01-02", "1990-05-15")
-	employer := entity.Employer{
-		Model:         gorm.Model{ID: 1},
-		Firstname:     "พรศิริ",
-		Lasttname:     "ถาบุญศรี", // Note: Struct has a typo 'Lasttname'
-		Email:         "hr@hormok.co.th",
-		CompanyName:   "ห่อหมก สตูดิโอ",
-		ContactPerson: "คุณพรศิริ ถาบุญศรี",
-		Birthday:      birthday,
-		Phone:         "081-234-5678",
-		Address:       "123 มทส. ประตู 4 ตำบลสุรนารี อำเภอเมืองนครราชสีมา จังหวัดนครราชสีมา",
-		UserID:        userForEmployer.ID,
-		GenderID:      gender[0].ID,
-	}
-	db.FirstOrCreate(&employer, employer.ID)
-
-	jobposts := []entity.Jobpost{
-		{Model: gorm.Model{ID: 1}, Title: "Content Creator (ฝึกงาน)", Status: "เปิดรับสมัคร", EmployerID: employer.ID, Salary: 18000},
-		{Model: gorm.Model{ID: 2}, Title: "ผู้ช่วยช่างภาพ (Part-time)", Status: "อนุมัติ", EmployerID: employer.ID, Salary: 15000},
-		{Model: gorm.Model{ID: 3}, Title: "พิสูจน์อักษร (ฟรีแลนซ์)", Status: "เสร็จสิ้น", EmployerID: employer.ID, Salary: 22000},
-	}
-	for _, jp := range jobposts {
-		db.FirstOrCreate(&jp, jp.ID)
-	}
-
+	// Billable Items
 	billableItems := []entity.BillableItems{
-		{Model: gorm.Model{ID: 1}, Description: "ค่าจ้าง", Amount: 15000},
-		{Model: gorm.Model{ID: 2}, Description: "ค่าบริการแพลตฟอร์ม", Amount: 500},
+		{Model: gorm.Model{ID: 1}, Description: "ค่าจ้างพาร์ทไทม์ร้านชาบู", Amount: 250},
+		{Model: gorm.Model{ID: 2}, Description: "ค่าบริการแพลตฟอร์ม", Amount: 50},
 	}
 	for _, bi := range billableItems {
 		db.FirstOrCreate(&bi, bi.ID)
 	}
 
+	passwordEmp, _ := bcrypt.GenerateFromPassword([]byte("123456"), 14)
+	passwordStd, _ := bcrypt.GenerateFromPassword([]byte("777777"), 14)
+
+	users := []entity.User{
+		{Model: gorm.Model{ID: 1}, Username: "hormok_hr", Password: string(passwordEmp), Role: "Employer"},
+		{Model: gorm.Model{ID: 2}, Username: "panida_t", Password: string(passwordStd), Role: "Student"},
+	}
+	for _, u := range users {
+		db.FirstOrCreate(&u, u.ID)
+	}
+
+	birthdayEmp, _ := time.Parse("2006-01-02", "1990-05-15")
+	employer := entity.Employer{
+		Model:         gorm.Model{ID: 1},
+		Firstname:     "พรศิริ",
+		Lasttname:     "ถาบุญศรี",
+		Email:         "hr@hormok.co.th",
+		CompanyName:   "ห่อหมก สตูดิโอ",
+		ContactPerson: "คุณพรศิริ ถาบุญศรี",
+		Birthday:      birthdayEmp,
+		Phone:         "081-234-5678",
+		Address:       "123 มทส. ประตู 4 ต.สุรนารี อ.เมือง จ.นครราชสีมา",
+		UserID:        users[0].ID,
+		GenderID:      genders[0].ID,
+	}
+	db.FirstOrCreate(&employer, employer.ID)
+
+	birthdayStd, _ := time.Parse("2006-01-02", "2004-12-31")
+	student := entity.Student{
+		Model:       gorm.Model{ID: 1},
+		Email:       "panida.t@gmail.com",
+		FirstName:   "พนิดา",
+		LastName:    "โต๊ะเหลือ",
+		Birthday:    birthdayStd,
+		Age:         20,
+		GPA:         3.5,
+		Year:        3,
+		Faculty:     "วิศวกรรมศาสตร์",
+		Phone:       "081-234-2154",
+		Skills:      "เคยทำงานพาร์ทไทม์ร้านชาบู",
+		UserID:      users[1].ID,
+		GenderID:    genders[1].ID,
+		BankAccount: "8630211849",
+		BankID:      banks[3].ID,
+	}
+	db.FirstOrCreate(&student, student.ID)
+
+	jobposts := []entity.Jobpost{
+		{
+			Model:       gorm.Model{ID: 1},
+			Title:       "พาร์ทไทม์ร้านบ้านชาบู",
+			Description: "ทำงานช่วงเย็น 17.00 - 20.00 น.",
+			Status:      "เปิดรับสมัคร",
+			Salary:      250,
+			EmployerID:  employer.ID,
+		},
+		{
+			Model:       gorm.Model{ID: 2},
+			Title:       "ผู้ช่วยช่างภาพ",
+			Description: "ถ่ายภาพสินค้าสำหรับลงเพจ",
+			Status:      "อนุมัติ",
+			Salary:      600,
+			EmployerID:  employer.ID,
+		},
+	}
+	for _, jp := range jobposts {
+		db.FirstOrCreate(&jp, jp.ID)
+	}
+
+	// Payment
 	payment1 := entity.Payments{
 		Model:            gorm.Model{ID: 1},
 		Proof_of_Payment: "proof_01.jpg",
