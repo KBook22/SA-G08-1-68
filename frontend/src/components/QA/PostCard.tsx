@@ -19,8 +19,12 @@ import {
   PlusOutlined,
   CloseOutlined
 } from '@ant-design/icons';
-import { Dropdown, Menu, Modal, Input, Button, Space, Avatar, Upload, type UploadFile, message, type InputRef, Form, Radio, Tooltip, Tag } from 'antd';
+// --- vvvv แก้ไขบรรทัดนี้: ไม่ต้อง import Menu แล้ว vvvv ---
+import { Dropdown, Modal, Input, Button, Space, Avatar, Upload, type UploadFile, message, type InputRef, Form, Radio, Tooltip, Tag, Typography } from 'antd';
+// --- ^^^^ สิ้นสุดการแก้ไข ^^^^ ---
 import type { Post, Comment } from '../../types';
+
+const { Text } = Typography;
 
 interface PostCardProps {
   post: Post;
@@ -29,17 +33,15 @@ interface PostCardProps {
   onAddComment: (id: number, text: string, image?: File, parentId?: number) => void;
   onAddReport: (post: Post, reason: string, details: string) => void;
   onEdit: (id: number, newContent: string, newSkills: string[]) => void;
+  onLikeComment: (postId: number, commentId: number) => void;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddComment, onAddReport, onEdit }) => {
+const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddComment, onAddReport, onEdit, onLikeComment }) => {
   const navigate = useNavigate();
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [editingContent, setEditingContent] = useState(post.content);
-
-  // State สำหรับจัดการแก้ไข Skills ใน Modal
-  const [editingSkills, setEditingSkills] = useState<string[]>(post.skills);
+  const [editingSkills, setEditingSkills] = useState<string[]>(post.skills || []);
   const [skillInput, setSkillInput] = useState('');
-
   const [isCommentOpen, setIsCommentOpen] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [commentFileList, setCommentFileList] = useState<UploadFile[]>([]);
@@ -50,19 +52,18 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddCommen
   const imageSrc = post.imageUrl;
   const fileHref = post.fileUrl;
   const fileLabel = post.fileName ?? 'ไฟล์แนบ';
-
   const loggedInUserId = 'johndoe';
   const isMyPost = post.authorId === loggedInUserId;
 
-  // อัปเดต State เมื่อ post prop เปลี่ยน (กรณีข้อมูลโพสต์ถูกแก้ไขจากภายนอก)
   useEffect(() => {
     setEditingContent(post.content);
-    setEditingSkills(post.skills);
+    setEditingSkills(post.skills || []);
   }, [post]);
 
-  const formatTime = (ts?: number) => {
+  const formatTime = (ts?: number | string) => {
     if (!ts) return 'เมื่อสักครู่';
-    const diff = Date.now() - ts;
+    const date = typeof ts === 'string' ? new Date(ts) : new Date(ts);
+    const diff = Date.now() - date.getTime();
     const m = Math.floor(diff / 60000);
     if (m < 1) return 'เมื่อสักครู่';
     if (m < 60) return `${m} นาทีที่แล้ว`;
@@ -70,9 +71,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddCommen
     if (h < 24) return `${h} ชม. ที่แล้ว`;
     const d = Math.floor(h / 24);
     if (d < 7) return `${d} วันก่อน`;
-    return new Date(ts).toLocaleString('th-TH', { hour12: false });
+    return date.toLocaleString('th-TH', { hour12: false });
   };
-
+  
   const showDeleteConfirm = () => {
     Modal.confirm({
       title: 'คุณต้องการลบโพสต์นี้ใช่หรือไม่?',
@@ -95,7 +96,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddCommen
     handleCancelReportModal();
   };
 
-  // --- ฟังก์ชันสำหรับ Modal แก้ไข ---
   const showEditModal = () => {
     setEditingContent(post.content);
     setEditingSkills(post.skills);
@@ -111,7 +111,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddCommen
     setIsEditModalVisible(false);
   };
   
-    // --- ฟังก์ชันสำหรับจัดการ Skill ใน Modal แก้ไข ---
   const handleAddSkillInModal = () => {
       const trimmedInput = skillInput.trim();
       if (trimmedInput && !editingSkills.includes(trimmedInput)) {
@@ -135,7 +134,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddCommen
         { key: 'chat', icon: <MessageOutlined />, label: 'แชท', onClick: () => navigate('/chat') },
       ];
 
-  const menu = <Menu items={menuItems} />;
+  // --- vvvv ไม่ต้องสร้างตัวแปร <Menu> แล้ว vvvv ---
+  // const menu = <Menu items={menuItems} />;
+  // --- ^^^^ สิ้นสุดการแก้ไข ^^^^ ---
 
   const grabFirstFile = (list: UploadFile[]) => {
     const f = list[0]?.originFileObj;
@@ -169,7 +170,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddCommen
     return f ? URL.createObjectURL(f) : undefined;
   }, [commentFileList]);
 
-  // นี่คือคอมเมนต์ของคุณที่ผมจะไม่ลบครับ
   const renderComment = (c: Comment) => {
     return (
       <div key={c.id} style={{ marginBottom: 12 }}>
@@ -189,8 +189,14 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddCommen
                 />
               )}
             </div>
-            <div style={{ paddingLeft: '12px', display: 'flex', gap: '8px', fontSize: '12px', color: '#65676b' }}>
-                <span style={{ fontWeight: 'bold', cursor: 'pointer' }}>ถูกใจ</span>
+            <div style={{ paddingLeft: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#65676b' }}>
+                <span
+                  style={{ fontWeight: 'bold', cursor: 'pointer', color: c.isLiked ? '#1890ff' : 'inherit' }}
+                  onClick={() => onLikeComment(post.id, c.id)}
+                >
+                  ถูกใจ
+                </span>
+                {c.likes && c.likes > 0 ? <Text type="secondary" style={{fontSize: '12px'}}>{c.likes}</Text> : null}
                 <span style={{ fontWeight: 'bold', cursor: 'pointer' }} onClick={() => handleSetReply(c)}>ตอบกลับ</span>
                 <span>{formatTime(c.createdAt)}</span>
             </div>
@@ -224,9 +230,11 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddCommen
               </Tooltip>
             </div>
           </div>
-          <Dropdown overlay={menu} trigger={['click']}>
+          {/* --- vvvv แก้ไข `overlay` เป็น `menu` ตรงนี้ vvvv --- */}
+          <Dropdown menu={{ items: menuItems }} trigger={['click']}>
               <Button type="text" shape="circle" icon={<FiMoreHorizontal size={20} />} />
           </Dropdown>
+          {/* --- ^^^^ สิ้นสุดการแก้ไข ^^^^ --- */}
         </div>
 
         <p className="post-content" style={{ textAlign: 'left', width: '100%', margin: '8px 0', whiteSpace: 'pre-wrap' }}>{post.content}</p>
@@ -261,7 +269,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddCommen
         </div>
       </div>
 
-      <Modal
+       <Modal
         open={isCommentOpen}
         onCancel={() => { setIsCommentOpen(false); setReplyingTo(null); }}
         footer={null}
@@ -272,6 +280,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete, onLike, onAddCommen
         <div style={{ maxHeight: '60vh', overflowY: 'auto', padding: '16px' }}>
             {post.comments.length > 0 ? post.comments.map(renderComment) : <p>ยังไม่มีความคิดเห็น</p>}
         </div>
+
         <div className="comment-input-area" style={{ padding: '16px', borderTop: '1px solid #f0f0f0' }}>
             {replyingTo && (
                 <div style={{ marginBottom: '8px', padding: '4px 8px', backgroundColor: '#e6f7ff', border: '1px solid #91d5ff', borderRadius: '4px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

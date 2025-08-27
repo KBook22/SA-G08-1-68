@@ -201,56 +201,50 @@
 
 // src/pages/StudentPost/index.tsx
 
+// src/pages/StudentPost/index.tsx
+
+// src/pages/StudentPost/index.tsx
+
+// src/pages/StudentPost/index.tsx
+
+// src/pages/StudentPost/index.tsx
+
+// src/pages/StudentPost/index.tsx
+
+// src/pages/StudentPost/index.tsx
+
+// src/pages/StudentPost/index.tsx
+
+// src/pages/StudentPost/index.tsx
+
 import { useState, useEffect, useCallback } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { message } from 'antd';
-import type { Post, Comment, Question, Answer, Report } from '../../types';
+import type { Post, Comment, FAQ, Report } from '../../types';
 
 const API_URL = 'http://localhost:8080/api';
 
 const StudentPostManager: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
   const navigate = useNavigate();
 
   const fetchData = useCallback(async () => {
     try {
-      const [postsRes, questionsRes] = await Promise.all([
+      const [postsRes, faqsRes] = await Promise.all([
         fetch(`${API_URL}/posts`),
-        fetch(`${API_URL}/questions`),
+        fetch(`${API_URL}/faqs`),
       ]);
       
-      if (!postsRes.ok || !questionsRes.ok) {
+      if (!postsRes.ok || !faqsRes.ok) {
           throw new Error('Network response was not ok');
       }
 
       const postsData = await postsRes.json();
-      const questionsData = await questionsRes.json();
+      const faqsData = await faqsRes.json();
       
-      // ✅ แก้ไขจุดนี้: แปลงข้อมูลที่ได้รับจาก Backend ให้ถูกต้อง
-      const formattedPosts = (postsData || []).map((post: any) => {
-        let skillsArray: string[] = [];
-        try {
-          // ตรวจสอบว่า skills เป็น string ที่หน้าตาเหมือน array "[]" หรือไม่ก่อนจะแปลง
-          if (post.skills && typeof post.skills === 'string' && post.skills.startsWith('[')) {
-            skillsArray = JSON.parse(post.skills);
-          }
-        } catch (e) {
-          console.error("Could not parse skills:", post.skills, e);
-          // หากแปลงไม่ได้ ให้ skills เป็น array ว่างๆ ป้องกัน Error
-        }
-
-        return {
-          ...post,
-          id: post.ID, // Map ID จาก gorm.Model
-          createdAt: new Date(post.CreatedAt).getTime(), // Map CreatedAt จาก gorm.Model
-          skills: skillsArray, // ใช้ skills ที่แปลงเป็น Array แล้ว
-          comments: post.Comments || [], // Backend ส่งมาเป็น Comments (ตัวใหญ่)
-        };
-      });
-      
-      setPosts(formattedPosts);
-      setQuestions(questionsData || []);
+      setPosts(postsData || []);
+      setFaqs(faqsData || []);
     } catch (error) {
       console.error("Failed to fetch data:", error);
       message.error("ไม่สามารถเชื่อมต่อหรือดึงข้อมูลจากเซิร์ฟเวอร์ได้");
@@ -261,57 +255,51 @@ const StudentPostManager: React.FC = () => {
     fetchData();
   }, [fetchData]);
 
-  const handleAddPost = async (
-    content: string,
-    privacy: Post['privacy'],
-    skills: string[],
-    file?: File,
-    image?: File,
-    location?: { lat: number; lng: number }
-  ) => {
-    const newPostData = {
-      content,
-      privacy,
-      skills: JSON.stringify(skills), // แปลง array เป็น string ก่อนส่ง
-    };
-
+  const handleRequestSubmit = async (values: { subject: string; initialMessage: string; }) => {
     try {
-      const response = await fetch(`${API_URL}/posts`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newPostData),
-      });
+        const response = await fetch(`${API_URL}/tickets`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(values),
+        });
 
-      if (!response.ok) throw new Error('Failed to create post');
-      
-      message.success('สร้างโพสต์สำเร็จ!');
-      fetchData(); // ✅ เรียก fetchData เพื่อดึงข้อมูลทั้งหมดมาอัปเดตใหม่
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to submit request');
+        }
+        
+        navigate(`/help/request-sent`);
+
     } catch (error) {
-      console.error("Error adding post:", error);
-      message.error('เกิดข้อผิดพลาดในการสร้างโพสต์');
+        console.error("Error submitting request:", error);
+        message.error('เกิดข้อผิดพลาดในการส่งคำร้อง');
+        throw error;
     }
   };
 
-    const handleEditPost = async (postId: number, newContent: string, newSkills: string[]) => {
-        message.info("ฟังก์ชันแก้ไขโพสต์ยังไม่ได้เชื่อมต่อกับ API");
-        setPosts(prevPosts =>
-            prevPosts.map(post =>
-                post.id === postId
-                    ? { ...post, content: newContent, skills: newSkills }
-                    : post
-            )
-        );
-    };
 
+  // --- vvvv เพิ่มฟังก์ชัน Placeholder ที่ขาดหายไปกลับเข้ามา vvvv ---
+  const handleAddPost = async (content: string, privacy: Post['privacy'], skills: string[]) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
+  const handleEditPost = async (postId: number, newContent: string, newSkills: string[]) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
+  const handleAddComment = async (postId: number, text: string) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
+  const handleLikePost = (id: number) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
+  const handleLikeComment = (postId: number, commentId: number) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
+  const handleDeletePost = (id: number) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
+  const onAddReport = (post: Post, reason: string, details: string) => { message.success("ขอบคุณสำหรับรายงาน"); };
+  // --- ^^^^ สิ้นสุดการเพิ่ม ^^^^ ---
 
   const outletContext = {
     posts,
-    questions,
-    faqQuestions: questions.filter(q => q.isFAQ),
-    myRequests: questions.filter(q => !q.isFAQ && q.author === 'จอมมาร'),
+    faqs,
+    myRequests: [],
     handleAddPost,
     handleEditPost,
-    // Other handlers here
+    handleAddComment,
+    handleDeletePost,
+    handleLikePost,
+    onAddReport,
+    handleLikeComment,
+    handleRequestSubmit,
   };
 
   return <Outlet context={outletContext} />;

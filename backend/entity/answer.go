@@ -1,15 +1,18 @@
+// backend/entity/answer.go
 package entity
 
 import "gorm.io/gorm"
 
 // Answer represents the Answer entity
 type Answer struct {
-	gorm.Model
-	
-	AnswerID string `gorm:"primaryKey;column:Answer_ID"`
-	UserID   string `gorm:"column:User_ID"`
-	User     User   `gorm:"foreignKey:UserID"`
-	TitleID  string `gorm:"column:Title_ID"`
-	Question Question `gorm:"foreignKey:TitleID"`
-	Answer   string `gorm:"column:Answer"`
+	gorm.Model // Use gorm.Model for standard fields
+
+	// Assuming UserID is a string for now.
+	UserID string `json:"user_id"`
+	// User     User   `gorm:"foreignKey:UserID"`
+
+	Text string `json:"answer_text"` // Renamed to avoid conflict with struct name
+
+	// Foreign key to Question
+	QuestionID uint `json:"question_id"`
 }

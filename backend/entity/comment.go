@@ -1,19 +1,20 @@
+// backend/entity/comment.go
 package entity
 
 import (
-	"time"
 	"gorm.io/gorm"
 )
 
 // Comment represents the Comment entity
 type Comment struct {
-	gorm.Model
+	gorm.Model // Provides ID, CreatedAt, UpdatedAt, DeletedAt
 
-	IDComment         string    `gorm:"primaryKey;column:ID_Comment"`
-	IDPost            string    `gorm:"column:ID_Post"`
-	JobPosting        JobPosting `gorm:"foreignKey:IDPost"`
-	UserID            string    `gorm:"column:Usr_ID"`
-	User              User      `gorm:"foreignKey:UserID"`
-	CommentDate       time.Time `gorm:"column:Comment_Date"`
-	DescriptionComment string `gorm:"column:Description_Comment"`
+	Text     string `json:"text"`
+	Author   string `json:"author"`
+	AuthorID string `json:"authorId"`
+	Likes    int    `json:"likes"`
+	IsLiked  bool   `json:"isLiked"`
+
+	// Foreign Key to link with JobPosting
+	JobPostingID uint `json:"jobPostingId"`
 }

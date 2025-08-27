@@ -1,6 +1,7 @@
+// src/pages/LoginPage2/LoginPage.tsx
 import React from 'react';
-import { Card, Form, Input, Button, Tabs, Typography, Space } from 'antd';
-import { UserOutlined, SearchOutlined } from '@ant-design/icons';
+import { Card, Form, Input, Button, Tabs, Typography, Space, message } from 'antd';
+import { UserOutlined, SearchOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 
@@ -9,12 +10,32 @@ const { Title, Link, Text } = Typography;
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
 
-  const onFinish = (values: any) => {
-    console.log('Received values of form: ', values);
-    // TODO: เพิ่ม Logic การตรวจสอบ username/password จริง
-    // หากสำเร็จ ให้ redirect ไปหน้าหลัก
-    navigate('/');
+  const onFinish = async (values: any) => {
+    try {
+      const response = await fetch('http://localhost:8080/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: values.username,
+          password: values.password,
+        }),
+      });
+
+      if (response.ok) {
+        message.success('เข้าสู่ระบบสำเร็จ!');
+        // In a real app, you would save the token from the response
+        navigate('/');
+      } else {
+        const errorData = await response.json();
+        message.error(errorData.error || 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
+      }
+    } catch (error) {
+      message.error('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้');
+    }
   };
+
 
   const items = [
     {
@@ -37,16 +58,16 @@ const LoginPage: React.FC = () => {
             onFinish={onFinish}
           >
             <Form.Item
-              name="email"
-              rules={[{ required: true, message: 'กรุณากรอกอีเมล!' }]}
+              name="username"
+              rules={[{ required: true, message: 'กรุณากรอกชื่อผู้ใช้!' }]}
             >
-              <Input placeholder="อีเมล" />
+              <Input prefix={<UserOutlined />} placeholder="ชื่อผู้ใช้" />
             </Form.Item>
             <Form.Item
               name="password"
               rules={[{ required: true, message: 'กรุณากรอกรหัสผ่าน!' }]}
             >
-              <Input.Password placeholder="รหัสผ่าน" />
+              <Input.Password prefix={<LockOutlined />} placeholder="รหัสผ่าน" />
             </Form.Item>
             <Form.Item>
               <Link className="login-form-forgot" href="">
@@ -62,7 +83,7 @@ const LoginPage: React.FC = () => {
           </Form>
           <div className="login-register-link">
             <Text>ยังไม่ได้เป็นสมาชิก? </Text>
-            <Link href="">สมัครสมาชิก</Link>
+            <Link to="/register">สมัครสมาชิก</Link>
           </div>
         </>
       ),

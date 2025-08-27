@@ -1,59 +1,71 @@
 // src/types.ts
 
-// ===== Comment =====
+// ===== Core Models =====
+export interface User {
+  ID: number;
+  username: string;
+  role: 'student' | 'employer';
+}
+
+// ===== Comment & Post =====
 export interface Comment {
-  id: number;
+  ID: number;
+  CreatedAt: string;
+  text: string;
   author: string;
   authorId: string;
-  text: string;
-  createdAt?: number;
-  imageUrl?: string;
+  likes: number;
+  isLiked: boolean;
+  jobPostingId: number;
   parentId?: number;
   replies?: Comment[];
 }
 
-// ===== Post =====
 export interface Post {
-  id: number;
+  ID: number;
+  CreatedAt: string;
   author: string;
   authorId: string;
   content: string;
-  skills: string[];                // ✅ ใช้ array เสมอ (ค่าว่าง = [])
-  fileUrl?: string;
-  fileName?: string;
+  skills: string[];
   imageUrl?: string;
-  imageName?: string;
-  location?: { lat: number; lng: number };
+  fileName?: string;
   likes: number;
   isLiked: boolean;
-  comments: Comment[];
-  createdAt: number;
   privacy: 'public' | 'private';
+  userId: string;
+  Comments: Comment[];
 }
 
-// ===== Q&A =====
-export interface Answer {
-  id: number;
-  author: string;
-  text: string;
-  isStaff: boolean;
-  parentId?: number;
-  createdAt?: number;
-  imageUrl?: string;
-  replyTo?: Answer;
-}
-
-export interface Question {
-  id: number;
+// ===== Q&A System (โครงสร้างใหม่) =====
+export interface FAQ {
+  ID: number;
+  CreatedAt: string;
   title: string;
-  author: string;
-  likes: number;
-  answerCount: number;
-  answers: Answer[];
-  isFAQ?: boolean;
+  content: string;
 }
 
-// ===== Notification / Report =====
+export interface TicketReply {
+    ID: number;
+    CreatedAt: string;
+    message: string;
+    is_staff_reply: boolean;
+    author: User;
+}
+
+export interface RequestTicket {
+    ID: number;
+    CreatedAt: string;
+    subject: string;
+    initial_message: string;
+    // --- Updated status types ---
+    status: 'Open' | 'In Progress' | 'Awaiting Confirmation' | 'Resolved';
+    user: User;
+    replies: TicketReply[];
+}
+
+
+// ===== Notification & Report =====
 export interface Notification {
   id: number;
   message: string;

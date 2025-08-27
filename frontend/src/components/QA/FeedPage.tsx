@@ -1,11 +1,13 @@
 // src/components/QA/FeedPage.tsx
 import React, { useState } from 'react';
-import { Button, Modal, Card, Avatar, Space, Input } from 'antd';
+import { Button, Modal, Card, Avatar, Space, Input, Typography } from 'antd';
 import { UserOutlined, SearchOutlined } from '@ant-design/icons';
 import PostCard from './PostCard';
 import PostCreator from './PostCreator';
 import type { Post } from '../../types';
 import './FeedPage.css';
+
+const { Text } = Typography;
 
 interface FeedPageProps {
   posts: Post[];
@@ -14,7 +16,8 @@ interface FeedPageProps {
   onAddComment: (postId: number, text: string, image?: File, parentId?: number) => void;
   onAddReport: (post: Post, reason: string, details: string) => void;
   onAddPost: (content: string, privacy: Post['privacy'], skills: string[], file?: File, image?: File, location?: { lat: number, lng: number }) => void;
-  onEdit: (id: number, newContent: string, newSkills: string[]) => void; // ✅ เพิ่ม Prop สำหรับ onEdit
+  onEdit: (id: number, newContent: string, newSkills: string[]) => void;
+  onLikeComment: (postId: number, commentId: number) => void; // ✅ เพิ่ม prop
   showCreatePostButton?: boolean;
 }
 
@@ -25,7 +28,8 @@ const FeedPage: React.FC<FeedPageProps> = ({
   onAddComment,
   onAddReport,
   onAddPost,
-  onEdit, // ✅ รับ onEdit prop
+  onEdit,
+  onLikeComment, // ✅ รับ prop
   showCreatePostButton = true,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -95,11 +99,12 @@ const FeedPage: React.FC<FeedPageProps> = ({
                     onLike={onLike}
                     onAddComment={onAddComment}
                     onAddReport={onAddReport}
-                    onEdit={onEdit} // ✅ ส่ง onEdit ไปยัง PostCard
+                    onEdit={onEdit}
+                    onLikeComment={onLikeComment} // ✅ ส่งต่อไปยัง PostCard
                 />
             ))
             ) : (
-            <Card><p>ไม่พบโพสต์ที่ตรงกับการค้นหาของคุณ</p></Card>
+            <Card><Text type="secondary">ไม่พบโพสต์ที่ตรงกับการค้นหาของคุณ</Text></Card>
             )}
         </Space>
       </main>

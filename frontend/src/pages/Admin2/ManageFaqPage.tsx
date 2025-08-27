@@ -1,42 +1,44 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Button, Form, Input, Modal, message, Typography, Popconfirm, Avatar, Tag, Space, Card, Tooltip, type InputRef } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, MessageOutlined, UserOutlined, ClockCircleOutlined } from '@ant-design/icons';
-import type { Question, Answer } from '../../types';
+// src/pages/Admin2/ManageFaqPage.tsx
+import React, { useState, useEffect } from 'react';
+import { Button, Form, Input, Modal, message, Typography, Popconfirm, Card, Tooltip, Space } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+// --- MODIFIED: Use the correct FAQ type from the global types file ---
+import type { FAQ } from '../../types';
 
-const { Title, Paragraph, Text } = Typography;
+const { Title, Paragraph } = Typography;
 const { TextArea } = Input;
+const API_URL = 'http://localhost:8080/api';
 
 const ManageFaqPage: React.FC = () => {
-    const [faqs, setFaqs] = useState<Question[]>([]);
+    // --- MODIFIED: Changed state to use the correct FAQ type ---
+    const [faqs, setFaqs] = useState<FAQ[]>([]);
     const [isFaqModalVisible, setIsFaqModalVisible] = useState(false);
-    const [isCommentModalVisible, setIsCommentModalVisible] = useState(false);
-    const [editingFaq, setEditingFaq] = useState<Question | null>(null);
-    const [selectedFaq, setSelectedFaq] = useState<Question | null>(null);
+    const [editingFaq, setEditingFaq] = useState<FAQ | null>(null);
     const [form] = Form.useForm();
 
-    // States for comment section
-    const [commentText, setCommentText] = useState('');
-    const [editingComment, setEditingComment] = useState<Answer | null>(null);
-    const [editingText, setEditingText] = useState('');
-    const mainInputRef = useRef<InputRef>(null);
-
-    const updateFaqs = (newFaqs: Question[]) => {
-        setFaqs(newFaqs);
-        const allQuestions = JSON.parse(localStorage.getItem('allQuestions') || '[]');
-        const nonFaqQuestions = allQuestions.filter((q: Question) => !q.isFAQ);
-        const updatedAllQuestions = [...nonFaqQuestions, ...newFaqs];
-        localStorage.setItem('allQuestions', JSON.stringify(updatedAllQuestions));
+    const fetchFaqs = async () => {
+        try {
+            // --- FIXED: Changed API endpoint from /questions to /faqs ---
+            const response = await fetch(`${API_URL}/faqs`);
+            if (!response.ok) throw new Error('Failed to fetch FAQs');
+            // --- MODIFIED: Ensure data is typed as FAQ[] ---
+            const data: FAQ[] = await response.json();
+            setFaqs(data);
+        } catch (error) {
+            console.error("Failed to fetch FAQs:", error);
+            message.error('ไม่สามารถดึงข้อมูล FAQ ได้');
+        }
     };
-
+    
     useEffect(() => {
-        const allQuestions = JSON.parse(localStorage.getItem('allQuestions') || '[]');
-        setFaqs(allQuestions.filter((q: Question) => q.isFAQ));
+        fetchFaqs();
     }, []);
 
-    const showFaqModal = (faq?: Question) => {
+    const showFaqModal = (faq?: FAQ) => {
         if (faq) {
             setEditingFaq(faq);
-            form.setFieldsValue({ title: faq.title, answer: faq.answers.find(a => a.isStaff)?.text });
+            // --- FIXED: Get content from the correct field ---
+            form.setFieldsValue({ title: faq.title, answer: faq.content });
         } else {
             setEditingFaq(null);
             form.resetFields();
@@ -44,151 +46,54 @@ const ManageFaqPage: React.FC = () => {
         setIsFaqModalVisible(true);
     };
 
-    const showCommentModal = (faq: Question) => {
-        setSelectedFaq(faq);
-        setIsCommentModalVisible(true);
-    };
-
     const handleCancel = () => {
         setIsFaqModalVisible(false);
-        setIsCommentModalVisible(false);
-        setEditingComment(null);
-        setEditingText('');
     };
 
-    const onFinishFaq = (values: { title: string; answer: string }) => {
-        let updatedFaqs;
-        if (editingFaq) {
-            updatedFaqs = faqs.map(faq => {
-                if (faq.id === editingFaq.id) {
-                    const staffAnswer = faq.answers.find(a => a.isStaff);
-                    const otherAnswers = faq.answers.filter(a => !a.isStaff);
-                    const updatedStaffAnswer = staffAnswer
-                        ? { ...staffAnswer, text: values.answer }
-                        : { id: Date.now(), author: 'แอดมิน', text: values.answer, isStaff: true, createdAt: Date.now() };
-                    return { ...faq, title: values.title, answers: [updatedStaffAnswer, ...otherAnswers] };
+    const onFinishFaq = async (values: { title: string; answer: string }) => {
+        try {
+            let response;
+            if (editingFaq) {
+                // This functionality would require a PUT /faqs/:id endpoint
+                message.info("ฟังก์ชันแก้ไข FAQ ยังไม่ได้เชื่อมต่อกับ API backend");
+            } else {
+                // --- FIXED: Corrected the data payload to match the backend FAQ entity ---
+                const newFaqData = {
+                    title: values.title,
+                    content: values.answer,
+                };
+                
+                // --- FIXED: Changed API endpoint from /questions to /faqs ---
+                response = await fetch(`${API_URL}/faqs`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newFaqData),
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to create new FAQ');
                 }
-                return faq;
-            });
-            message.success('แก้ไข FAQ สำเร็จ!');
-        } else {
-            const newFaq: Question = {
-                id: Date.now(),
-                title: values.title,
-                author: 'แอดมิน',
-                likes: 0,
-                answerCount: 1,
-                answers: [
-                    { id: Date.now() + 1, author: 'แอดมิน', text: values.answer, isStaff: true, createdAt: Date.now() }
-                ],
-                isFAQ: true,
-            };
-            updatedFaqs = [newFaq, ...faqs];
-            message.success('สร้าง FAQ ใหม่สำเร็จ!');
+                
+                message.success('สร้าง FAQ ใหม่สำเร็จ!');
+                fetchFaqs(); // Refresh data after success
+            }
+            setIsFaqModalVisible(false);
+        } catch (error) {
+            console.error('Error in onFinishFaq:', error);
+            const errorMessage = error instanceof Error ? error.message : 'เกิดข้อผิดพลาดในการบันทึกข้อมูล';
+            message.error(errorMessage);
         }
-        updateFaqs(updatedFaqs);
-        setIsFaqModalVisible(false);
     };
 
-    const handleDeleteFaq = (id: number) => {
-        const updatedFaqs = faqs.filter(faq => faq.id !== id);
-        updateFaqs(updatedFaqs);
-        message.success('ลบ FAQ สำเร็จ!');
+    const handleDeleteFaq = async (id: number) => {
+        try {
+            // This would require a DELETE /faqs/:id endpoint
+            message.info("ฟังก์ชันลบ FAQ ยังไม่ได้เชื่อมต่อกับ API backend");
+        } catch (error) {
+            message.error('เกิดข้อผิดพลาดในการลบ');
+        }
     };
-
-    const handleSendComment = () => {
-        if (!commentText.trim() || !selectedFaq) return;
-        const newAnswer: Answer = {
-            id: Date.now(),
-            author: 'แอดมิน',
-            text: commentText,
-            isStaff: true,
-            createdAt: Date.now()
-        };
-        const updatedFaqs = faqs.map(faq =>
-            faq.id === selectedFaq.id
-                ? { ...faq, answers: [...faq.answers, newAnswer], answerCount: faq.answerCount + 1 }
-                : faq
-        );
-        updateFaqs(updatedFaqs);
-        setSelectedFaq(updatedFaqs.find(f => f.id === selectedFaq.id) || null);
-        setCommentText('');
-        message.success('เพิ่มคอมเมนต์สำเร็จ');
-    };
-
-    const handleStartEditComment = (comment: Answer) => {
-        setEditingComment(comment);
-        setEditingText(comment.text);
-    };
-
-    const handleSaveEditComment = () => {
-        if (!editingText.trim() || !selectedFaq || !editingComment) return;
-        const updatedFaqs = faqs.map(faq =>
-            faq.id === selectedFaq.id
-                ? { ...faq, answers: faq.answers.map(ans =>
-                    ans.id === editingComment.id ? { ...ans, text: editingText } : ans
-                  )}
-                : faq
-        );
-        updateFaqs(updatedFaqs);
-        setSelectedFaq(updatedFaqs.find(f => f.id === selectedFaq.id) || null);
-        setEditingComment(null);
-        setEditingText('');
-        message.success("แก้ไขคอมเมนต์สำเร็จ");
-    };
-
-    const handleDeleteAnswer = (questionId: number, answerId: number) => {
-        const updatedFaqs = faqs.map(faq =>
-            faq.id === questionId
-                ? { ...faq, answers: faq.answers.filter(ans => ans.id !== answerId), answerCount: faq.answerCount - 1 }
-                : faq
-        );
-        updateFaqs(updatedFaqs);
-        setSelectedFaq(updatedFaqs.find(f => f.id === questionId) || null);
-        message.success('ลบคอมเมนต์สำเร็จ');
-    };
-
-    const formatTime = (ts?: number) => {
-        if (!ts) return '';
-        return new Date(ts).toLocaleString('th-TH');
-    };
-
-    const renderComment = (ans: Answer) => (
-        <div key={ans.id} style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-            <Avatar size="small" icon={<UserOutlined />} />
-            <div>
-                <div style={{ backgroundColor: '#f0f2f5', padding: '8px 12px', borderRadius: '18px', textAlign: 'left' }}>
-                    <Text strong>{ans.author}</Text>
-                    {ans.isStaff && <Tag color="blue" style={{ marginLeft: 8 }}>แอดมิน</Tag>}
-                    {editingComment?.id === ans.id ? (
-                        <TextArea value={editingText} onChange={(e) => setEditingText(e.target.value)} autoSize />
-                    ) : (
-                        <div style={{ whiteSpace: 'pre-wrap' }}>{ans.text}</div>
-                    )}
-                </div>
-                <div style={{ paddingLeft: '12px', display: 'flex', gap: '8px', fontSize: '12px', color: '#65676b' }}>
-                    <Tooltip title={formatTime(ans.createdAt)}>
-                        <span>{formatTime(ans.createdAt)}</span>
-                    </Tooltip>
-                    {ans.author === 'แอดมิน' && (
-                        <>
-                            {editingComment?.id === ans.id ? (
-                                <>
-                                    <span style={{ fontWeight: 'bold', cursor: 'pointer' }} onClick={handleSaveEditComment}>บันทึก</span>
-                                    <span style={{ fontWeight: 'bold', cursor: 'pointer' }} onClick={() => setEditingComment(null)}>ยกเลิก</span>
-                                </>
-                            ) : (
-                                <span style={{ fontWeight: 'bold', cursor: 'pointer' }} onClick={() => handleStartEditComment(ans)}>แก้ไข</span>
-                            )}
-                            <Popconfirm title="ต้องการลบคอมเมนต์นี้?" onConfirm={() => handleDeleteAnswer(selectedFaq!.id, ans.id)}>
-                                <span style={{ fontWeight: 'bold', cursor: 'pointer', color: '#ff4d4f' }}>ลบ</span>
-                            </Popconfirm>
-                        </>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
 
     return (
         <div>
@@ -202,26 +107,22 @@ const ManageFaqPage: React.FC = () => {
             <Space direction="vertical" style={{ width: '100%' }} size="middle">
                 {faqs.map(item => (
                     <Card
-                        key={item.id}
+                        key={item.ID}
                         title={item.title}
                         actions={[
-                            <Tooltip title="จัดการคอมเมนต์">
-                                <Button icon={<MessageOutlined />} onClick={() => showCommentModal(item)} type="text">
-                                    ({item.answers.length})
-                                </Button>
-                            </Tooltip>,
                             <Tooltip title="แก้ไข FAQ">
                                 <Button icon={<EditOutlined />} onClick={() => showFaqModal(item)} type="text" />
                             </Tooltip>,
-                            <Popconfirm title="ต้องการลบ FAQ นี้?" onConfirm={() => handleDeleteFaq(item.id)} okText="ใช่" cancelText="ไม่">
+                            <Popconfirm title="ต้องการลบ FAQ นี้?" onConfirm={() => handleDeleteFaq(item.ID)} okText="ใช่" cancelText="ไม่">
                                 <Tooltip title="ลบ FAQ">
                                     <Button danger icon={<DeleteOutlined />} type="text" />
                                 </Tooltip>
                             </Popconfirm>,
                         ]}
                     >
+                        {/* --- FIXED: Display content from the correct field --- */}
                         <Paragraph ellipsis={{ rows: 2, expandable: true, symbol: 'ดูเพิ่มเติม' }}>
-                            {item.answers.find(a => a.isStaff)?.text || 'ยังไม่มีคำตอบ'}
+                            {item.content || 'ยังไม่มีคำตอบ'}
                         </Paragraph>
                     </Card>
                 ))}
@@ -257,31 +158,6 @@ const ManageFaqPage: React.FC = () => {
                         </Space>
                     </Form.Item>
                 </Form>
-            </Modal>
-
-            <Modal
-                title={`คอมเมนต์สำหรับ: ${selectedFaq?.title}`}
-                open={isCommentModalVisible}
-                onCancel={handleCancel}
-                footer={null}
-                width={720}
-            >
-                <div style={{ maxHeight: '50vh', overflowY: 'auto', padding: '16px' }}>
-                    {selectedFaq?.answers.map(renderComment)}
-                    {selectedFaq?.answers.length === 0 && <Typography.Text type="secondary">ยังไม่มีความคิดเห็น</Typography.Text>}
-                </div>
-                <div className="comment-input-area" style={{ padding: '16px', borderTop: '1px solid #f0f0f0' }}>
-                    <Space.Compact style={{ width: '100%' }}>
-                        <Input
-                            ref={mainInputRef}
-                            placeholder="แสดงความคิดเห็นในฐานะแอดมิน..."
-                            value={commentText}
-                            onChange={(e) => setCommentText(e.target.value)}
-                            onPressEnter={handleSendComment}
-                        />
-                        <Button type="primary" onClick={handleSendComment}>ส่ง</Button>
-                    </Space.Compact>
-                </div>
             </Modal>
         </div>
     );

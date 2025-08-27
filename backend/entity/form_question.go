@@ -1,3 +1,4 @@
+// backend/entity/form_question.go
 package entity
 
 import (
@@ -5,17 +6,21 @@ import (
 	"gorm.io/gorm"
 )
 
-// FormQuestion represents the From Question entity
+// FormQuestion represents the entity for user-submitted requests/complaints
 type FormQuestion struct {
-	gorm.Model
+	gorm.Model // Provides ID, CreatedAt, UpdatedAt, DeletedAt automatically
 
-	FormQuestionID string    `gorm:"primaryKey;column:Form_Question_ID"`
-	UserID         string    `gorm:"column:User_ID"`
-	User           User      `gorm:"foreignKey:UserID"`
-	Phone          string    `gorm:"column:Phon"`
-	Email          string    `gorm:"column:Email"`
-	Role           int       `gorm:"column:Role"`
-	Title          string    `gorm:"column:Title"`
-	Description    string    `gorm:"column:Description"`
-	DateTime       time.Time `gorm:"column:Date_Time"`
+	// Fields from the form
+	Name        string `json:"name"`
+	Lastname    string `json:"lastname"`
+	Phone       string `json:"phone"`
+	Email       string `json:"email"`
+	ContactType string `json:"contact_type"`
+	Title       string `json:"title"`
+	Details     string `json:"details"`
+
+	// Server-side fields
+	UserID      string    `json:"userId"` // Placeholder for logged-in user ID
+	Status      string    `gorm:"default:'pending'" json:"status"`
+	SubmittedAt time.Time `json:"submittedAt"`
 }

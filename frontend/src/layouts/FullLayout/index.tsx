@@ -1,4 +1,4 @@
-// // src/layout/FullLayout/index.tsx
+// src/layouts/FullLayout/index.tsx
 import React from "react";
 // 1. เพิ่ม import 'useOutletContext' เข้ามา
 import { Link, useLocation, Outlet, useOutletContext } from "react-router-dom";
@@ -30,6 +30,7 @@ const createMenuItem = (key: string, label: React.ReactNode): MenuItem => {
 
 const navItems: MenuItem[] = [
   createMenuItem("home", "Home"),
+  // FIXED: Changed "Job" to "Job/Board" to match the correct route
   createMenuItem("Job/Board", "Jobs"),
   createMenuItem("my-jobs", "My Job"),
   createMenuItem("payment-report", "Payment Report"),
@@ -56,6 +57,10 @@ const FullLayout: React.FC = () => {
     <Layout style={{ minHeight: "auto" }}>
       <Header
         style={{
+          position: "sticky", //  <-- เพิ่มบรรทัดนี้
+          top: 0,             //  <-- เพิ่มบรรทัดนี้
+          zIndex: 1,          //  <-- เพิ่มบรรทัดนี้
+          width: "100%",      //  <-- เพิ่มบรรทัดนี้
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",

@@ -110,3 +110,81 @@
     color: rgba(0, 0, 0, 0.45);
     margin-left: 8px;
 }
+
+/* --- เพิ่ม/แก้ไข: สไตล์สำหรับ Modal และการสนทนาให้กระชับขึ้น --- */
+.ant-modal .ant-modal-body {
+    padding: 24px; /* Default padding */
+}
+
+.initial-message-box {
+    background-color: #fff;
+    border: 1px solid #e8e8e8;
+    padding: 12px; /* ลด padding */
+    border-radius: 6px;
+    white-space: pre-wrap;
+    font-size: 14px; /* ลดขนาดฟอนต์ */
+}
+
+.ant-descriptions-item-label {
+    font-size: 13px; /* ลดขนาดฟอนต์สำหรับ label */
+}
+.ant-descriptions-item-content {
+    font-size: 14px; /* ลดขนาดฟอนต์สำหรับ content */
+}
+
+
+.conversation-history {
+    /* ลบ max-height ออกเพื่อให้ flexbox จัดการ */
+    overflow-y: auto;
+    padding: 10px; /* ลด padding */
+    background-color: #f5f5f5;
+    border: 1px solid #e8e8e8;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* ลด gap */
+}
+
+.history-entry {
+    border-radius: 6px;
+    border: 1px solid transparent;
+}
+
+.history-entry.staff-reply {
+    background-color: #e6f7ff;
+    border-color: #91d5ff;
+}
+.history-entry.user-reply {
+    background-color: #f6ffed;
+    border-color: #b7eb8f;
+}
+
+.entry-header {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* ลด gap */
+    padding: 6px 10px; /* ลด padding */
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 13px; /* ลดขนาดฟอนต์ */
+}
+
+.entry-timestamp {
+    margin-left: auto;
+    font-size: 11px; /* ลดขนาดฟอนต์ */
+}
+
+.entry-body {
+    padding: 10px; /* ลด padding */
+    font-size: 14px; /* ลดขนาดฟอนต์ */
+}
+
+.reply-section {
+    margin-top: 0; /* Reset margin */
+}
+
+/* สำหรับ Title H5 ใน modal */
+.ant-modal-body .ant-typography.ant-typography-h5 {
+    font-size: 16px; /* ปรับขนาด Title H5 ใน Modal */
+    margin-bottom: 8px !important;
+    margin-top: 0 !important;
+}
