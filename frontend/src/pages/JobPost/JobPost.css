@@ -13,6 +13,7 @@
   font-size: 15px !important;
   color: #d1d6d9 !important; /* สีเทาอ่อน */
   opacity: 1 !important;
+  
 }
 
 /* ========== input ปกติที่ถูก custom เอง (ไม่ใช่ ant-design) ========== */
@@ -22,7 +23,18 @@
   font-family: "Kanit", "Sarabun", Arial, sans-serif;
   color: #d1d6d9;
   opacity: 1;
+  display: flex;                /* ใช้ flex */
+  justify-content: flex-start;  /* ให้เนื้อหาชิดซ้าย */
+  align-items: center;          /* จัด icon กับข้อความให้อยู่แนวเดียวกัน */
+  text-align: left;
+  
 }
+/* เจาะเฉพาะ Form.Item ที่เป็น upload */
+.upload-item .ant-form-item-control-input-content {
+  justify-content: flex-start !important;
+}
+
+
 
 /* ========== placeholder ของ textarea ที่ custom เอง ========== */
 .custom-textarea::placeholder {
@@ -40,6 +52,7 @@
   font-size: 15px;
   color: #1f2937;
   line-height: 1.6;
+  text-align: left; /* ✅ บังคับให้ข้อความชิดซ้าย */
 }
 
 /* ========== ฟอนต์ใน ant-design date picker input ========== */
@@ -71,15 +84,62 @@
 
 /* ========== ขนาด padding ของปุ่ม submit ========== */
 .submit-button {
-  padding: 0.5rem 4rem;
+  padding: 6px 32px !important;   /* บนล่าง 4px, ซ้ายขวา 16px */
+  min-width: auto !important;     /* เอา min-width ออก */
+  width: auto !important;         /* ให้ขนาดอัตโนมัติ ตามข้อความ */
+    font-family: "Kanit", "Sarabun", Arial, sans-serif;
+    font-weight: 400;
 }
+
 
 /* ========== container หลักของหน้า JobPost (เผื่อใช้จัด layout ภายใน) ========== */
 .JopPost-container {
-  padding-top: 55px; /* เว้นระยะด้านบนให้พ้น navbar */
   box-sizing: border-box;
   width: 100%;
 }
+
+/* แก้ปุ่ม Upload ให้ชิดซ้ายตรงกับ Label */
+.ant-form-item-control-input-content {
+  display: flex !important;
+  justify-content: flex-start !important;
+}
+
+.ant-form-item-control-input-content .ant-upload {
+  display: inline-block !important;
+  margin-left: 0 !important;
+}
+
+/* ฟอนต์ของ dropdown option */
+.ant-select-item-option-content {
+  font-size: 14px !important;
+  font-weight: 300 !important;
+  font-family: "Kanit", "Sarabun", Arial, sans-serif !important;
+}
+
+/* ฟอนต์ของค่าที่เลือกใน Select (รวม defaultValue) */
+.ant-select-single .ant-select-selector .ant-select-selection-item {
+  font-size: 14px !important;
+  font-weight: 300 !important;
+  font-family: "Kanit", "Sarabun", Arial, sans-serif !important;
+  color: #1f2937 !important;
+}
+
+/* ฟอนต์ของ placeholder เวลา Select ยังไม่ได้เลือก */
+.ant-select-single .ant-select-selector .ant-select-selection-placeholder {
+  font-size: 14px !important;
+  font-weight: 300 !important;
+  font-family: "Kanit", "Sarabun", Arial, sans-serif !important;
+  color: #d1d6d9 !important;
+}
+
+/* ข้อความ error ให้อยู่ชิด label */
+.ant-form-item-explain {
+  margin-left: 0 !important;
+}
+.ant-form-item-explain-error {
+  text-align: left !important;
+}
+
 
 /* ========== Responsive: หน้าจอเล็ก (มือถือ) ========== */
 @media (max-width: 600px) {
@@ -107,6 +167,7 @@
     font-size: 14px;
   }
 }
+
 
 /* ========== Responsive: หน้าจอขนาดกลาง (แท็บเล็ต) ========== */
 @media (min-width: 601px) and (max-width: 1024px) {
