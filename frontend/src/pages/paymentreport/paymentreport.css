@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700&display=swap');
+
+.payment-report-page-container {
+  font-family: 'Kanit', sans-serif !important;
+}
+
+.payment-report-page-container .ant-typography,
+.payment-report-page-container .ant-table-thead > tr > th,
+.payment-report-page-container .ant-table-tbody > tr > td,
+.payment-report-page-container .ant-btn span,
+.payment-report-page-container .ant-picker-input input,
+.payment-report-page-container .ant-select-selector {
+  font-family: 'Kanit', sans-serif !important;
+}
+
+.payment-report-page-container .ant-spin-text {
+  font-family: 'Kanit', sans-serif !important;
+}

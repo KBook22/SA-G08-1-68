@@ -89,7 +89,6 @@ const RequestStatusPageRoute = () => {
     return <RequestStatusPage questions={questions} />;
 };
 
-
 const MainRoutes: React.FC = () => {
     return (
       <Routes>
@@ -110,8 +109,12 @@ const MainRoutes: React.FC = () => {
             <Route path="/payment-report" element={<PaymentReportPage />} />
             <Route path="/payment" element={<PaymentPage />} />
             <Route path="/profile" element={<ProfilePageV1 />} />
+<<<<<<< HEAD
             <Route path="/review" element={<ReviewPage />} />
             <Route path="/Interview-Schedule" element={<InterviewScheduling/>} />
+=======
+            <Route path="/review/:id" element={<ReviewPage />} />
+>>>>>>> Chompoo-feature
 
             {/* --- ส่วนของนักศึกษา (จะถูกจัดการ State โดย StudentPostManager) --- */}
             <Route element={<StudentPostManager />}>

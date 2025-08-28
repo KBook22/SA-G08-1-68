@@ -11,12 +11,12 @@ import {
   Card,
 } from "antd";
 import {
-  ArrowLeftOutlined,
   UserOutlined,
   QrcodeOutlined,
   BankOutlined,
 } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+
+import './payment.css';
 
 const { Title, Text } = Typography;
 const { Panel } = Collapse;
@@ -73,20 +73,6 @@ const PaymentPage: React.FC = () => {
           }}
         >
           <div style={{ position: "relative", marginBottom: "24px" }}>
-            <Link to="/my-jobs">
-              <Button
-                type="text"
-                icon={<ArrowLeftOutlined />}
-                size="large"
-                style={{ 
-                  color: "#1E3A5F",
-                  position: "absolute",
-                  left: 0,
-                  top: "50%",
-                  transform: "translateY(-50%)"
-                }}
-              />
-            </Link>
             <Title 
               level={2} 
               style={{ 
