@@ -213,6 +213,8 @@ func SeedDatabase() {
 	}
 	db.FirstOrCreate(&payment1, payment1.ID)
 }
+<<<<<<< HEAD
+=======
 
 func ConnectDB() {
 	database, err := gorm.Open(sqlite.Open("system_analysis.db"), &gorm.Config{})
@@ -245,3 +247,4 @@ func ConnectDB() {
 
 	db = database
 }
+>>>>>>> main

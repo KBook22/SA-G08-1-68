@@ -39,7 +39,14 @@ const Board: React.FC = () => {
           <div className="banner-container">
             <div className="banner-content">
               <h1>เริ่มต้นประกาศหานักศึกษา</h1>
+<<<<<<< HEAD
+              <p>
+                โพสต์ประกาศหานักศึกษามาช่วยงานแบบตรงใจ <br />
+                ได้เลยทันที
+              </p>
+=======
               <p>โพสต์ประกาศหานักศึกษามาช่วยงานแบบตรงใจ ได้เลยทันที</p>
+>>>>>>> main
               <Button
                 type="primary"
                 className="no-border-button"

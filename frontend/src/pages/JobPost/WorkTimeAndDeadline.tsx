@@ -15,8 +15,6 @@ const WorkTimeAndDeadline: React.FC = () => {
           label={<span className="label">เวลาเริ่ม-เลิกงาน (ถ้ามี)</span>}
           name="workTime"
           rules={[{ required: false }]}
-            labelCol={{ span: 24 }}     // ✅ Label เต็มแถว
-  wrapperCol={{ span: 24 }}   // ✅ Input เต็มแถว
         >
           <RangePicker
             value={workTime}
@@ -24,7 +22,6 @@ const WorkTimeAndDeadline: React.FC = () => {
             format="HH:mm"
             size="large"
             allowEmpty={[true, true]}
-               style={{ width: '100%' }}   // ✅ input ขยายเต็ม
           />
         </Form.Item>
       </Col>

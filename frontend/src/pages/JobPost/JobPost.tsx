@@ -1,9 +1,15 @@
-import React, { useState } from "react";
-import { Form, Input, Button, Modal, Result } from "antd";
+import React from "react";
+import { Form, Input, Upload } from "antd";
 import JobTypeSelector from "./JobTypeSelector";
 import Location from "./Location";
 import WorkTimeAndDeadline from "./WorkTimeAndDeadline";
 import JobPostingSection from "./JobPostingSection";
+<<<<<<< HEAD
+import "./JobPost.css"; // import CSS ปกติ
+import PageHeader from "../../components/PageHeader"; 
+
+const JobPost: React.FC = () => {
+=======
 import "./JobPost.css";
 import PageHeader from "../../components/PageHeader";
 import lahui from "../../assets/lahui.svg"; // ✅ default logo
@@ -47,6 +53,7 @@ const JobPost: React.FC = () => {
     }
   };
 
+>>>>>>> main
   return (
 
     <div 
@@ -55,33 +62,36 @@ const JobPost: React.FC = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        background: "white"
       }}
     >
       <Form
-        form={form}
         layout="vertical"
         style={{ width: "100%", maxWidth: 800 }}
         autoComplete="off"
-        onFinish={handleFinish}
       >
         <div className="JopPost-container">
           <PageHeader title="รายละเอียดประกาศงาน" />
         </div>
 
-        {/* ฟิลด์กรอก */}
         <Form.Item
           label={<span className="label">ชื่องาน</span>}
           name="Name"
           rules={[{ required: true, message: "กรุณากรอกชื่องาน" }]}
         >
-          <Input placeholder="กรอกชื่องาน" size="large" />
+          <Input
+            placeholder="กรอกชื่องาน"
+            size="large"
+            className="custom-input::placeholder"
+          />
         </Form.Item>
 
         <JobTypeSelector />
         <Location />
         <WorkTimeAndDeadline />
         <JobPostingSection />
+<<<<<<< HEAD
+      </Form>
+=======
 
         {/* upload รูป */}
         <Form.Item label="เลือกรูปโลโก้ร้าน (ถ้ามี)">
@@ -129,6 +139,7 @@ const JobPost: React.FC = () => {
           }
         />
       </Modal>
+>>>>>>> main
     </div>
   );
 };

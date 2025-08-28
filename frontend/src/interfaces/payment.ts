@@ -8,7 +8,7 @@ export interface Payment {
     bill_able_item_id: number;
     bill_able_item?: Billableitem;
     proof_of_payment: string;
-    amount: Float64Array;
+    amount: number;
     datetime: Date;
     payment_method_id: number;
     payment_method?: Paymentmethod;

@@ -9,9 +9,8 @@ type Payments struct {
 	gorm.Model
 	
 	Proof_of_Payment string          `json:"proof_of_payment"`
-	Amount           float64         `json:"amount"`
+	Amount           float32         `json:"amount"`
 	Datetime         time.Time       `json:"datetime"`
-
 
 	//FK
 	BillableItemID   uint            `json:"billable_item_id"`
@@ -25,6 +24,4 @@ type Payments struct {
 
 	PaymentReportID  uint            `json:"payment_report_id"`
 	PaymentReport    *PaymentReports `gorm:"foreignKey: payment_report_id" json:"payment_report"`
-
-	// discount ?
 }
