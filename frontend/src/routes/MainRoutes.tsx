@@ -1,34 +1,31 @@
 // src/routes/MainRoutes.tsx
 
-import React from 'react';
-import { Route, Routes, useOutletContext } from 'react-router-dom';
+import React from "react";
+import { Route, Routes, useOutletContext } from "react-router-dom";
 
 // Layout
-import FullLayout from '../layout/FullLayout';
+import FullLayout from "../layout/FullLayout";
 
 // Parent Component for Student Section
-import StudentPostManager from '../pages/StudentPost';
+import StudentPostManager from "../pages/StudentPost";
 
 // (Import Pages ทั้งหมดเหมือนเดิม)
-import FeedPage from '../components/QA/FeedPage';
-import PostCreator from '../components/QA/PostCreator';
-import ProfilePageV2 from '../pages/ProfilePage2/ProfilePage';
-import FAQPage from '../pages/StudentPost/FAQPage';
-import AskQuestionPage from '../pages/StudentPost/AskQuestionPage';
-import QuestionDetailPage from '../pages/StudentPost/QuestionDetailPage';
-import RequestThreadPage from '../pages/RequestThreadPage/RequestThreadPage';
-import RequestStatusPage from '../pages/RequestThreadPage/RequestStatusPage';
-import Homepage from '../pages/Home/Home';
+import FeedPage from "../components/QA/FeedPage";
+import PostCreator from "../components/QA/PostCreator";
+import ProfilePageV2 from "../pages/ProfilePage2/ProfilePage";
+import FAQPage from "../pages/StudentPost/FAQPage";
+import AskQuestionPage from "../pages/StudentPost/AskQuestionPage";
+import QuestionDetailPage from "../pages/StudentPost/QuestionDetailPage";
+import RequestThreadPage from "../pages/RequestThreadPage/RequestThreadPage";
+import RequestStatusPage from "../pages/RequestThreadPage/RequestStatusPage";
+import Homepage from "../pages/Home/Home";
 import Board from "../pages/Board/Board";
 import JobDetail from "../pages/Board/JobDetail";
 import ApplyJob from "../pages/ApplyJob/ApplyJob";
 import Interview from '../pages/Interview/Interview';
 import Chat from '../pages/Chat/Chat';
-//tung tung tung sahur
-import StudentListPage from "../pages/worklog/StudentListPage";
-import Reportpage from '../pages/Reportpage/report'
-import Worklog from '../pages/worklog/worklog'
-//Plabooooooo
+import StudentListPage from "../pages/StudentListpage/StudentListPage";
+import Reportpage from '../pages/Reportpage/report';
 import JobsPage from '../pages/myjob';
 import PaymentReportPage from '../pages/paymentreport';
 import ProfilePageV1 from '../pages/profile';
@@ -39,54 +36,60 @@ import InterviewScheduling from "../pages/InterviewScheduling/InterviewSchedulin
 
 // --- สร้าง Helper Components เพื่อรับ Context จาก StudentPostManager ---
 const FeedPageRoute = () => {
-    const context: any = useOutletContext();
-    return <FeedPage
-              posts={context.posts}
-              onDelete={context.handleDeletePost}
-              onLike={context.handleLikePost}
-              onAddComment={context.handleAddComment}
-              onAddReport={context.handleAddReport}
-              onAddPost={context.handleAddPost}
-           />;
+  const context: any = useOutletContext();
+  return (
+    <FeedPage
+      posts={context.posts}
+      onDelete={context.handleDeletePost}
+      onLike={context.handleLikePost}
+      onAddComment={context.handleAddComment}
+      onAddReport={context.handleAddReport}
+      onAddPost={context.handleAddPost}
+    />
+  );
 };
 const PostCreatorRoute = () => {
-    const { handleAddPost }: any = useOutletContext();
-    return <PostCreator onAddPost={handleAddPost} />;
+  const { handleAddPost }: any = useOutletContext();
+  return <PostCreator onAddPost={handleAddPost} />;
 };
 
 const ProfilePageV2Route = () => {
   const context: any = useOutletContext();
-  return <ProfilePageV2
+  return (
+    <ProfilePageV2
       posts={context.posts}
       handleAddPost={context.handleAddPost}
       handleDeletePost={context.handleDeletePost}
       handleLikePost={context.handleLikePost}
       handleAddComment={context.handleAddComment}
       onAddReport={context.handleAddReport}
-    />;
-}
+    />
+  );
+};
 
 const FAQPageRoute = () => {
-    const { faqQuestions, handleLikeQuestion }: any = useOutletContext();
-    return <FAQPage questions={faqQuestions} onLike={handleLikeQuestion} />;
+  const { faqQuestions, handleLikeQuestion }: any = useOutletContext();
+  return <FAQPage questions={faqQuestions} onLike={handleLikeQuestion} />;
 };
 
 const AskQuestionPageRoute = () => {
-    const { handleAddQuestion }: any = useOutletContext();
-    return <AskQuestionPage onFormSubmit={handleAddQuestion} />;
+  const { handleAddQuestion }: any = useOutletContext();
+  return <AskQuestionPage onFormSubmit={handleAddQuestion} />;
 };
 
 const QuestionDetailPageRoute = () => {
-    const context: any = useOutletContext();
-    return <QuestionDetailPage
-              questions={context.questions}
-              onAddAnswer={context.handleAddAnswer}
-           />;
+  const context: any = useOutletContext();
+  return (
+    <QuestionDetailPage
+      questions={context.questions}
+      onAddAnswer={context.handleAddAnswer}
+    />
+  );
 };
 
 const RequestStatusPageRoute = () => {
-    const { questions }: any = useOutletContext();
-    return <RequestStatusPage questions={questions} />;
+  const { questions }: any = useOutletContext();
+  return <RequestStatusPage questions={questions} />;
 };
 
 const MainRoutes: React.FC = () => {
@@ -109,28 +112,29 @@ const MainRoutes: React.FC = () => {
             <Route path="/payment-report" element={<PaymentReportPage />} />
             <Route path="/payment" element={<PaymentPage />} />
             <Route path="/profile" element={<ProfilePageV1 />} />
-<<<<<<< HEAD
             <Route path="/review" element={<ReviewPage />} />
-            <Route path="/Interview-Schedule" element={<InterviewScheduling/>} />
-=======
-            <Route path="/review/:id" element={<ReviewPage />} />
->>>>>>> Chompoo-feature
+            <Route path="/InterviewScheduling" element={<InterviewScheduling/>} />
 
-            {/* --- ส่วนของนักศึกษา (จะถูกจัดการ State โดย StudentPostManager) --- */}
-            <Route element={<StudentPostManager />}>
-              <Route path="/feed" element={<FeedPageRoute />} />
-              <Route path="/create" element={<PostCreatorRoute />} />
-              <Route path="/profile-v2" element={<ProfilePageV2Route />} />
-              <Route path="/help" element={<FAQPageRoute />} />
-              <Route path="/help/ask" element={<AskQuestionPageRoute />} />
-              <Route path="/help/question/:id" element={<QuestionDetailPageRoute />} />
-              <Route path="/help/request-status/:id" element={<RequestStatusPageRoute />} />
-              <Route path="/help/request/:id" element={<RequestThreadPage />} />
-            </Route>
+        {/* --- ส่วนของนักศึกษา (จะถูกจัดการ State โดย StudentPostManager) --- */}
+        <Route element={<StudentPostManager />}>
+          <Route path="/feed" element={<FeedPageRoute />} />
+          <Route path="/create" element={<PostCreatorRoute />} />
+          <Route path="/profile-v2" element={<ProfilePageV2Route />} />
+          <Route path="/help" element={<FAQPageRoute />} />
+          <Route path="/help/ask" element={<AskQuestionPageRoute />} />
+          <Route
+            path="/help/question/:id"
+            element={<QuestionDetailPageRoute />}
+          />
+          <Route
+            path="/help/request-status/:id"
+            element={<RequestStatusPageRoute />}
+          />
+          <Route path="/help/request/:id" element={<RequestThreadPage />} />
         </Route>
-      </Routes>
-    );
-
+      </Route>
+    </Routes>
+  );
 };
 
 export default MainRoutes;

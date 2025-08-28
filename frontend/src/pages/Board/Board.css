@@ -1,5 +1,5 @@
 .board-container {
-  width: 100vw;
+  width: 100%;
   position: relative;
   left: 50%;
   right: 50%;
@@ -51,22 +51,22 @@
 
 .btn-startpost,
 .btn-mypost {
-  background-color: #fff;
-  color: #0088ff;
-  font-family: "Kanit", "Sarabun", sans-serif;
-  height: 33px;
-  width: 150px;
-  font-weight: 500;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: 0.2s ease;
+  background-color: #fff; /* พื้นหลังสีขาว */
+  color: #0088ff; /* ตัวอักษรสีฟ้า */
+  font-family: "Kanit", "Sarabun", sans-serif; /* ฟอนต์ */
+  height: 33px; /* ความสูงปุ่ม 33px */
+  width: 150px; /* ความกว้างปุ่ม 150px */
+  font-weight: 500; /* ตัวหนาปานกลาง */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* เงาปุ่ม */
+  border: none; /* ไม่มีขอบ */
+  border-radius: 6px; /* มุมโค้งมน 6px */
+  cursor: pointer; /* เคอร์เซอร์เปลี่ยนเป็น pointer */
+  transition: 0.2s ease; /* เอฟเฟกต์เปลี่ยนสีลื่น */
 }
 
 .btn-startpost:hover,
 .btn-mypost:hover {
-  background-color: #e6f0ff;
+  background-color: #e6f0ff; /* พื้นหลังสีฟ้าจางเมื่อ hover */
 }
 
 .banner-container {
@@ -115,6 +115,8 @@
   border: none !important;
   box-shadow: none !important;
   background-color: #f9edc8;
+    height: 33px; /* ความสูงปุ่ม 33px */
+  width: 100px; /* ความกว้างปุ่ม 150px */
   color: black;
   margin-top: 0;
   padding: 0; /* ✅ ไม่มี padding ซ้าย */

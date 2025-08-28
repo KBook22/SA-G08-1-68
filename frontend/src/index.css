@@ -9,7 +9,8 @@
     --text-color: #495057;
     --dark-text: #212529;
   }
-  
+
+
   /* =========================
      Global Resets & Defaults
      ========================= */
@@ -81,3 +82,6 @@
     gap: 1rem;
     color: var(--text-color);
   }
+  /* * {
+  outline: 1px solid red !important;
+} */

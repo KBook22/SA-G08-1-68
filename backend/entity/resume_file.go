@@ -14,8 +14,4 @@ type ResumeFile struct {
 	//FK
 	JobApplicationID uint           `gorm:"not null" json:"job_application_id"`
 	JobApplication   JobApplication `gorm:"foreignKey:JobApplicationID" json:"job_application"`
-
-	StudentID uint      `gorm:"not null" json:"student_id"`
-    Student   Student   `gorm:"foreignKey:StudentID;references:ID"`  // FK to Student.ID
-
 }
