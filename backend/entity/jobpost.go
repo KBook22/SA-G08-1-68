@@ -22,13 +22,8 @@ type Jobpost struct {
 	ImageURL 			*string 		`gorm:"type:varchar(255)" json:"image_url"` // nullable string
 	PortfolioRequired 	*string 		`gorm:"type:varchar(100)" json:"portfolio_required"` // nullable
 	Salary				int				`json:"salary"`
-	
-
 
 	//FK
-
-	BillableItemID	uint				`json:"billable_item_id"`
-	BillableItem	*BillableItems 		`gorm:"foreignKey: billable_item_id" json:"billable_item"`
 
 	EmployerID			uint    		`gorm:"not null" json:"employer_id"`
     Employer   			Employer 		`gorm:"foreignKey:EmployerID;references:ID"`

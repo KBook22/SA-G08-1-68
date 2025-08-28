@@ -16,7 +16,11 @@ import JobDetail from "../pages/Board/JobDetail";
 import ApplyJob from "../pages/ApplyJob/ApplyJob";
 import Interview from '../pages/Interview/Interview';
 import Chat from '../pages/Chat/Chat';
+<<<<<<< HEAD
+import StudentListPage from "../pages/StudentListpage/StudentListPage";
+=======
 import StudentListPage from "../pages/worklog/StudentListPage";
+>>>>>>> main
 import Reportpage from '../pages/Reportpage/report';
 import JobsPage from '../pages/myjob';
 import PaymentReportPage from '../pages/paymentreport';
@@ -24,11 +28,14 @@ import ProfilePageV1 from '../pages/profile';
 import ReviewPage from '../pages/review';
 import PaymentPage from '../pages/payment';
 import JobPost from "../pages/JobPost/JobPost";
+<<<<<<< HEAD
+=======
 import InterviewScheduling from "../pages/InterviewScheduling/InterviewScheduling";
 import EmployerFeedPage from '../pages/Employer/EmployerFeedPage';
 import StudentPostForm from '../pages/StudentPost/StudentPostForm';
 import RequestSentPage from '../pages/StudentPost/RequestSentPage'; // เพิ่ม import นี้
 import MyPost from '../pages/MyPost/Mypost'
+>>>>>>> main
 
 // Helper components to pass context from Outlet
 const FeedPageRoute = () => {
@@ -44,6 +51,7 @@ const FeedPageRoute = () => {
               onLikeComment={context.handleLikeComment}
            />;
 };
+
 const PostCreatorRoute = () => {
   const { handleAddPost }: any = useOutletContext();
   return <PostCreator onAddPost={handleAddPost} />;
@@ -95,6 +103,10 @@ const RequestStatusPageRoute = () => {
   return <RequestStatusPage questions={questions} />;
 };
 
+<<<<<<< HEAD
+// import JobPost from "../pages/JobPost/JobPost";
+=======
+>>>>>>> main
 
 const MainRoutes: React.FC = () => {
     return (
@@ -115,6 +127,10 @@ const MainRoutes: React.FC = () => {
             <Route path="/my-jobs" element={<JobsPage />} />
             <Route path="/payment-report" element={<PaymentReportPage />} />
             <Route path="/payment" element={<PaymentPage />} />
+<<<<<<< HEAD
+            <Route path="/profile" element={<ProfilePageV1 />} />
+            <Route path="/review/:id" element={<ReviewPage />} />
+=======
             <Route path="/review" element={<ReviewPage />} />
             <Route path="/InterviewScheduling" element={<InterviewScheduling/>} />
             <Route path="/profile-v1" element={<ProfilePageV1 />} />
@@ -123,6 +139,7 @@ const MainRoutes: React.FC = () => {
             {/* --- Feed Routes (now independent) --- */}
             <Route path="/feed" element={<EmployerFeedPage />} />
             <Route path="/feed/create" element={<StudentPostForm />} />
+>>>>>>> main
 
             {/* --- Student-focused Routes (State managed by StudentPostManager) --- */}
             <Route element={<StudentPostManager />}>
