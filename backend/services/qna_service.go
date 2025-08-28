@@ -10,7 +10,7 @@ import (
 
 func GetFAQs() ([]entity.FAQ, error) {
 	var faqs []entity.FAQ
-	if err := config.DB.Order("created_at desc").Find(&faqs).Error; err != nil {
+	if err := config.DB().Order("created_at desc").Find(&faqs).Error; err != nil {
 		return nil, err
 	}
 	return faqs, nil
@@ -23,7 +23,7 @@ func CreateTicket(ticket *entity.RequestTicket, userID uint) (*entity.RequestTic
 	ticket.UserID = userID // 👈 ใช้ userID ที่รับมา
 	ticket.Status = "Open"
 
-	if err := config.DB.Create(ticket).Error; err != nil {
+	if err := config.DB().Create(ticket).Error; err != nil {
 		return nil, err
 	}
 	return ticket, nil
@@ -31,7 +31,7 @@ func CreateTicket(ticket *entity.RequestTicket, userID uint) (*entity.RequestTic
 
 func GetTickets() ([]entity.RequestTicket, error) {
 	var tickets []entity.RequestTicket
-	if err := config.DB.Preload("User").Preload("Replies.Author").Order("created_at desc").Find(&tickets).Error; err != nil {
+	if err := config.DB().Preload("User").Preload("Replies.Author").Order("created_at desc").Find(&tickets).Error; err != nil {
 		return nil, err
 	}
 	return tickets, nil
@@ -39,7 +39,7 @@ func GetTickets() ([]entity.RequestTicket, error) {
 
 func GetTicketByID(id uint) (*entity.RequestTicket, error) {
 	var ticket entity.RequestTicket
-	if err := config.DB.Preload("User").Preload("Replies.Author").First(&ticket, id).Error; err != nil {
+	if err := config.DB().Preload("User").Preload("Replies.Author").First(&ticket, id).Error; err != nil {
 		return nil, err
 	}
 	return &ticket, nil

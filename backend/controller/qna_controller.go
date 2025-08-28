@@ -1,5 +1,5 @@
 // backend/controllers/qna_controller.go
-package controllers
+package controller
 
 import (
 	"net/http"
@@ -30,7 +30,7 @@ func CreateFAQ(c *gin.Context) {
 	}
 	faq.AdminID = adminID.(uint)
 
-	if err := config.DB.Create(&faq).Error; err != nil {
+	if err := config.DB().Create(&faq).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create FAQ"})
 		return
 	}
@@ -57,7 +57,7 @@ func UpdateFAQ(c *gin.Context) {
 	}
 
 	var faq entity.FAQ
-	if err := config.DB.First(&faq, uint(id)).Error; err != nil {
+	if err := config.DB().First(&faq, uint(id)).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "FAQ not found"})
 		return
 	}
@@ -73,7 +73,7 @@ func UpdateFAQ(c *gin.Context) {
 
 	faq.Title = input.Title
 	faq.Content = input.Content
-	config.DB.Save(&faq)
+	config.DB().Save(&faq)
 
 	c.JSON(http.StatusOK, faq)
 }
@@ -87,7 +87,7 @@ func DeleteFAQ(c *gin.Context) {
 		return
 	}
 
-	if err := config.DB.Delete(&entity.FAQ{}, uint(id)).Error; err != nil {
+	if err := config.DB().Delete(&entity.FAQ{}, uint(id)).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete FAQ"})
 		return
 	}
@@ -124,7 +124,7 @@ func CreateRequestTicket(c *gin.Context) {
 func GetRequestTickets(c *gin.Context) {
 	var tickets []entity.RequestTicket
 	// เพิ่ม .Preload("User") และ .Preload("Replies.Author") เพื่อให้ดึงข้อมูลที่เกี่ยวข้องมาด้วย
-	if err := config.DB.Preload("User").Preload("Replies.Author").Order("created_at desc").Find(&tickets).Error; err != nil {
+	if err := config.DB().Preload("User").Preload("Replies.Author").Order("created_at desc").Find(&tickets).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve tickets"})
 		return
 	}
@@ -141,7 +141,7 @@ func GetMyRequestTickets(c *gin.Context) {
 
 	var tickets []entity.RequestTicket
 	// ค้นหา tickets ทั้งหมดที่ตรงกับ user_id ของคนที่ล็อกอิน
-	if err := config.DB.Where("user_id = ?", userID).Order("created_at desc").Find(&tickets).Error; err != nil {
+	if err := config.DB().Where("user_id = ?", userID).Order("created_at desc").Find(&tickets).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve user tickets"})
 		return
 	}
@@ -186,7 +186,7 @@ func CreateTicketReply(c *gin.Context) {
 	}
 	
 	var ticket entity.RequestTicket
-	if err := config.DB.First(&ticket, ticketID).Error; err != nil {
+	if err := config.DB().First(&ticket, ticketID).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Ticket not found"})
 		return
 	}
@@ -200,12 +200,12 @@ func CreateTicketReply(c *gin.Context) {
 
 	reply.TicketID = uint(ticketID)
 
-	if err := config.DB.Create(&reply).Error; err != nil {
+	if err := config.DB().Create(&reply).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create reply"})
 		return
 	}
 
-	config.DB.Preload("Author").First(&reply, reply.ID)
+	config.DB().Preload("Author").First(&reply, reply.ID)
 	c.JSON(http.StatusCreated, reply)
 }
 
@@ -227,17 +227,17 @@ func UpdateTicketStatus(c *gin.Context) {
 	}
 
 	var ticket entity.RequestTicket
-	if err := config.DB.First(&ticket, ticketID).Error; err != nil {
+	if err := config.DB().First(&ticket, ticketID).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Ticket not found"})
 		return
 	}
 
 	ticket.Status = statusUpdate.Status
-	if err := config.DB.Save(&ticket).Error; err != nil {
+	if err := config.DB().Save(&ticket).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update ticket status"})
 		return
 	}
 	
-	config.DB.Preload("User").Preload("Replies.Author").First(&ticket, ticket.ID)
+	config.DB().Preload("User").Preload("Replies.Author").First(&ticket, ticket.ID)
 	c.JSON(http.StatusOK, ticket)
 }

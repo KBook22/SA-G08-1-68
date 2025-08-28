@@ -12,12 +12,12 @@ func CreateStudentProfilePost(post *entity.StudentProfilePost, studentID uint) (
 	post.StudentID = studentID
 
 	// ดึงข้อมูล Student มา Preload เพื่อให้ Response ที่ส่งกลับไปมีข้อมูลครบถ้วน
-	if err := config.DB.Create(post).Error; err != nil {
+	if err := config.DB().Create(post).Error; err != nil {
 		return nil, err
 	}
 	
 	// Preload Student data to include it in the response
-	if err := config.DB.Preload("Student").First(&post, post.ID).Error; err != nil {
+	if err := config.DB().Preload("Student").First(&post, post.ID).Error; err != nil {
 		return nil, err
 	}
 
@@ -27,7 +27,7 @@ func CreateStudentProfilePost(post *entity.StudentProfilePost, studentID uint) (
 func GetStudentProfilePosts() ([]entity.StudentProfilePost, error) {
 	var posts []entity.StudentProfilePost
 	// เพิ่ม .Order("created_at desc") เพื่อให้โพสต์ล่าสุดอยู่บนสุด
-	if err := config.DB.Preload("Student").Order("created_at desc").Find(&posts).Error; err != nil {
+	if err := config.DB().Preload("Student").Order("created_at desc").Find(&posts).Error; err != nil {
 		return nil, err
 	}
 	return posts, nil
@@ -35,7 +35,7 @@ func GetStudentProfilePosts() ([]entity.StudentProfilePost, error) {
 
 func GetStudentProfilePostsByStudentID(studentID uint) ([]entity.StudentProfilePost, error) {
 	var posts []entity.StudentProfilePost
-	if err := config.DB.Where("student_id = ?", studentID).Order("created_at desc").Find(&posts).Error; err != nil {
+	if err := config.DB().Where("student_id = ?", studentID).Order("created_at desc").Find(&posts).Error; err != nil {
 		return nil, err
 	}
 	return posts, nil

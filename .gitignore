@@ -26,3 +26,6 @@ dist-ssr
 #backend
 go.mod
 go.sum
+
+main
+main.exe

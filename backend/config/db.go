@@ -3,6 +3,7 @@
 package config
 
 import (
+	"golang.org/x/crypto/bcrypt"
 	"github.com/KBook22/System-Analysis-and-Design/entity"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -10,6 +11,9 @@ import (
 )
 var db *gorm.DB
 
+func DB() *gorm.DB {
+	return db
+}
 func ConnectionDB() {
 	database, err := gorm.Open(sqlite.Open("sa-project.db"), &gorm.Config{})
 	if err != nil {
@@ -209,7 +213,6 @@ func SeedDatabase() {
 	}
 	db.FirstOrCreate(&payment1, payment1.ID)
 }
-var DB *gorm.DB
 
 func ConnectDB() {
 	database, err := gorm.Open(sqlite.Open("system_analysis.db"), &gorm.Config{})
@@ -240,5 +243,5 @@ func ConnectDB() {
 		panic("Failed to migrate database!")
 	}
 
-	DB = database
+	db = database
 }

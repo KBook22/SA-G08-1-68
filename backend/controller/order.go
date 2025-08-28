@@ -1,4 +1,4 @@
-package controllers
+package controller
 
 import (
 	"net/http"
@@ -6,6 +6,7 @@ import (
 	"github.com/KBook22/System-Analysis-and-Design/config"
 	"github.com/KBook22/System-Analysis-and-Design/entity"
 	"github.com/gin-gonic/gin"
+	
 )
 
 // POST /orders

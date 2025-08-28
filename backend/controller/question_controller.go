@@ -1,5 +1,5 @@
 // backend/controllers/question_controller.go
-package controllers
+package controller
 
 import (
 	"net/http"
@@ -14,7 +14,7 @@ import (
 // GET /questions (For FAQs)
 func GetQuestions(c *gin.Context) {
 	var questions []entity.Question
-	if err := config.DB.Order("created_at desc").Find(&questions).Error; err != nil {
+	if err := config.DB().Order("created_at desc").Find(&questions).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve questions"})
 		return
 	}
@@ -29,7 +29,7 @@ func CreateQuestion(c *gin.Context) {
 		return
 	}
 
-	if err := config.DB.Create(&question).Error; err != nil {
+	if err := config.DB().Create(&question).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create question"})
 		return
 	}

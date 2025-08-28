@@ -1,10 +1,12 @@
 package main
 
 import (
+	"github.com/KBook22/System-Analysis-and-Design/config"
 	"github.com/KBook22/System-Analysis-and-Design/controller"
 	"github.com/KBook22/System-Analysis-and-Design/middleware"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -30,13 +32,13 @@ func main() {
 	// --- API Routes ---
 	api := r.Group("/api")
 	{
-		api.GET("/jobposts", controllers.ListJobPosts)
-		api.GET("/jobposts/:id", controllers.GetJobPostByID)
-		api.GET("/reviews/scores", controllers.ListRatingScores)
-		api.GET("/payments/statuses", controllers.ListPaymentStatuses)
-		api.GET("/payments/methods", controllers.ListPaymentMethods)
-		// api.GET("/banks", controllers.ListBanks)
-		// api.GET("/genders", controllers.ListGenders)
+		api.GET("/jobposts", controller.ListJobPosts)
+		api.GET("/jobposts/:id", controller.GetJobPostByID)
+		api.GET("/reviews/scores", controller.ListRatingScores)
+		api.GET("/payments/statuses", controller.ListPaymentStatuses)
+		api.GET("/payments/methods", controller.ListPaymentMethods)
+		// api.GET("/banks", controller.ListBanks)
+		// api.GET("/genders", controller.ListGenders)
 
 		protected := api.Group("")
 		// protected.Use(middleware.Authorizes())
@@ -44,71 +46,65 @@ func main() {
 			// JobPost (actions)
 			jobpostRoutes := protected.Group("/jobposts")
 			{
-				jobpostRoutes.POST("", controllers.CreateJobPost)
-				jobpostRoutes.PUT("/:id", controllers.UpdateJobPost)
-				jobpostRoutes.DELETE("/:id", controllers.DeleteJobPost)
+				jobpostRoutes.POST("", controller.CreateJobPost)
+				jobpostRoutes.PUT("/:id", controller.UpdateJobPost)
+				jobpostRoutes.DELETE("/:id", controller.DeleteJobPost)
 			}
 
 			// Review (actions)
 			reviewRoutes := protected.Group("/reviews")
 			{
-				reviewRoutes.POST("/new-rating", controllers.CreateRating)
-				reviewRoutes.GET("", controllers.FindRatingsByJobPostID)
+				reviewRoutes.POST("/new-rating", controller.CreateRating)
+				reviewRoutes.GET("", controller.FindRatingsByJobPostID)
 			}
 			
 			// Payment (actions)
 			paymentRoutes := protected.Group("/payments")
 			{
-				paymentRoutes.POST("", controllers.CreatePayment)
-				paymentRoutes.GET("", controllers.ListPayments)
-				paymentRoutes.GET("/:id", controllers.GetPaymentByID)
+				paymentRoutes.POST("", controller.CreatePayment)
+				paymentRoutes.GET("", controller.ListPayments)
+				paymentRoutes.GET("/:id", controller.GetPaymentByID)
 			}
 
 			// Other protected routes
-			protected.GET("/payment_reports", controllers.ListPaymentReports)
-			protected.GET("/orders", controllers.ListOrders)
-			protected.GET("/discounts", controllers.ListDiscounts)
-			protected.GET("/billable_items", controllers.ListBillableItems)
+			protected.GET("/payment_reports", controller.ListPaymentReports)
+			protected.GET("/orders", controller.ListOrders)
+			protected.GET("/discounts", controller.ListDiscounts)
+			protected.GET("/billable_items", controller.ListBillableItems)
 		}
-	// }
-		r := gin.Default()
-	r.Use(CORSMiddleware())
-	config.ConnectDB()
-
-	api := r.Group("/api")
 	{
 		// === 🌏 Public Routes (ไม่ต้อง Login) ===
-		api.POST("/register/student", controllers.RegisterStudent)
-		api.POST("/register/employer", controllers.RegisterEmployer)
-		api.POST("/register/admin", controllers.RegisterAdmin)
-		api.POST("/login", controllers.Login)
-		api.GET("/faqs", controllers.GetFAQs)
-		api.GET("/student-profile-posts", controllers.GetStudentProfilePosts)
+		api.POST("/register/student", controller.RegisterStudent)
+		api.POST("/register/employer", controller.RegisterEmployer)
+		api.POST("/register/admin", controller.RegisterAdmin)
+		api.POST("/login", controller.Login)
+		api.GET("/faqs", controller.GetFAQs)
+		api.GET("/student-profile-posts", controller.GetStudentProfilePosts)
 
 		// === 🛡️ Protected Routes (ต้อง Login และส่ง Token มาด้วย) ===
 		auth := api.Group("/")
 		auth.Use(middleware.AuthMiddleware())
 		{
 			// --- Student Routes ---
-			auth.POST("/student-profile-posts", controllers.CreateStudentProfilePost)
-			auth.GET("/profile", controllers.GetMyProfile)
+			auth.POST("/student-profile-posts", controller.CreateStudentProfilePost)
+			auth.GET("/profile", controller.GetMyProfile)
 
 			// --- Ticket Routes (สำหรับผู้ใช้ทั่วไป) ---
-			auth.POST("/tickets", controllers.CreateRequestTicket)
-			auth.GET("/tickets", controllers.GetMyRequestTickets) // เพิ่มเส้นทางนี้
-			auth.GET("/tickets/:id", controllers.GetRequestTicketByID)
-			auth.POST("/tickets/:id/replies", controllers.CreateTicketReply)
+			auth.POST("/tickets", controller.CreateRequestTicket)
+			auth.GET("/tickets", controller.GetMyRequestTickets) // เพิ่มเส้นทางนี้
+			auth.GET("/tickets/:id", controller.GetRequestTicketByID)
+			auth.POST("/tickets/:id/replies", controller.CreateTicketReply)
 		}
 
 		// === 🔑 Admin Routes (ต้องมี Role Admin) ===
 		admin := api.Group("/admin")
 		admin.Use(middleware.AdminMiddleware())
 		{
-			admin.GET("/tickets", controllers.GetRequestTickets)
-			admin.PUT("/tickets/:id/status", controllers.UpdateTicketStatus)
-			admin.POST("/faqs", controllers.CreateFAQ)
-			admin.PUT("/faqs/:id", controllers.UpdateFAQ)
-			admin.DELETE("/faqs/:id", controllers.DeleteFAQ)
+			admin.GET("/tickets", controller.GetRequestTickets)
+			admin.PUT("/tickets/:id/status", controller.UpdateTicketStatus)
+			admin.POST("/faqs", controller.CreateFAQ)
+			admin.PUT("/faqs/:id", controller.UpdateFAQ)
+			admin.DELETE("/faqs/:id", controller.DeleteFAQ)
 		}
 	}
 

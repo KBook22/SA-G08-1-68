@@ -1,5 +1,4 @@
-package controllers
-
+package controller
 import (
     "net/http"
     //"time"
@@ -26,7 +25,7 @@ func RegisterEmployer(c *gin.Context) {
         return
     }
 
-    tx := config.DB.Begin()
+    tx := config.DB().Begin()
 
     hashedPassword, err := config.HashPassword(payload.Password)
     if err != nil {

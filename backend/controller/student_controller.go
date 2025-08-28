@@ -1,5 +1,5 @@
 // backend/controllers/student_controller.go
-package controllers
+package controller
 
 import (
 	"net/http"
@@ -34,7 +34,7 @@ func RegisterStudent(c *gin.Context) {
 		return
 	}
 
-	tx := config.DB.Begin()
+	tx := config.DB().Begin()
 
 	hashedPassword, err := config.HashPassword(payload.Password)
 	if err != nil {

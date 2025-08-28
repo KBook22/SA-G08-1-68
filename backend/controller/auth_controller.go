@@ -1,5 +1,5 @@
 // backend/controllers/auth_controller.go
-package controllers
+package controller
 
 import (
 	"net/http"
@@ -11,7 +11,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
-
 // POST /login
 func Login(c *gin.Context) {
 	var user entity.User
@@ -22,7 +21,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	if err := config.DB.Where("username = ?", user.Username).First(&foundUser).Error; err != nil {
+	if err := config.DB().Where("username = ?", user.Username).First(&foundUser).Error; err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
 		return
 	}
@@ -77,7 +76,7 @@ func Register(c *gin.Context) {
 	user.Password = hashedPassword
 	user.Role = entity.Stu 
 
-	if err := config.DB.Create(&user).Error; err != nil {
+	if err := config.DB().Create(&user).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
 		return
 	}

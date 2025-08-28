@@ -1,5 +1,5 @@
 // backend/controllers/student_profile_post_controller.go
-package controllers
+package controller
 
 import (
 	"net/http"
@@ -27,7 +27,7 @@ func CreateStudentProfilePost(c *gin.Context) {
 
 	// --- ✨ 2. ค้นหา Student ID จาก User ID ---
 	var student entity.Student
-	if err := config.DB.Where("user_id = ?", userID).First(&student).Error; err != nil {
+	if err := config.DB().Where("user_id = ?", userID).First(&student).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Student profile not found for the logged-in user"})
 		return
 	}
