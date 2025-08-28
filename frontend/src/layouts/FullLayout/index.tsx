@@ -140,7 +140,7 @@ const FullLayout: React.FC = () => {
           </Space>
         </Flex>
       </Header>
-      <Content style={{ padding: "24px 48px" }}>
+      <Content>
         <Outlet context={context} />
       </Content>
       <Footer style={{ textAlign: "center" }}>
