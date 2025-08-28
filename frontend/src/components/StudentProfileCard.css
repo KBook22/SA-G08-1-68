@@ -13,7 +13,7 @@
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 24px; /* เพิ่ม padding ภายใน */
 }
 
 .student-grid-card .ant-card-cover {
@@ -27,7 +27,7 @@
 }
 
 .student-grid-card .ant-card-cover .placeholder-icon {
-  font-size: 56px;
+  font-size: 72px; /* ขยายไอคอนให้ใหญ่ขึ้น */
   color: #adc6ff;
 }
 
@@ -37,7 +37,7 @@
 
 .student-grid-card .ant-card-meta-title {
   font-weight: 600;
-  font-size: 18px;
+  font-size: 20px; /* ขยายขนาดชื่อ */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -45,9 +45,9 @@
 }
 
 .student-grid-card .ant-card-meta-description {
-  font-size: 14px;
+  font-size: 16px; /* ขยายขนาดคำอธิบาย */
   color: #595959;
-  height: 42px; /* Fixed height for 2 lines */
+  height: 48px; /* เพิ่มความสูงสำหรับ 2 บรรทัด */
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -60,14 +60,12 @@
   border-top: 1px solid #f0f0f0;
 }
 
-/* --- vvvv เพิ่มสไตล์สำหรับป้ายกำกับ "ทักษะ" vvvv --- */
 .skills-title {
-  font-size: 13px;
+  font-size: 14px; /* ขยายขนาดป้ายกำกับ "ทักษะ" */
   font-weight: 500;
   color: #8c8c8c;
   margin-bottom: 8px;
 }
-/* --- ^^^^ สิ้นสุดการแก้ไข ^^^^ --- */
 
 .skills-section-in-card .ant-tag {
   margin-bottom: 6px;

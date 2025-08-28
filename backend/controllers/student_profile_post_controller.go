@@ -1,10 +1,12 @@
+// backend/controllers/student_profile_post_controller.go
 package controllers
 
 import (
 	"net/http"
 
-	"github.com/KBook22/System-Analysis-and-Design/config"
+	"github.com/KBook22/System-Analysis-and-Design/config" // ✨ เพิ่ม import config
 	"github.com/KBook22/System-Analysis-and-Design/entity"
+	"github.com/KBook22/System-Analysis-and-Design/services"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,20 +18,33 @@ func CreateStudentProfilePost(c *gin.Context) {
 		return
 	}
 
-	post.StudentID = 1 
-
-	if err := config.DB.Create(&post).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create student profile post"})
+	// --- ✨ 1. ดึง userID จาก Context ที่ Middleware ตั้งค่าไว้ ---
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not identified"})
 		return
 	}
 
-	c.JSON(http.StatusCreated, post)
+	// --- ✨ 2. ค้นหา Student ID จาก User ID ---
+	var student entity.Student
+	if err := config.DB.Where("user_id = ?", userID).First(&student).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Student profile not found for the logged-in user"})
+		return
+	}
+
+	// --- ✨ 3. ส่ง Student ID ที่ได้เข้าไปใน Service Layer ---
+	createdPost, err := services.CreateStudentProfilePost(&post, student.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create student profile post"})
+		return
+	}
+	c.JSON(http.StatusCreated, createdPost)
 }
 
 // GET /student-profile-posts
 func GetStudentProfilePosts(c *gin.Context) {
-    var posts []entity.StudentProfilePost
-    if err := config.DB.Preload("Student").Find(&posts).Error; err != nil {
+    posts, err := services.GetStudentProfilePosts()
+    if err != nil {
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve student posts"})
         return
     }

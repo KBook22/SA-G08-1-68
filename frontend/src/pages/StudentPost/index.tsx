@@ -217,6 +217,7 @@
 
 // src/pages/StudentPost/index.tsx
 
+// src/pages/StudentPost/index.tsx
 import { useState, useEffect, useCallback } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { message } from 'antd';
@@ -231,8 +232,9 @@ const StudentPostManager: React.FC = () => {
 
   const fetchData = useCallback(async () => {
     try {
+      // ✨ แก้ไข Endpoint จาก /posts -> /student-profile-posts
       const [postsRes, faqsRes] = await Promise.all([
-        fetch(`${API_URL}/posts`),
+        fetch(`${API_URL}/student-profile-posts`),
         fetch(`${API_URL}/faqs`),
       ]);
       
@@ -277,8 +279,6 @@ const StudentPostManager: React.FC = () => {
     }
   };
 
-
-  // --- vvvv เพิ่มฟังก์ชัน Placeholder ที่ขาดหายไปกลับเข้ามา vvvv ---
   const handleAddPost = async (content: string, privacy: Post['privacy'], skills: string[]) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
   const handleEditPost = async (postId: number, newContent: string, newSkills: string[]) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
   const handleAddComment = async (postId: number, text: string) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
@@ -286,7 +286,6 @@ const StudentPostManager: React.FC = () => {
   const handleLikeComment = (postId: number, commentId: number) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
   const handleDeletePost = (id: number) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
   const onAddReport = (post: Post, reason: string, details: string) => { message.success("ขอบคุณสำหรับรายงาน"); };
-  // --- ^^^^ สิ้นสุดการเพิ่ม ^^^^ ---
 
   const outletContext = {
     posts,

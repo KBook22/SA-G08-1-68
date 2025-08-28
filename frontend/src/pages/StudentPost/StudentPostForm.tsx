@@ -251,26 +251,9 @@
 // src/pages/StudentPost/StudentPostForm.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Form,
-  Input,
-  Select,
-  Button,
-  Card,
-  Typography,
-  Space,
-  Row,
-  Col,
-  Divider,
-  message,
-  Result,
-} from 'antd';
-import {
-  LinkOutlined,
-  SolutionOutlined,
-  RocketOutlined,
-  HomeOutlined,
-} from '@ant-design/icons';
+import { Form, Input, Select, Button, Card, Typography, Space, Row, Col, Divider, message, Result } from 'antd';
+import { LinkOutlined, SolutionOutlined, RocketOutlined, HomeOutlined } from '@ant-design/icons';
+import { createStudentProfilePost } from '../../services/studentPostService'; // ✨ 1. Import service
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -287,7 +270,6 @@ const StudentPostForm: React.FC<StudentPostFormProps> = ({ onSuccess }) => {
 
   const onFinish = async (values: any) => {
     setLoading(true);
-    // ข้อมูลที่ส่งไปจะเหลือแค่ข้อมูลที่เกี่ยวกับโพสต์โดยตรง
     const postData = {
         introduction: values.introduction,
         job_type: values.jobType,
@@ -296,48 +278,32 @@ const StudentPostForm: React.FC<StudentPostFormProps> = ({ onSuccess }) => {
     };
     
     try {
-        const response = await fetch('http://localhost:8080/api/student-profile-posts', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(postData),
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Network response was not ok: ${errorText}`);
-        }
+        await createStudentProfilePost(postData); // ✨ 2. เรียกใช้ฟังก์ชันจาก service
         
+        message.success('โพสต์โปรไฟล์ของคุณสำเร็จแล้ว!');
         if (onSuccess) {
-            onSuccess();
+            onSuccess(); // ใช้สำหรับกรณีที่ถูกเรียกใช้ใน Modal
         } else {
-            setIsSubmitted(true);
+            setIsSubmitted(true); // ใช้สำหรับกรณีที่เป็นหน้าเดี่ยว
         }
-
     } catch (error) {
         console.error('Failed to submit the form:', error);
-        message.error('เกิดข้อผิดพลาดในการโพสต์โปรไฟล์');
+        message.error(String(error));
     } finally {
         setLoading(false);
     }
   };
 
-  if (isSubmitted && !onSuccess) {
+  if (isSubmitted) {
     return (
         <Result
             status="success"
             title="โพสต์โปรไฟล์ของคุณสำเร็จแล้ว!"
-            subTitle="ผู้ว่าจ้างที่สนใจจะเห็นโปรไฟล์ของคุณและสามารถติดต่อคุณได้โดยตรง"
+            subTitle="ผู้ประกอบการที่สนใจจะเห็นโปรไฟล์ของคุณและสามารถติดต่อคุณได้โดยตรง"
             extra={[
-            <Button
-                type="primary"
-                key="console"
-                icon={<HomeOutlined />}
-                onClick={() => navigate('/Job/Board')}
-            >
-                กลับไปหน้าบอร์ด
-            </Button>,
+                <Button type="primary" key="view" icon={<HomeOutlined />} onClick={() => navigate('/employer/feed')}>
+                    ดูโพสต์ทั้งหมด
+                </Button>,
             ]}
         />
     );
@@ -345,60 +311,39 @@ const StudentPostForm: React.FC<StudentPostFormProps> = ({ onSuccess }) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', padding: '24px' }}>
-      <Card style={{ width: '100%', maxWidth: '800px', boxShadow: 'none', border: 'none' }}>
+      <Card style={{ width: '100%', maxWidth: '800px', border: 'none' }}>
         <div style={{ textAlign: 'center', marginBottom: '24px' }}>
             <RocketOutlined style={{ fontSize: '32px', color: '#007bff' }} />
             <Title level={3} style={{ marginTop: '8px' }}>สร้างโพสต์หางานของคุณ</Title>
             <Text type="secondary">กรอกข้อมูลเพื่อให้ผู้ว่าจ้างรู้ว่าคุณต้องการอะไร</Text>
         </div>
         
-        <Form
-          layout="vertical"
-          onFinish={onFinish}
-          autoComplete="off"
-        >
+        <Form layout="vertical" onFinish={onFinish} autoComplete="off">
           <Divider orientation="left">รายละเอียดเกี่ยวกับงาน</Divider>
           
-          <Form.Item
-            name="introduction"
-            label="กรอกรายละเอียดของงานที่ต้องการ"
-            rules={[{ required: true, message: 'กรุณากรอกรายละเอียดงานที่สนใจ'}]}
-          >
-            <TextArea rows={4} placeholder="อธิบายเกี่ยวกับงานที่คุณสนใจ เพื่อให้ผู้ว่าจ้างรู้จักคุณดีขึ้น" />
+          <Form.Item name="introduction" label="แนะนำตัวเองและงานที่มองหา" rules={[{ required: true, message: 'กรุณากรอกรายละเอียด'}]}>
+            <TextArea rows={4} placeholder="เช่น กำลังมองหางานพาร์ทไทม์ด้านการตลาด มีความสามารถในการใช้ Photoshop..." />
           </Form.Item>
 
           <Row gutter={24}>
             <Col xs={24} sm={12}>
-                <Form.Item
-                    name="jobType"
-                    label="ประเภทงาน"
-                    rules={[{ required: true, message: 'กรุณาเลือกประเภทงาน' }]}
-                >
+                <Form.Item name="jobType" label="ประเภทงาน" rules={[{ required: true, message: 'กรุณาเลือกประเภทงาน' }]}>
                     <Select placeholder="เลือกประเภทงาน">
-                    <Option value="พาร์ทไทม์">พาร์ทไทม์</Option>
-                    <Option value="งานประจำ">งานประจำ</Option>
-                    
-                    <Option value="ฝึกงาน">ฝึกงาน</Option>
+                        <Option value="พาร์ทไทม์">พาร์ทไทม์</Option>
+                        <Option value="งานประจำ">งานประจำ</Option>
+                        <Option value="ฝึกงาน">ฝึกงาน</Option>
                     </Select>
                 </Form.Item>
             </Col>
             <Col xs={24} sm={12}>
-                <Form.Item
-                    name="portfolio"
-                    label="ลิงก์ผลงาน/LinkedIn (ถ้ามี)"
-                >
-                    <Input prefix={<LinkOutlined />} placeholder="https://linkedin.com/in/yourprofile" />
+                <Form.Item name="portfolio" label="ลิงก์ผลงาน/LinkedIn (ถ้ามี)">
+                    <Input prefix={<LinkOutlined />} placeholder="https://..." />
                 </Form.Item>
             </Col>
           </Row>
           
-          <Form.Item
-            name="skills"
-            label="ทักษะและความสามารถที่ต้องการเน้น"
-            rules={[{ required: true, message: 'กรุณาระบุทักษะของคุณ'}]}
-            extra="คั่นแต่ละทักษะด้วยจุลภาค (,) เช่น Python, Photoshop, การตลาดออนไลน์"
-          >
-            <TextArea rows={4} placeholder="Python, Photoshop, การตลาดออนไลน์" />
+          <Form.Item name="skills" label="ทักษะและความสามารถ" rules={[{ required: true, message: 'กรุณาระบุทักษะ'}]} extra="คั่นแต่ละทักษะด้วยจุลภาค (,)">
+            <TextArea rows={3} placeholder="Python, Photoshop, การตลาดออนไลน์" />
           </Form.Item>
           
           <Form.Item style={{ textAlign: 'right', marginTop: '24px' }}>

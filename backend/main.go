@@ -4,6 +4,7 @@ package main
 import (
 	"github.com/KBook22/System-Analysis-and-Design/config"
 	"github.com/KBook22/System-Analysis-and-Design/controllers"
+	"github.com/KBook22/System-Analysis-and-Design/middleware"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -14,12 +15,10 @@ func CORSMiddleware() gin.HandlerFunc {
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
-
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
 			return
 		}
-
 		c.Next()
 	}
 }
@@ -31,39 +30,39 @@ func main() {
 
 	api := r.Group("/api")
 	{
-		// Authentication
+		// === 🌏 Public Routes (ไม่ต้อง Login) ===
 		api.POST("/register/student", controllers.RegisterStudent)
+		api.POST("/register/employer", controllers.RegisterEmployer)
+		api.POST("/register/admin", controllers.RegisterAdmin)
 		api.POST("/login", controllers.Login)
-
-		// --- Routes เดิม (ที่ไม่เกี่ยวกับ Q&A) ---
-		api.GET("/posts", controllers.GetPosts)
-		api.POST("/posts", controllers.CreatePost)
-		api.POST("/posts/:postId/comments", controllers.CreateComment)
-		api.POST("/student-profile-posts", controllers.CreateStudentProfilePost)
-		api.GET("/student-profile-posts", controllers.GetStudentProfilePosts)
-		
-		// --- vvvv ลบ Routes เก่าของ Q&A ออก vvvv ---
-		// api.GET("/questions", controllers.GetQuestions)
-		// api.POST("/questions", controllers.CreateQuestion)
-		// api.POST("/requests", controllers.CreateFormQuestion)
-		// api.GET("/requests", controllers.GetFormQuestions) 
-		// api.GET("/users/:userId/requests", controllers.GetFormQuestionsByUser)
-		// --- ^^^^ สิ้นสุดการลบ ^^^^ ---
-
-		// --- vvvv เพิ่ม Routes ใหม่สำหรับระบบ Q&A vvvv ---
-		// FAQ Routes
 		api.GET("/faqs", controllers.GetFAQs)
-		api.POST("/faqs", controllers.CreateFAQ)
-		// (เพิ่ม PUT, DELETE สำหรับ FAQ ได้ในอนาคต)
+		api.GET("/student-profile-posts", controllers.GetStudentProfilePosts)
 
-		// Request Ticket Routes
-		api.GET("/tickets", controllers.GetRequestTickets)
-		api.POST("/tickets", controllers.CreateRequestTicket)
-		api.GET("/tickets/:id", controllers.GetRequestTicketByID) // <-- 👇 เพิ่ม Route ใหม่ตรงนี้ 👇
-		api.POST("/tickets/:id/replies", controllers.CreateTicketReply)
-		// --- Add new route for status update ---
-		api.PUT("/tickets/:id/status", controllers.UpdateTicketStatus)
-		// --- ^^^^ สิ้นสุดการเพิ่ม ^^^^ ---
+		// === 🛡️ Protected Routes (ต้อง Login และส่ง Token มาด้วย) ===
+		auth := api.Group("/")
+		auth.Use(middleware.AuthMiddleware())
+		{
+			// --- Student Routes ---
+			auth.POST("/student-profile-posts", controllers.CreateStudentProfilePost)
+			auth.GET("/profile", controllers.GetMyProfile)
+
+			// --- Ticket Routes (สำหรับผู้ใช้ทั่วไป) ---
+			auth.POST("/tickets", controllers.CreateRequestTicket)
+			auth.GET("/tickets", controllers.GetMyRequestTickets) // เพิ่มเส้นทางนี้
+			auth.GET("/tickets/:id", controllers.GetRequestTicketByID)
+			auth.POST("/tickets/:id/replies", controllers.CreateTicketReply)
+		}
+
+		// === 🔑 Admin Routes (ต้องมี Role Admin) ===
+		admin := api.Group("/admin")
+		admin.Use(middleware.AdminMiddleware())
+		{
+			admin.GET("/tickets", controllers.GetRequestTickets)
+			admin.PUT("/tickets/:id/status", controllers.UpdateTicketStatus)
+			admin.POST("/faqs", controllers.CreateFAQ)
+			admin.PUT("/faqs/:id", controllers.UpdateFAQ)
+			admin.DELETE("/faqs/:id", controllers.DeleteFAQ)
+		}
 	}
 
 	r.GET("/", func(c *gin.Context) {

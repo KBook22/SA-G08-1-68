@@ -187,7 +187,6 @@
 // };
 
 // export default RequestsPage;
-
 // src/pages/Admin2/RequestsPage.tsx
 import React, { useState, useEffect } from 'react';
 import { Table, Tag, Button, Typography, Space, Modal, message, Descriptions, Input, Avatar, Card, Divider, Alert } from 'antd';
@@ -211,7 +210,19 @@ const RequestsPage: React.FC = () => {
     const fetchTickets = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${API_URL}/tickets`);
+            const token = localStorage.getItem('token');
+            if (!token) {
+                message.error('ไม่พบ Token สำหรับยืนยันตัวตน');
+                setLoading(false);
+                return;
+            }
+
+            const response = await fetch(`${API_URL}/admin/tickets`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
             if (!response.ok) throw new Error('Failed to fetch tickets');
             const data: RequestTicket[] = await response.json();
             const sortedData = data.sort((a, b) => new Date(b.CreatedAt).getTime() - new Date(a.CreatedAt).getTime());
@@ -259,24 +270,32 @@ const RequestsPage: React.FC = () => {
         setSelectedTicket(null);
     };
 
+    // --- vvvv แก้ไขฟังก์ชัน handleSendReply vvvv ---
     const handleSendReply = async () => {
         if (!replyMessage.trim() || !selectedTicket) {
             message.error('กรุณาพิมพ์ข้อความตอบกลับ');
             return;
         }
         try {
+            const token = localStorage.getItem('token'); // 1. ดึง Token
             const response = await fetch(`${API_URL}/tickets/${selectedTicket.ID}/replies`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` // 2. เพิ่ม Token ใน Header
+                },
                 body: JSON.stringify({ message: replyMessage, is_staff_reply: true }),
             });
             if (!response.ok) throw new Error((await response.json()).error || 'Failed to send reply');
             
             message.success(`ตอบกลับคำร้อง "${selectedTicket.subject}" สำเร็จ!`);
             setReplyMessage('');
-            fetchTickets(); 
             
-            const updatedTicketResponse = await fetch(`${API_URL}/tickets/${selectedTicket.ID}`);
+            // 3. รีเฟรชข้อมูลใน Modal และตารางหลัก
+            fetchTickets(); 
+            const updatedTicketResponse = await fetch(`${API_URL}/tickets/${selectedTicket.ID}`, {
+                 headers: { 'Authorization': `Bearer ${token}` }
+            });
             const updatedTicketData = await updatedTicketResponse.json();
             setSelectedTicket(updatedTicketData);
 
@@ -285,21 +304,26 @@ const RequestsPage: React.FC = () => {
             message.error('เกิดข้อผิดพลาดในการส่งข้อความตอบกลับ');
         }
     };
+    // --- ^^^^ สิ้นสุดการแก้ไข ^^^^ ---
     
     const handleUpdateStatus = async (status: RequestTicket['status']) => {
         if (!selectedTicket) return;
         try {
-            const response = await fetch(`${API_URL}/tickets/${selectedTicket.ID}/status`, {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_URL}/admin/tickets/${selectedTicket.ID}/status`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify({ status }),
             });
             if (!response.ok) throw new Error('Failed to update status');
 
             message.success(`อัปเดตสถานะเป็น "${getStatusText(status)}" สำเร็จ`);
-            fetchTickets();
             const updatedTicketData = await response.json();
             setSelectedTicket(updatedTicketData);
+            fetchTickets();
 
         } catch (error) {
             message.error('เกิดข้อผิดพลาดในการอัปเดตสถานะ');

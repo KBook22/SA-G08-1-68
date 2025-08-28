@@ -1,32 +1,15 @@
 // src/pages/Employer/EmployerFeedPage.tsx
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Typography, Spin, Alert, List, Input, Tabs, Row, Col, Modal, Button, Space, Tag, Avatar } from 'antd';
-import { SearchOutlined, UserOutlined, EyeOutlined, MessageOutlined, SolutionOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
+import { SearchOutlined, UserOutlined, EyeOutlined, MessageOutlined, SolutionOutlined, MailOutlined, PhoneOutlined, PlusOutlined } from '@ant-design/icons';
 import StudentProfileCard from '../../components/StudentProfileCard';
 import PageHeader from '../../components/PageHeader';
+import { getStudentProfilePosts } from '../../services/studentPostService';
+import { AuthContext } from '../../context/AuthContext';
+import type{ StudentProfilePost } from '../../types';
 
 const { Paragraph, Text } = Typography;
-
-interface Student {
-    first_name: string;
-    last_name: string;
-    email: string;
-    phone: string;
-    faculty: string;
-    year: string;
-}
-
-// 1. แก้ไขชื่อจาก "Student" เป็น "student" (ตัวพิมพ์เล็ก)
-interface StudentProfilePost {
-    ID: number;
-    CreatedAt: string;
-    introduction: string;
-    job_type: string;
-    portfolio_url?: string;
-    skills: string;
-    student: Student; 
-}
 
 const EmployerFeedPage: React.FC = () => {
     const [posts, setPosts] = useState<StudentProfilePost[]>([]);
@@ -36,16 +19,17 @@ const EmployerFeedPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState<string>('all');
     const [currentPage, setCurrentPage] = useState<number>(1);
     const pageSize = 12;
-    const [isModalOpen, setIsModalOpen] = useState(false); // 👈 แก้ไขชื่อ state ให้อ่านง่ายขึ้น
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedPost, setSelectedPost] = useState<StudentProfilePost | null>(null);
+
+    const authContext = useContext(AuthContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchPosts = async () => {
             setLoading(true);
             try {
-                const response = await fetch('http://localhost:8080/api/student-profile-posts');
-                if (!response.ok) throw new Error('Failed to fetch posts');
-                const data = await response.json();
+                const data = await getStudentProfilePosts();
                 setPosts(Array.isArray(data) ? data : []);
             } catch (err) {
                 setError('ไม่สามารถโหลดข้อมูลโปรไฟล์นักศึกษาได้');
@@ -58,18 +42,13 @@ const EmployerFeedPage: React.FC = () => {
     }, []);
 
     const filteredPosts = posts.filter(post => {
-        // 2. เพิ่มการตรวจสอบว่า post.student มีข้อมูลอยู่จริงหรือไม่ก่อนใช้งาน
         if (!post.student) return false;
-
         const lowerSearch = searchTerm.toLowerCase();
         const matchesSearch =
-            (post.student.first_name || '').toLowerCase().includes(lowerSearch) ||
-            (post.student.last_name || '').toLowerCase().includes(lowerSearch) ||
+            `${post.student.first_name} ${post.student.last_name}`.toLowerCase().includes(lowerSearch) ||
             (post.skills || '').toLowerCase().includes(lowerSearch) ||
             (post.student.faculty || '').toLowerCase().includes(lowerSearch);
-
         const matchesTab = activeTab === 'all' || post.job_type === activeTab;
-
         return matchesSearch && matchesTab;
     });
 
@@ -77,11 +56,11 @@ const EmployerFeedPage: React.FC = () => {
 
     const showModal = (post: StudentProfilePost) => {
         setSelectedPost(post);
-        setIsModalOpen(true); // 👈 แก้ไขชื่อ state
+        setIsModalOpen(true);
     };
 
     const handleCancel = () => {
-        setIsModalOpen(false); // 👈 แก้ไขชื่อ state
+        setIsModalOpen(false);
         setSelectedPost(null);
     };
 
@@ -99,7 +78,21 @@ const EmployerFeedPage: React.FC = () => {
     return (
         <>
             <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px' }}>
-                <PageHeader title="ค้นหาโปรไฟล์นักศึกษา" />
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                    <PageHeader title="ค้นหาโปรไฟล์นักศึกษา" />
+                    {authContext?.user?.role === 'student' && (
+                        <Button
+                            type="primary"
+                            icon={<PlusOutlined />}
+                            size="large"
+                            // 👇 3. อัปเดตลิงก์ตรงนี้
+                            onClick={() => navigate('/feed/create')}
+                        >
+                            สร้างโพสต์หางาน
+                        </Button>
+                    )}
+                </div>
+                
                 <Row gutter={[24, 24]}>
                     <Col xs={24}>
                         <Input
@@ -115,15 +108,7 @@ const EmployerFeedPage: React.FC = () => {
                             onChange={key => { setActiveTab(key); setCurrentPage(1); }}
                         />
                         <List
-                            grid={{
-                                gutter: 24,
-                                xs: 1,
-                                sm: 2,
-                                md: 2,
-                                lg: 3,
-                                xl: 4,
-                                xxl: 4,
-                            }}
+                            grid={{ gutter: 24, xs: 1, sm: 1, md: 1, lg: 1, xl: 2 }}
                             dataSource={paginatedPosts}
                             renderItem={post => (
                                 <List.Item>
@@ -143,8 +128,9 @@ const EmployerFeedPage: React.FC = () => {
                 </Row>
             </div>
 
+            {/* ... (Modal code is unchanged) ... */}
             <Modal
-                open={isModalOpen} // 👈 แก้ไขจาก visible เป็น open
+                open={isModalOpen}
                 onCancel={handleCancel}
                 width={720}
                 className="profile-modal"
@@ -156,7 +142,7 @@ const EmployerFeedPage: React.FC = () => {
                                 <Button icon={<EyeOutlined />}>ดูผลงาน</Button>
                             </a>
                         )}
-                        <Link to={`/profile/${selectedPost?.ID}`}>
+                        <Link to={`/profile/${selectedPost?.student.first_name}`}>
                            <Button icon={<SolutionOutlined />}>ดูโปรไฟล์</Button>
                         </Link>
                         <Button type="primary" icon={<MessageOutlined />}>
@@ -165,7 +151,7 @@ const EmployerFeedPage: React.FC = () => {
                     </Space>
                 }
             >
-                {selectedPost && selectedPost.student && ( // 3. แก้ไขการแสดงผลใน Modal ทั้งหมดเป็น post.student
+                {selectedPost && selectedPost.student && (
                     <>
                         <div className="modal-header-content">
                             <Avatar size={64} icon={<UserOutlined />} />

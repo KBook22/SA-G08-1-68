@@ -1,6 +1,5 @@
 // src/layouts/FullLayout/index.tsx
 import React from "react";
-// 1. เพิ่ม import 'useOutletContext' เข้ามา
 import { Link, useLocation, Outlet, useOutletContext } from "react-router-dom";
 import {
   Layout,
@@ -30,7 +29,6 @@ const createMenuItem = (key: string, label: React.ReactNode): MenuItem => {
 
 const navItems: MenuItem[] = [
   createMenuItem("home", "Home"),
-  // FIXED: Changed "Job" to "Job/Board" to match the correct route
   createMenuItem("Job/Board", "Jobs"),
   createMenuItem("my-jobs", "My Job"),
   createMenuItem("payment-report", "Payment Report"),
@@ -39,8 +37,8 @@ const navItems: MenuItem[] = [
   createMenuItem("interview","Interview Table"),
   createMenuItem("students","Students List"),
   createMenuItem("report","Report"),
-  // Link ไปยังหน้าของนักศึกษา (ส่วนที่รวมเข้ามาใหม่)
-  createMenuItem("feed", "Students Post"),
+  // 👇 3. แก้ไขชื่อเมนูตรงนี้
+  createMenuItem("feed", "Feed"), 
 ];
 
 const FullLayout: React.FC = () => {
@@ -48,19 +46,18 @@ const FullLayout: React.FC = () => {
     token: { colorText },
   } = theme.useToken();
   const location = useLocation();
-  const currentPageKey = location.pathname.split("/")[1] || "home"; // แก้ไข default key เป็น 'home'
+  const currentPageKey = location.pathname.split("/")[1] || "home";
 
-  // 2. รับ context ที่ส่งมาจาก App.tsx
   const context = useOutletContext();
 
   return (
     <Layout style={{ minHeight: "auto" }}>
       <Header
         style={{
-          position: "sticky", //  <-- เพิ่มบรรทัดนี้
-          top: 0,             //  <-- เพิ่มบรรทัดนี้
-          zIndex: 1,          //  <-- เพิ่มบรรทัดนี้
-          width: "100%",      //  <-- เพิ่มบรรทัดนี้
+          position: "sticky",
+          top: 0,
+          zIndex: 1,
+          width: "100%",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -87,7 +84,6 @@ const FullLayout: React.FC = () => {
                   height: "50px",
                   width: "auto",
                   display: "block",
-                  // ลบ position ที่ทำให้โลโก้ลอยออกไป
                 }}
               />
             </Link>
@@ -145,7 +141,6 @@ const FullLayout: React.FC = () => {
         </Flex>
       </Header>
       <Content style={{ padding: "24px 48px" }}>
-        {/* 3. ส่งต่อ context ที่ได้รับไปยังหน้าเว็บลูกๆ */}
         <Outlet context={context} />
       </Content>
       <Footer style={{ textAlign: "center" }}>
@@ -156,7 +151,6 @@ const FullLayout: React.FC = () => {
 };
 
 export default FullLayout;
-
 
 
 // src/layout/FullLayout/index.tsx

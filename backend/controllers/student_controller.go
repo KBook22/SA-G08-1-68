@@ -7,8 +7,9 @@ import (
 
 	"github.com/KBook22/System-Analysis-and-Design/config"
 	"github.com/KBook22/System-Analysis-and-Design/entity"
+	"github.com/KBook22/System-Analysis-and-Design/services"
 	"github.com/gin-gonic/gin"
-	// "gorm.io/gorm"  <-- ลบบรรทัดนี้ออก
+	"gorm.io/gorm"
 )
 
 type StudentRegistrationPayload struct {
@@ -33,10 +34,8 @@ func RegisterStudent(c *gin.Context) {
 		return
 	}
 
-	// Start a new database transaction
 	tx := config.DB.Begin()
 
-	// 1. Create User
 	hashedPassword, err := config.HashPassword(payload.Password)
 	if err != nil {
 		tx.Rollback()
@@ -47,7 +46,7 @@ func RegisterStudent(c *gin.Context) {
 	user := entity.User{
 		Username: payload.Username,
 		Password: hashedPassword,
-		Role:     entity.Stu, // Set role to student
+		Role:     entity.Stu,
 	}
 
 	if err := tx.Create(&user).Error; err != nil {
@@ -56,7 +55,6 @@ func RegisterStudent(c *gin.Context) {
 		return
 	}
 
-	// 2. Create Student, linking with the new UserID
 	student := entity.Student{
 		UserID:    user.ID,
 		FirstName: payload.FirstName,
@@ -65,9 +63,9 @@ func RegisterStudent(c *gin.Context) {
 		Phone:     payload.Phone,
 		Faculty:   payload.Faculty,
 		Year:      payload.Year,
-		Birthday:  time.Now(), // Placeholder, consider adding to form
-		Age:       0,          // Placeholder, can be calculated from birthday
-		GPA:       0.0,        // Placeholder, can be updated later
+		Birthday:  time.Now(),
+		Age:       0,
+		GPA:       0.0,
 	}
 
 	if err := tx.Create(&student).Error; err != nil {
@@ -76,11 +74,49 @@ func RegisterStudent(c *gin.Context) {
 		return
 	}
 
-	// If everything is fine, commit the transaction
 	if err := tx.Commit().Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Student registration successful"})
+}
+
+// ✨ 1. แก้ไข Struct สำหรับ Response ที่นี่
+type ProfileResponse struct {
+	Student entity.Student            `json:"student"` // เปลี่ยนจาก StudentInfo -> Student และ json:"student_info" -> json:"student"
+	Posts   []entity.StudentProfilePost `json:"posts"`
+}
+
+// GET /profile
+func GetMyProfile(c *gin.Context) {
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not identified"})
+		return
+	}
+
+	studentProfile, err := services.GetStudentProfileByUserID(userID.(uint))
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Student profile not found"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not retrieve profile"})
+		return
+	}
+
+	studentPosts, err := services.GetStudentProfilePostsByStudentID(studentProfile.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not retrieve student posts"})
+		return
+	}
+    
+	// ✨ 2. แก้ไขการสร้าง Response ให้ตรงกับ Struct ใหม่
+	response := ProfileResponse{
+		Student: *studentProfile,
+		Posts:   studentPosts,
+	}
+
+	c.JSON(http.StatusOK, response)
 }

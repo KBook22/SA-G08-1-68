@@ -4,18 +4,18 @@ import { Button, Modal, Card, Avatar, Space, Input, Typography } from 'antd';
 import { UserOutlined, SearchOutlined } from '@ant-design/icons';
 import PostCard from './PostCard';
 import PostCreator from './PostCreator';
-import type { Post } from '../../types';
+import type * as types from '../../types';
 import './FeedPage.css';
 
 const { Text } = Typography;
 
 interface FeedPageProps {
-  posts: Post[];
+  posts: types.Post[];
   onDelete: (id: number) => void;
   onLike: (id: number) => void;
   onAddComment: (postId: number, text: string, image?: File, parentId?: number) => void;
-  onAddReport: (post: Post, reason: string, details: string) => void;
-  onAddPost: (content: string, privacy: Post['privacy'], skills: string[], file?: File, image?: File, location?: { lat: number, lng: number }) => void;
+  onAddReport: (post: types.Post, reason: string, details: string) => void;
+  onAddPost: (content: string, privacy: types.Post['privacy'], skills: string[], file?: File, image?: File, location?: { lat: number, lng: number }) => void;
   onEdit: (id: number, newContent: string, newSkills: string[]) => void;
   onLikeComment: (postId: number, commentId: number) => void; // ✅ เพิ่ม prop
   showCreatePostButton?: boolean;
@@ -38,7 +38,7 @@ const FeedPage: React.FC<FeedPageProps> = ({
   const showModal = () => setIsModalVisible(true);
   const handleCancel = () => setIsModalVisible(false);
 
-  const handlePostSubmit = (content: string, privacy: Post['privacy'], skills: string[], file?: File, image?: File, location?: { lat: number, lng: number }) => {
+  const handlePostSubmit = (content: string, privacy: types.Post['privacy'], skills: string[], file?: File, image?: File, location?: { lat: number, lng: number }) => {
     onAddPost(content, privacy, skills, file, image, location);
     setIsModalVisible(false);
   };

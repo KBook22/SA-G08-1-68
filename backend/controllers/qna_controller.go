@@ -7,6 +7,7 @@ import (
 
 	"github.com/KBook22/System-Analysis-and-Design/config"
 	"github.com/KBook22/System-Analysis-and-Design/entity"
+	"github.com/KBook22/System-Analysis-and-Design/services"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -20,8 +21,15 @@ func CreateFAQ(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	// In a real app, you'd get the AdminID from the logged-in user context
-	faq.AdminID = 1
+
+	// ดึง AdminID จาก Token (ในอนาคตควรเช็ค Role Admin)
+	adminID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Admin not identified"})
+		return
+	}
+	faq.AdminID = adminID.(uint)
+
 	if err := config.DB.Create(&faq).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create FAQ"})
 		return
@@ -31,13 +39,62 @@ func CreateFAQ(c *gin.Context) {
 
 // GET /faqs
 func GetFAQs(c *gin.Context) {
-	var faqs []entity.FAQ
-	if err := config.DB.Order("created_at desc").Find(&faqs).Error; err != nil {
+	faqs, err := services.GetFAQs()
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve FAQs"})
 		return
 	}
 	c.JSON(http.StatusOK, faqs)
 }
+
+// PUT /faqs/:id
+func UpdateFAQ(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid FAQ ID"})
+		return
+	}
+
+	var faq entity.FAQ
+	if err := config.DB.First(&faq, uint(id)).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "FAQ not found"})
+		return
+	}
+
+	var input struct {
+		Title   string `json:"title"`
+		Content string `json:"content"`
+	}
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	faq.Title = input.Title
+	faq.Content = input.Content
+	config.DB.Save(&faq)
+
+	c.JSON(http.StatusOK, faq)
+}
+
+// DELETE /faqs/:id
+func DeleteFAQ(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid FAQ ID"})
+		return
+	}
+
+	if err := config.DB.Delete(&entity.FAQ{}, uint(id)).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete FAQ"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "FAQ deleted successfully"})
+}
+
 
 // --- Request Ticket System ---
 
@@ -48,20 +105,25 @@ func CreateRequestTicket(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	// In a real app, you'd get the UserID from the logged-in user context
-	ticket.UserID = 1 // Placeholder for now
-	ticket.Status = "Open"
-	if err := config.DB.Create(&ticket).Error; err != nil {
+
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not identified"})
+		return
+	}
+
+	createdTicket, err := services.CreateTicket(&ticket, userID.(uint))
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create request ticket"})
 		return
 	}
-	c.JSON(http.StatusCreated, ticket)
+	c.JSON(http.StatusCreated, createdTicket)
 }
 
-// GET /tickets
+// GET /admin/tickets (สำหรับ Admin)
 func GetRequestTickets(c *gin.Context) {
 	var tickets []entity.RequestTicket
-	// Preload User and Replies to get related data
+	// เพิ่ม .Preload("User") และ .Preload("Replies.Author") เพื่อให้ดึงข้อมูลที่เกี่ยวข้องมาด้วย
 	if err := config.DB.Preload("User").Preload("Replies.Author").Order("created_at desc").Find(&tickets).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve tickets"})
 		return
@@ -69,17 +131,35 @@ func GetRequestTickets(c *gin.Context) {
 	c.JSON(http.StatusOK, tickets)
 }
 
+// GET /tickets (สำหรับผู้ใช้ที่ล็อกอินอยู่)
+func GetMyRequestTickets(c *gin.Context) {
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not identified"})
+		return
+	}
+
+	var tickets []entity.RequestTicket
+	// ค้นหา tickets ทั้งหมดที่ตรงกับ user_id ของคนที่ล็อกอิน
+	if err := config.DB.Where("user_id = ?", userID).Order("created_at desc").Find(&tickets).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve user tickets"})
+		return
+	}
+
+	c.JSON(http.StatusOK, tickets)
+}
+
 // GET /tickets/:id
 func GetRequestTicketByID(c *gin.Context) {
-	ticketID, err := strconv.Atoi(c.Param("id"))
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ticket ID"})
 		return
 	}
 
-	var ticket entity.RequestTicket
-	// Preload related data
-	if err := config.DB.Preload("User").Preload("Replies.Author").Where("id = ?", ticketID).First(&ticket).Error; err != nil {
+	ticket, err := services.GetTicketByID(uint(id))
+	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			c.JSON(http.StatusNotFound, gin.H{"error": "Ticket not found"})
 			return
@@ -87,7 +167,6 @@ func GetRequestTicketByID(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve ticket"})
 		return
 	}
-
 	c.JSON(http.StatusOK, ticket)
 }
 
@@ -112,19 +191,12 @@ func CreateTicketReply(c *gin.Context) {
 		return
 	}
 
-	if reply.IsStaffReply {
-		reply.AuthorID = 1 // Assuming Admin User has ID 1
-		// --- If it's the first staff reply, change status to "In Progress" ---
-		if ticket.Status == "Open" {
-			ticket.Status = "In Progress"
-			if err := config.DB.Save(&ticket).Error; err != nil {
-				// Log error but don't block the reply
-				c.Error(err)
-			}
-		}
-	} else {
-		reply.AuthorID = ticket.UserID
+	authorID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Author not identified"})
+		return
 	}
+	reply.AuthorID = authorID.(uint)
 
 	reply.TicketID = uint(ticketID)
 
@@ -133,13 +205,11 @@ func CreateTicketReply(c *gin.Context) {
 		return
 	}
 
-	// Preload the author to return the full reply object
 	config.DB.Preload("Author").First(&reply, reply.ID)
-
 	c.JSON(http.StatusCreated, reply)
 }
 
-// PUT /tickets/:id/status
+// PUT /tickets/:id/status (สำหรับ Admin)
 func UpdateTicketStatus(c *gin.Context) {
 	ticketID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -168,7 +238,6 @@ func UpdateTicketStatus(c *gin.Context) {
 		return
 	}
 	
-	// Preload necessary data before returning
 	config.DB.Preload("User").Preload("Replies.Author").First(&ticket, ticket.ID)
 	c.JSON(http.StatusOK, ticket)
 }

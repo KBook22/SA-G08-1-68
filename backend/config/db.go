@@ -15,18 +15,24 @@ func ConnectDB() {
 		panic("Failed to connect to database!")
 	}
 
-	// ลบ Entity เก่าของ Q&A และเพิ่ม Entity ใหม่เข้าไป
+	// ✨ เพิ่ม Entity ที่จำเป็นทั้งหมดเข้าไปที่นี่ ✨
 	err = database.AutoMigrate(
+		// --- ระบบหลัก ---
 		&entity.User{},
-		&entity.JobPosting{},
-		&entity.Comment{},
+		&entity.Admin{},
+		&entity.Student{},
+		&entity.Employer{}, // 👈 เพิ่มตารางนายจ้าง
+		&entity.Genders{},
+		&entity.Banks{},
+		&entity.Admin{},
+
+		// --- ระบบโพสต์ของนักศึกษา ---
 		&entity.StudentProfilePost{},
 
-		// --- vvvv เพิ่ม Entities ใหม่สำหรับระบบ Q&A vvvv ---
+		// --- ระบบ Q&A ---
 		&entity.FAQ{},
 		&entity.RequestTicket{},
 		&entity.TicketReply{},
-		// --- ^^^^ สิ้นสุดการเพิ่ม ^^^^ ---
 	)
 	if err != nil {
 		panic("Failed to migrate database!")

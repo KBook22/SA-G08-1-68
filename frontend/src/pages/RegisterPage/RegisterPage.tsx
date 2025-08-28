@@ -1,6 +1,5 @@
 // src/pages/RegisterPage/RegisterPage.tsx
 import React from 'react';
-// 👈 แก้ไขบรรทัดนี้: เพิ่ม Divider เข้ามา
 import { Card, Form, Input, Button, Typography, message, Select, Row, Col, Divider } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined, BookOutlined } from '@ant-design/icons';
 import { useNavigate, Link } from 'react-router-dom';
@@ -14,11 +13,13 @@ const RegisterPage: React.FC = () => {
 
   const onFinish = async (values: any) => {
     try {
+      // 1. ตรวจสอบว่า Endpoint ถูกต้อง
       const response = await fetch('http://localhost:8080/api/register/student', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        // 2. ตรวจสอบว่าข้อมูลที่ส่ง (Payload) ตรงกับที่ Backend ต้องการ
         body: JSON.stringify({
           username: values.username,
           password: values.password,
@@ -27,13 +28,13 @@ const RegisterPage: React.FC = () => {
           email: values.email,
           phone: values.phone,
           faculty: values.faculty,
-          year: parseInt(values.year, 10),
+          year: parseInt(values.year, 10), // แปลงชั้นปีเป็นตัวเลข
         }),
       });
 
       if (response.ok) {
         message.success('สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ');
-        navigate('/login');
+        navigate('/login'); // กลับไปหน้า login หลังจากสมัครสำเร็จ
       } else {
         const errorData = await response.json();
         message.error(errorData.error || 'การสมัครสมาชิกผิดพลาด');

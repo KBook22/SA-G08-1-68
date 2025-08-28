@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form, Input, Modal, message, Typography, Popconfirm, Card, Tooltip, Space } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-// --- MODIFIED: Use the correct FAQ type from the global types file ---
 import type { FAQ } from '../../types';
 
 const { Title, Paragraph } = Typography;
@@ -10,7 +9,6 @@ const { TextArea } = Input;
 const API_URL = 'http://localhost:8080/api';
 
 const ManageFaqPage: React.FC = () => {
-    // --- MODIFIED: Changed state to use the correct FAQ type ---
     const [faqs, setFaqs] = useState<FAQ[]>([]);
     const [isFaqModalVisible, setIsFaqModalVisible] = useState(false);
     const [editingFaq, setEditingFaq] = useState<FAQ | null>(null);
@@ -18,10 +16,8 @@ const ManageFaqPage: React.FC = () => {
 
     const fetchFaqs = async () => {
         try {
-            // --- FIXED: Changed API endpoint from /questions to /faqs ---
             const response = await fetch(`${API_URL}/faqs`);
             if (!response.ok) throw new Error('Failed to fetch FAQs');
-            // --- MODIFIED: Ensure data is typed as FAQ[] ---
             const data: FAQ[] = await response.json();
             setFaqs(data);
         } catch (error) {
@@ -37,7 +33,6 @@ const ManageFaqPage: React.FC = () => {
     const showFaqModal = (faq?: FAQ) => {
         if (faq) {
             setEditingFaq(faq);
-            // --- FIXED: Get content from the correct field ---
             form.setFieldsValue({ title: faq.title, answer: faq.content });
         } else {
             setEditingFaq(null);
@@ -52,33 +47,44 @@ const ManageFaqPage: React.FC = () => {
 
     const onFinishFaq = async (values: { title: string; answer: string }) => {
         try {
-            let response;
-            if (editingFaq) {
-                // This functionality would require a PUT /faqs/:id endpoint
-                message.info("ฟังก์ชันแก้ไข FAQ ยังไม่ได้เชื่อมต่อกับ API backend");
-            } else {
-                // --- FIXED: Corrected the data payload to match the backend FAQ entity ---
-                const newFaqData = {
-                    title: values.title,
-                    content: values.answer,
-                };
-                
-                // --- FIXED: Changed API endpoint from /questions to /faqs ---
-                response = await fetch(`${API_URL}/faqs`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(newFaqData),
-                });
-                
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'Failed to create new FAQ');
-                }
-                
-                message.success('สร้าง FAQ ใหม่สำเร็จ!');
-                fetchFaqs(); // Refresh data after success
+            const token = localStorage.getItem('token');
+            if (!token) {
+                message.error('ไม่พบ Token สำหรับยืนยันตัวตน กรุณาเข้าสู่ระบบใหม่');
+                return;
             }
+
+            const headers: HeadersInit = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            };
+
+            let response;
+            const url = editingFaq 
+                ? `${API_URL}/admin/faqs/${editingFaq.ID}` 
+                : `${API_URL}/admin/faqs`;
+            
+            const method = editingFaq ? 'PUT' : 'POST';
+            
+            const payload = {
+                title: values.title,
+                content: values.answer,
+            };
+
+            response = await fetch(url, {
+                method: method,
+                headers: headers,
+                body: JSON.stringify(payload),
+            });
+                
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to save FAQ');
+            }
+                
+            message.success(editingFaq ? 'แก้ไข FAQ สำเร็จ!' : 'สร้าง FAQ ใหม่สำเร็จ!');
+            fetchFaqs(); // Refresh data after success
             setIsFaqModalVisible(false);
+
         } catch (error) {
             console.error('Error in onFinishFaq:', error);
             const errorMessage = error instanceof Error ? error.message : 'เกิดข้อผิดพลาดในการบันทึกข้อมูล';
@@ -88,8 +94,23 @@ const ManageFaqPage: React.FC = () => {
 
     const handleDeleteFaq = async (id: number) => {
         try {
-            // This would require a DELETE /faqs/:id endpoint
-            message.info("ฟังก์ชันลบ FAQ ยังไม่ได้เชื่อมต่อกับ API backend");
+            const token = localStorage.getItem('token');
+            if (!token) {
+                message.error('ไม่พบ Token สำหรับยืนยันตัวตน');
+                return;
+            }
+
+            const response = await fetch(`${API_URL}/admin/faqs/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete FAQ');
+            }
+            
+            message.success("ลบ FAQ สำเร็จ!");
+            fetchFaqs(); // Refresh data
         } catch (error) {
             message.error('เกิดข้อผิดพลาดในการลบ');
         }
@@ -120,7 +141,6 @@ const ManageFaqPage: React.FC = () => {
                             </Popconfirm>,
                         ]}
                     >
-                        {/* --- FIXED: Display content from the correct field --- */}
                         <Paragraph ellipsis={{ rows: 2, expandable: true, symbol: 'ดูเพิ่มเติม' }}>
                             {item.content || 'ยังไม่มีคำตอบ'}
                         </Paragraph>

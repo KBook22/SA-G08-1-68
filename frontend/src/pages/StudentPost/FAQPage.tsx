@@ -191,7 +191,12 @@
 // export default FAQPage;
 
 // src/pages/StudentPost/FAQPage.tsx
-import React, { useState, useEffect } from 'react';
+
+// โค้ดนี้เหมือนกับที่เคยให้ไปครั้งล่าสุด ซึ่งตอนนี้จะทำงานถูกต้องแล้ว
+// เพราะเราได้สร้าง API Endpoint ใน Backend ขึ้นมารองรับแล้ว
+// สามารถคัดลอกไปใช้เพื่อให้แน่ใจว่าโค้ดถูกต้อง 100%
+
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Input, Typography, Button, Tabs, List, Tag, message, Spin, Collapse, Modal, Descriptions, Card, Divider, Alert, Space } from 'antd';
 import type { CollapseProps, TabsProps } from 'antd';
@@ -208,6 +213,8 @@ const FAQPage: React.FC = () => {
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [loadingFaqs, setLoadingFaqs] = useState(true);
   const navigate = useNavigate();
+
+  const [searchTerm, setSearchTerm] = useState('');
 
   const [myRequests, setMyRequests] = useState<RequestTicket[]>([]);
   const [loadingRequests, setLoadingRequests] = useState(false);
@@ -235,11 +242,34 @@ const FAQPage: React.FC = () => {
   useEffect(() => {
     fetchFaqs();
   }, []);
+  
+  const filteredFaqs = useMemo(() => {
+    if (!searchTerm) {
+      return faqs;
+    }
+    return faqs.filter(faq =>
+      faq.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [searchTerm, faqs]);
+
 
   const fetchMyRequests = async () => {
     setLoadingRequests(true);
     try {
-      const response = await fetch(`${API_URL}/tickets`);
+        const token = localStorage.getItem('token');
+        if (!token) {
+            message.error('กรุณาเข้าสู่ระบบเพื่อดูคำร้องของคุณ');
+            setLoadingRequests(false);
+            return;
+        }
+        
+        // URL นี้ถูกต้องแล้ว เพราะเราเพิ่งสร้างใน Backend
+        const response = await fetch(`${API_URL}/tickets`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
       if (!response.ok) throw new Error('Failed to fetch user requests');
       const data: RequestTicket[] = await response.json();
       const sortedData = data.sort((a, b) => new Date(b.CreatedAt).getTime() - new Date(a.CreatedAt).getTime());
@@ -257,7 +287,7 @@ const FAQPage: React.FC = () => {
       fetchMyRequests();
     }
   };
-
+    // ... โค้ดส่วนที่เหลือของไฟล์เหมือนเดิมทุกประการ ...
   const getStatusColor = (status: RequestTicket['status']) => {
     switch (status) {
       case 'Open': return 'orange';
@@ -282,7 +312,10 @@ const FAQPage: React.FC = () => {
     setLoadingModal(true);
     setIsModalVisible(true);
     try {
-        const response = await fetch(`${API_URL}/tickets/${request.ID}`);
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/tickets/${request.ID}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
         if (!response.ok) throw new Error('Failed to fetch ticket details');
         const data: RequestTicket = await response.json();
         setSelectedTicket(data);
@@ -305,9 +338,13 @@ const FAQPage: React.FC = () => {
         return;
     }
     try {
+        const token = localStorage.getItem('token');
         const response = await fetch(`${API_URL}/tickets/${selectedTicket.ID}/replies`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify({ message: replyMessage, is_staff_reply: false }),
         });
         if (!response.ok) throw new Error((await response.json()).error || 'Failed to send reply');
@@ -315,7 +352,9 @@ const FAQPage: React.FC = () => {
         message.success(`ส่งข้อความตอบกลับสำเร็จ!`);
         setReplyMessage('');
         
-        const updatedTicketResponse = await fetch(`${API_URL}/tickets/${selectedTicket.ID}`);
+        const updatedTicketResponse = await fetch(`${API_URL}/tickets/${selectedTicket.ID}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
         if (!updatedTicketResponse.ok) throw new Error('Failed to re-fetch ticket details');
         const updatedTicketData = await updatedTicketResponse.json();
         setSelectedTicket(updatedTicketData);
@@ -329,9 +368,13 @@ const FAQPage: React.FC = () => {
   const handleUpdateStatus = async (status: RequestTicket['status']) => {
     if (!selectedTicket) return;
     try {
-        const response = await fetch(`${API_URL}/tickets/${selectedTicket.ID}/status`, {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/admin/tickets/${selectedTicket.ID}/status`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify({ status }),
         });
         if (!response.ok) throw new Error('Failed to update status');
@@ -352,19 +395,20 @@ const FAQPage: React.FC = () => {
   
   const formatTime = (ts?: string) => ts ? new Date(ts).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' }) : '';
 
-  const faqItems: CollapseProps['items'] = faqs.map(q => ({
+  const faqItems: CollapseProps['items'] = filteredFaqs.map(q => ({
     key: q.ID,
     label: <Title level={5} style={{ margin: 0, color: '#1E3A5F' }}>{q.title}</Title>,
     children: <Paragraph className="faq-answer-text">{q.content || 'ยังไม่มีคำตอบ'}</Paragraph>,
   }));
+
 
   const tabItems: TabsProps['items'] = [
     {
       key: '1',
       label: <span><QuestionCircleOutlined /> คำถามที่พบบ่อย</span>,
       children: loadingFaqs ? <div style={{ textAlign: 'center', padding: '50px' }}><Spin size="large" /></div>
-        : faqs.length > 0 ? <Collapse accordion className="faq-collapse" bordered={false} items={faqItems} expandIcon={({ isActive }) => isActive ? <MinusOutlined /> : <PlusOutlined />}/>
-        : <div style={{ padding: '20px', textAlign: 'center' }}><Text type="secondary">ยังไม่มีคำถามที่พบบ่อย</Text></div>,
+        : filteredFaqs.length > 0 ? <Collapse accordion className="faq-collapse" bordered={false} items={faqItems} expandIcon={({ isActive }) => isActive ? <MinusOutlined /> : <PlusOutlined />}/>
+        : <div style={{ padding: '20px', textAlign: 'center' }}><Text type="secondary">ไม่พบคำถามที่ตรงกับคำค้นหาของคุณ</Text></div>,
     },
     {
       key: '2',
@@ -404,7 +448,13 @@ const FAQPage: React.FC = () => {
             <Title level={2}>ศูนย์ช่วยเหลือ</Title>
             <Paragraph>เราพร้อมช่วยเหลือคุณเสมอ! ค้นหาคำตอบจากคำถามที่พบบ่อย หรือส่งคำร้องหาเราโดยตรง</Paragraph>
             <div className="help-center-search">
-              <Input.Search size="large" placeholder="ค้นหาคำถามที่พบบ่อย..." enterButton="ค้นหา" />
+              <Input.Search 
+                size="large" 
+                placeholder="ค้นหาคำถามที่พบบ่อย..." 
+                enterButton="ค้นหา" 
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onSearch={(value) => setSearchTerm(value)}
+              />
             </div>
           </div>
           <div className="help-center-tabs">

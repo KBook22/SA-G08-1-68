@@ -101,40 +101,39 @@
 
 // src/pages/StudentPost/AskQuestionPage.tsx
 import React, { useState } from 'react';
-import { Form, Input, Button, Typography, Card } from 'antd';
+import { Form, Input, Button, Typography, Card, message } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { createTicket } from '../../services/qnaService'; // ✨ 1. Import service
 
 const { Title } = Typography;
 const { TextArea } = Input;
 
-interface AskQuestionPageProps {
-    onFormSubmit: (values: { subject: string; initial_message: string }) => Promise<void>;
-}
-
-const AskQuestionPage: React.FC<AskQuestionPageProps> = ({ onFormSubmit }) => {
+const AskQuestionPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
-  const handleFinish = async (values: any) => {
+  const handleFinish = async (values: { title: string; details: string }) => {
     const ticketData = {
         subject: values.title,
         initial_message: values.details
     };
     setIsSubmitting(true);
     try {
-      await onFormSubmit(ticketData);
+      await createTicket(ticketData); // ✨ 2. เรียกใช้ฟังก์ชันจาก service
+      navigate('/help/request-sent');
     } catch (error) {
+      console.error(error);
+      message.error(String(error));
+    } finally {
       setIsSubmitting(false);
     }
   };
 
 
   return (
-    <Card>
-        <Title level={2} style={{ textAlign: 'center', marginBottom: 24 }}>แบบฟอร์มรับคำร้อง</Title>
-        <Form
-            layout="vertical"
-            onFinish={handleFinish}
-            style={{ maxWidth: 800, margin: 'auto' }}
-        >
+    <Card style={{ maxWidth: 800, margin: 'auto' }}>
+        <Title level={2} style={{ textAlign: 'center', marginBottom: 24 }}>แบบฟอร์มส่งคำร้อง</Title>
+        <Form layout="vertical" onFinish={handleFinish}>
             <Form.Item label="หัวข้อเรื่อง (Subject)" name="title" rules={[{ required: true, message: 'กรุณาระบุหัวข้อเรื่อง' }]}>
                 <Input placeholder="ระบุหัวข้อที่ต้องการติดต่อ..." />
             </Form.Item>
@@ -144,12 +143,7 @@ const AskQuestionPage: React.FC<AskQuestionPageProps> = ({ onFormSubmit }) => {
             </Form.Item>
 
             <Form.Item style={{ textAlign: 'center' }}>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  size="large"
-                  loading={isSubmitting}
-                >
+                <Button type="primary" htmlType="submit" size="large" loading={isSubmitting}>
                     {isSubmitting ? 'กำลังส่ง...' : 'ส่งคำร้อง'}
                 </Button>
             </Form.Item>
