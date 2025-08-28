@@ -17,8 +17,8 @@ import { Link } from "react-router-dom";
 import "../../App.css";
 
 const { Title, Text, Paragraph } = Typography;
-
-const mockProfileData = {
+//เเก้ไขโดยพรศิริ
+export const mockProfileData = {
   name: "พนิดา โ.",
   details:
     "นักศึกษาวิศวกรรมคอมพิวเตอร์ ชั้นปีที่ 3 มหาวิทยาลัยเทคโนโลยีสุรนารี",

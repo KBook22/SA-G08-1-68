@@ -1,3 +1,4 @@
+// backend/entity/users.go
 package entity
 
 import (
@@ -8,8 +9,9 @@ import (
 type RoleEnum string
 
 const (
-	Stu  RoleEnum = "student"
-	Emp RoleEnum = "employer"
+	Stu       RoleEnum = "student"
+	Emp       RoleEnum = "employer"
+	RoleAdmin RoleEnum = "admin" // <-- 🔄 แก้ไขชื่อตรงนี้
 )
 
 // User: ใช้ได้ทั้งนักศึกษาและผู้ว่าจ้าง

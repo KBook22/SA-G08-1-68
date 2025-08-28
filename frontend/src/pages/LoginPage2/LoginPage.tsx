@@ -1,19 +1,80 @@
-import React from 'react';
-import { Card, Form, Input, Button, Tabs, Typography, Space } from 'antd';
-import { UserOutlined, SearchOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+// src/pages/LoginPage2/LoginPage.tsx
+import React, { useContext } from 'react';
+import { Card, Form, Input, Button, Tabs, Typography, Space, message } from 'antd';
+import { UserOutlined, SearchOutlined, LockOutlined } from '@ant-design/icons';
+import { useNavigate, Link } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
 import './LoginPage.css';
 
-const { Title, Link, Text } = Typography;
+const { Title, Text } = Typography;
+
+// ✨ 1. สร้าง Component สำหรับฟอร์ม Login เพื่อนำไปใช้ซ้ำ
+const LoginForm = ({ onFinishHandler, formName }: { onFinishHandler: (values: any) => void, formName: string }) => (
+  <Form name={formName} onFinish={onFinishHandler}>
+    <Form.Item
+      name="username"
+      rules={[{ required: true, message: 'กรุณากรอกชื่อผู้ใช้!' }]}
+    >
+      <Input prefix={<UserOutlined />} placeholder="ชื่อผู้ใช้" />
+    </Form.Item>
+    <Form.Item
+      name="password"
+      rules={[{ required: true, message: 'กรุณากรอกรหัสผ่าน!' }]}
+    >
+      <Input.Password prefix={<LockOutlined />} placeholder="รหัสผ่าน" />
+    </Form.Item>
+    <Form.Item>
+      <Link to="#" className="login-form-forgot">
+        ลืมรหัสผ่าน
+      </Link>
+    </Form.Item>
+    <Form.Item>
+      <Button type="primary" htmlType="submit" className="login-form-button">
+        เข้าสู่ระบบ
+      </Button>
+    </Form.Item>
+  </Form>
+);
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
+  const authContext = useContext(AuthContext);
 
-  const onFinish = (values: any) => {
-    console.log('Received values of form: ', values);
-    // TODO: เพิ่ม Logic การตรวจสอบ username/password จริง
-    // หากสำเร็จ ให้ redirect ไปหน้าหลัก
-    navigate('/');
+  const onFinish = async (values: any) => {
+    if (!authContext) {
+      message.error("Authentication service is not available.");
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8080/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: values.username,
+          password: values.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        message.success('เข้าสู่ระบบสำเร็จ!');
+        authContext.login(data.user, data.token);
+
+        if (data.user.role === 'admin') {
+            navigate('/admin');
+        } else if (data.user.role === 'employer') {
+            navigate('/employer/feed'); // หรือหน้า dashboard ของนายจ้าง
+        } else {
+            navigate('/feed'); // หน้าของนักศึกษา
+        }
+      } else {
+        message.error(data.error || 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
+      }
+    } catch (error) {
+      message.error('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้');
+    }
   };
 
   const items = [
@@ -28,41 +89,13 @@ const LoginPage: React.FC = () => {
       children: (
         <>
           <Title level={4} style={{ textAlign: 'center', marginBottom: 24 }}>
-            เข้าสู่ระบบสำหรับผู้สมัครงาน
+            เข้าสู่ระบบสำหรับนักศึกษา
           </Title>
-          <Form
-            name="normal_login"
-            className="login-form"
-            initialValues={{ remember: true }}
-            onFinish={onFinish}
-          >
-            <Form.Item
-              name="email"
-              rules={[{ required: true, message: 'กรุณากรอกอีเมล!' }]}
-            >
-              <Input placeholder="อีเมล" />
-            </Form.Item>
-            <Form.Item
-              name="password"
-              rules={[{ required: true, message: 'กรุณากรอกรหัสผ่าน!' }]}
-            >
-              <Input.Password placeholder="รหัสผ่าน" />
-            </Form.Item>
-            <Form.Item>
-              <Link className="login-form-forgot" href="">
-                ลืมรหัสผ่าน
-              </Link>
-            </Form.Item>
-
-            <Form.Item>
-              <Button type="primary" htmlType="submit" className="login-form-button">
-                เข้าสู่ระบบ
-              </Button>
-            </Form.Item>
-          </Form>
+          {/* ✨ 2. เรียกใช้ LoginForm และกำหนด name ที่ไม่ซ้ำกัน */}
+          <LoginForm onFinishHandler={onFinish} formName="student_login" />
           <div className="login-register-link">
             <Text>ยังไม่ได้เป็นสมาชิก? </Text>
-            <Link href="">สมัครสมาชิก</Link>
+            <Link to="/register">สมัครสมาชิก</Link>
           </div>
         </>
       ),
@@ -76,10 +109,17 @@ const LoginPage: React.FC = () => {
       ),
       key: 'employer',
       children: (
-        <div style={{ textAlign: 'center', padding: '40px 0' }}>
-            <Title level={4}>เข้าสู่ระบบสำหรับผู้ประกอบการ</Title>
-            <Text type="secondary">ส่วนนี้ยังไม่เปิดให้บริการ</Text>
-        </div>
+        <>
+          <Title level={4} style={{ textAlign: 'center', marginBottom: 24 }}>
+            เข้าสู่ระบบสำหรับผู้ประกอบการ
+          </Title>
+          {/* ✨ 3. เรียกใช้ LoginForm และกำหนด name ที่ไม่ซ้ำกัน */}
+          <LoginForm onFinishHandler={onFinish} formName="employer_login" />
+          <div className="login-register-link">
+            <Text>ยังไม่มีบัญชี? </Text>
+            <Link to="/register/employer">สมัครสมาชิก</Link>
+          </div>
+        </>
       ),
     },
   ];

@@ -1,56 +1,108 @@
 // src/types.ts
 
-// --- Post & Comment Types (จาก src2) ---
+// ===== Core Models =====
+export interface User {
+  ID: number;
+  username: string;
+  role: 'student' | 'employer' | 'admin';
+}
+
+// ===== Student Profile & Posts (ข้อมูลและโพสต์ของนักศึกษา) =====
+export interface Student {
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone: string;
+    faculty: string;
+    year: string;
+    skills: string;
+}
+
+export interface StudentProfilePost {
+  ID: number;
+  CreatedAt: string;
+  introduction: string;
+  job_type: string;
+  portfolio_url?: string;
+  skills: string;
+  student: Student;
+}
+
+// ✨ แก้ไข Interface ที่นี่
+export interface ProfileResponse {
+    student: Student; // เปลี่ยนจาก student_info -> student
+    posts: StudentProfilePost[];
+}
+
+
+// ===== Job Offers (ประกาศงานจากผู้ประกอบการ) =====
+export interface JobOffer {
+    ID: number;
+    title: string;
+    description: string;
+    deadline: string;
+    salary: number;
+}
+
+// ===== Feed Posts & Comments (สำหรับฟีดข่าวทั่วไป) =====
 export interface Comment {
-  id: number;
-  author: string;
+  ID: number;
+  CreatedAt: string;
   text: string;
-  createdAt?: number;
-  imageUrl?: string;
+  author: string;
+  authorId: string;
+  likes: number;
+  isLiked: boolean;
+  feed_post_id: number; 
+  parentId?: number;
   replies?: Comment[];
 }
 
-export interface Post {
-  id: number;
+export interface FeedPost {
+  ID: number;
+  CreatedAt: string;
   author: string;
+  authorId: string;
   content: string;
-  file?: File;
-  image?: File;
-  fileUrl?: string;
-  fileName?: string;
+  skills: string[];
   imageUrl?: string;
-  imageName?: string;
-  location?: { lat: number; lng: number };
+  fileName?: string;
   likes: number;
   isLiked: boolean;
-  comments: Comment[];
-  createdAt?: number;
   privacy: 'public' | 'private';
+  userId: string;
+  Comments: Comment[];
 }
 
-// --- Q&A Types (รวมจาก src และ src2) ---
-export interface Question {
-  id: number;
+
+// ===== Q&A System (ระบบถาม-ตอบ และส่งคำร้อง) =====
+export interface FAQ {
+  ID: number;
+  CreatedAt: string;
   title: string;
-  author: string;
-  likes: number;
-  answerCount: number;
-  answers: Answer[];
-  isFAQ?: boolean;
+  content: string;
 }
 
-export interface Answer {
-  id: number;
-  author: string;
-  text: string;
-  isStaff: boolean;
-  parentId?: number; // สำหรับการตอบกลับคอมเมนต์ย่อย
-  createdAt?: number;
-  imageUrl?: string;
-  replyTo?: Answer; // สำหรับอ้างอิงข้อความที่ถูกตอบกลับ
+export interface TicketReply {
+    ID: number;
+    CreatedAt: string;
+    message: string;
+    is_staff_reply: boolean;
+    author: User;
 }
 
-// --- System Types (จาก src2) ---
+export interface RequestTicket {
+    ID: number;
+    CreatedAt: string;
+    subject: string;
+    initial_message: string;
+    status: 'Open' | 'In Progress' | 'Awaiting Confirmation' | 'Resolved';
+    user: User;
+    replies: TicketReply[];
+}
+
+
+// ===== Notification & Report (การแจ้งเตือนและรายงาน) =====
 export interface Notification {
   id: number;
   message: string;

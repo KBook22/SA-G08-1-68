@@ -1,177 +1,165 @@
-// /Users/phonsirithabunsri/Desktop/frontend/src/pages/RequestThreadPage/RequestThreadPage.tsx
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
-import { Typography, Avatar, Input, Button, Card, message, Space, Tag, Spin, Result } from 'antd';
-import { UserOutlined, MessageOutlined, PictureOutlined } from '@ant-design/icons';
-import type { Question, Answer, Notification } from '../../types';
+// src/pages/Admin2/RequestsPage.tsx
+import React, { useState, useEffect } from 'react';
+import { Table, Tag, Button, Typography, Space, Modal, message, Descriptions, Input, Avatar, Card, Divider } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import { EyeOutlined, UserOutlined, EditOutlined } from '@ant-design/icons';
+import type { RequestTicket } from '../../types';
 import './RequestThreadPage.css';
 
-const { Title } = Typography;
+const { Title, Paragraph, Text } = Typography;
 const { TextArea } = Input;
 
-const RequestThreadPage: React.FC = () => {
-    // ดึงค่า id ของคำร้องจาก URL
-    const { id } = useParams<{ id: string }>();
-    const [request, setRequest] = useState<Question | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [replyText, setReplyText] = useState<string>('');
-    // ref สำหรับเลื่อน scroll ไปยังข้อความล่าสุด
-    const messagesEndRef = useRef<HTMLDivElement>(null);
-    const requestId = parseInt(id as string);
+const API_URL = 'http://localhost:8080/api';
 
-    // ฟังก์ชันสำหรับโหลดข้อมูลคำร้องจาก LocalStorage
-    const loadRequest = () => {
-        const storedRequests = JSON.parse(localStorage.getItem('userRequests') || '[]');
-        const foundRequest = storedRequests.find((q: Question) => q.id === requestId);
-        if (foundRequest) {
-            setRequest(foundRequest);
+const RequestsPage: React.FC = () => {
+    const [tickets, setTickets] = useState<RequestTicket[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedTicket, setSelectedTicket] = useState<RequestTicket | null>(null);
+    const [replyMessage, setReplyMessage] = useState('');
+
+    const fetchTickets = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(`${API_URL}/tickets`);
+            if (!response.ok) throw new Error('Failed to fetch tickets');
+            const data: RequestTicket[] = await response.json();
+            setTickets(data);
+        } catch (error) {
+            console.error(error);
+            message.error('ไม่สามารถดึงข้อมูลคำร้องได้');
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
-    // โหลดข้อมูลเมื่อ component ถูก mount และเมื่อข้อมูลใน LocalStorage เปลี่ยนแปลง
     useEffect(() => {
-        loadRequest();
-        window.addEventListener('storage', loadRequest);
-        return () => {
-            window.removeEventListener('storage', loadRequest);
-        };
-    }, [requestId]);
+        fetchTickets();
+    }, []);
 
-    // เลื่อน scroll ไปยังข้อความล่าสุดทุกครั้งที่มีข้อความใหม่
-    useEffect(() => {
-        if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-        }
-    }, [request]);
+    const handleViewDetails = (ticket: RequestTicket) => {
+        setSelectedTicket(ticket);
+        setIsModalVisible(true);
+    };
 
-    // ฟังก์ชันสำหรับส่งข้อความตอบกลับ
-    const handleSendReply = () => {
-        if (!replyText.trim() || !request) {
-            message.warn('กรุณาพิมพ์ข้อความก่อนส่ง');
+    const handleCancelModal = () => {
+        setIsModalVisible(false);
+        setReplyMessage('');
+        setSelectedTicket(null);
+    };
+
+    const handleSendReply = async () => {
+        if (!replyMessage.trim() || !selectedTicket) {
+            message.error('กรุณาพิมพ์ข้อความตอบกลับ');
             return;
         }
+        try {
+            const response = await fetch(`${API_URL}/tickets/${selectedTicket.ID}/replies`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: replyMessage, is_staff_reply: true }),
+            });
+            if (!response.ok) throw new Error((await response.json()).error || 'Failed to send reply');
+            
+            message.success(`ตอบกลับคำร้อง "${selectedTicket.subject}" สำเร็จ!`);
+            setReplyMessage('');
+            fetchTickets(); // โหลดข้อมูลใหม่เพื่ออัปเดตตาราง
+            
+            // โหลดข้อมูล ticket ที่เลือกอยู่ใหม่เพื่ออัปเดต modal
+            const updatedTicketResponse = await fetch(`${API_URL}/tickets/${selectedTicket.ID}`);
+            const updatedTicketData = await updatedTicketResponse.json();
+            setSelectedTicket(updatedTicketData);
 
-        // สร้าง Object ข้อความใหม่จากผู้ใช้งาน
-        const newAnswer: Answer = {
-            id: Date.now(),
-            author: 'ผู้ใช้งาน', // สามารถปรับเป็นชื่อผู้ใช้จริงได้
-            text: replyText.trim(),
-            isStaff: false,
-            createdAt: Date.now(),
-        };
-
-        // อัปเดตข้อมูลใน LocalStorage
-        const existingRequests = JSON.parse(localStorage.getItem('userRequests') || '[]');
-        const updatedRequests = existingRequests.map((req: Question) => {
-            if (req.id === requestId) {
-                return {
-                    ...req,
-                    answers: [...req.answers, newAnswer],
-                    answerCount: req.answerCount + 1,
-                };
-            }
-            return req;
-        });
-
-        localStorage.setItem('userRequests', JSON.stringify(updatedRequests));
-
-        // สร้าง Notification เพื่อแจ้งเตือนแอดมิน
-        const existingNotifications = JSON.parse(localStorage.getItem('notifications') || '[]');
-        const newNotification: Notification = {
-            id: Date.now(),
-            message: `ผู้ใช้งานตอบกลับคำร้องของคุณ: "${request.title}"`,
-            read: false,
-            link: `/admin/requests`, // ลิงก์ไปยังหน้าจัดการคำร้องของแอดมิน
-            timestamp: Date.now(),
-        };
-        localStorage.setItem('notifications', JSON.stringify([newNotification, ...existingNotifications]));
-
-        // ล้างช่อง input และแสดงข้อความสำเร็จ
-        setReplyText('');
-        message.success('ส่งข้อความเรียบร้อย');
+        } catch (error) {
+            console.error('Error sending reply:', error);
+            message.error('เกิดข้อผิดพลาดในการส่งข้อความตอบกลับ');
+        }
     };
+    
+    const formatTime = (ts?: string) => ts ? new Date(ts).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' }) : '';
 
-    // แสดงหน้าโหลดหากข้อมูลยังไม่พร้อม
-    if (loading) {
-        return <Spin size="large" className="request-thread-spin" />;
-    }
+    const columns: ColumnsType<RequestTicket> = [
+        { title: 'เวลาที่ส่ง', dataIndex: 'CreatedAt', key: 'CreatedAt', render: formatTime, sorter: (a, b) => new Date(b.CreatedAt).getTime() - new Date(a.CreatedAt).getTime(), defaultSortOrder: 'ascend' },
+        { title: 'หัวข้อเรื่อง', dataIndex: 'subject', key: 'subject', ellipsis: true },
+        { title: 'ผู้ส่ง', key: 'author', render: (_, record) => <Space><Avatar size="small" icon={<UserOutlined />} />{record.user?.username || 'N/A'}</Space> },
+        { title: 'สถานะ', dataIndex: 'status', key: 'status', render: (status: string) => <Tag color={status === 'Open' ? 'warning' : 'success'}>{status}</Tag> },
+        { title: 'การดำเนินการ', key: 'action', render: (_, record) => <Button icon={<EyeOutlined />} onClick={() => handleViewDetails(record)}>ตรวจสอบ</Button> },
+    ];
 
-    // แสดงหน้า 404 หากไม่พบคำร้อง
-    if (!request) {
-        return <Result status="404" title="404" subTitle="ไม่พบคำร้องที่ท่านต้องการ" />;
-    }
+    const allMessages = selectedTicket ? [
+        { ID: `initial-${selectedTicket.ID}`, author: selectedTicket.user, message: selectedTicket.initial_message, is_staff_reply: false, CreatedAt: selectedTicket.CreatedAt },
+        ...(selectedTicket.replies || [])
+    ] : [];
 
     return (
-        <Card className="request-thread-card">
-            <div className="thread-header">
-                <Title level={4} className="thread-title">{request.title}</Title>
-                <p className="thread-subtitle">
-                    โดย: <strong className="thread-author">{request.author}</strong>
-                </p>
-            </div>
-            
-            <div className="thread-messages">
-                {request.answers.map((answer) => (
-                    <div
-                        key={answer.id}
-                        className={`message-bubble ${answer.isStaff ? 'staff-message' : 'user-message'}`}
-                    >
-                        <div className="message-content">
-                            <Space align="start">
-                                <Avatar size="small" icon={<UserOutlined />} />
-                                <div className="message-text-container">
-                                    <div className="message-header">
-                                        <span className="message-author">
-                                            {answer.author}
-                                            {answer.isStaff && <Tag color="blue" style={{ marginLeft: 8 }}>แอดมิน</Tag>}
-                                        </span>
-                                        <span className="message-time">
-                                            {new Date(answer.createdAt!).toLocaleString('th-TH')}
-                                        </span>
-                                    </div>
-                                    <p className="message-text">{answer.text}</p>
-                                </div>
-                            </Space>
-                        </div>
-                    </div>
-                ))}
-                {/* div เปล่าสำหรับเลื่อน scroll ไปยังส่วนท้ายสุด */}
-                <div ref={messagesEndRef} />
-            </div>
+        <div>
+            <Title level={2}>จัดการคำร้อง</Title>
+            <Table columns={columns} dataSource={tickets} rowKey="ID" loading={loading} />
 
-            <div className="thread-input-area">
-                <div className="input-with-button-container">
-                    <Input
-                        value={replyText}
-                        onChange={(e) => setReplyText(e.target.value)}
-                        placeholder="พิมพ์ข้อความตอบกลับ..."
-                        className="reply-input"
-                        onPressEnter={(e) => {
-                            if (!e.shiftKey) {
-                                e.preventDefault();
-                                handleSendReply();
-                            }
-                        }}
-                        suffix={
-                            <Button 
-                                type="text"
-                                className="icon-button"
-                                icon={<PictureOutlined style={{ fontSize: '18px', color: '#888' }} />}
+            <Modal
+                title={`สอบถามเรื่อง: ${selectedTicket?.subject}`}
+                open={isModalVisible}
+                onCancel={handleCancelModal}
+                width={800}
+                footer={null}
+                className="ticket-modal"
+            >
+                {selectedTicket && (
+                    <>
+                        <Descriptions bordered column={1} size="small" className="ticket-descriptions">
+                            <Descriptions.Item label="ผู้ส่งคำร้อง">{selectedTicket.user?.username || 'N/A'}</Descriptions.Item>
+                            <Descriptions.Item label="อีเมล">somchai@email.com (ตัวอย่าง)</Descriptions.Item>
+                            <Descriptions.Item label="เบอร์โทร">082-345-6789 (ตัวอย่าง)</Descriptions.Item>
+                            <Descriptions.Item label="สถานะ"><Tag color={selectedTicket.status === 'Open' ? 'warning' : 'success'}>{selectedTicket.status}</Tag></Descriptions.Item>
+                            <Descriptions.Item label="วันที่ส่ง">{formatTime(selectedTicket.CreatedAt)}</Descriptions.Item>
+                        </Descriptions>
+                        
+                        <Title level={5} style={{ marginTop: '24px' }}>รายละเอียดคำร้อง</Title>
+                        <Paragraph className="initial-message-box">
+                            {selectedTicket.initial_message}
+                        </Paragraph>
+
+                        <Title level={5} style={{ marginTop: '24px' }}>การตอบกลับ</Title>
+                        <div className="conversation-history">
+                            {allMessages.slice(1).map((msg: any) => (
+                                <div key={msg.ID} className={`history-entry ${msg.is_staff_reply ? 'staff-reply' : 'user-reply'}`}>
+                                    <div className="entry-header">
+                                        <Text strong>{msg.author?.username || 'Unknown'}</Text>
+                                        {msg.is_staff_reply && <Tag color="blue">เจ้าหน้าที่</Tag>}
+                                        <Text type="secondary" className="entry-timestamp">{formatTime(msg.CreatedAt)}</Text>
+                                    </div>
+                                    <div className="entry-body">
+                                        <Paragraph style={{ whiteSpace: 'pre-wrap' }}>{msg.message}</Paragraph>
+                                    </div>
+                                </div>
+                            ))}
+                            {allMessages.length <= 1 && <Text type="secondary">ยังไม่มีการตอบกลับ...</Text>}
+                        </div>
+
+                        <Divider />
+                        
+                        <div className="reply-section">
+                             <Title level={5}>ตอบกลับ</Title>
+                             <TextArea
+                                rows={4}
+                                value={replyMessage}
+                                onChange={(e) => setReplyMessage(e.target.value)}
+                                placeholder="พิมพ์คำตอบในฐานะเจ้าหน้าที่..."
                             />
-                        }
-                    />
-                    <Button 
-                        type="primary" 
-                        onClick={handleSendReply}
-                        className="send-button-design"
-                    >
-                        ส่ง
-                    </Button>
-                </div>
-            </div>
-        </Card>
+                            <Button
+                                type="primary"
+                                onClick={handleSendReply}
+                                style={{ marginTop: '16px' }}
+                                icon={<EditOutlined />}
+                            >
+                                ส่งตอบกลับ
+                            </Button>
+                        </div>
+                    </>
+                )}
+            </Modal>
+        </div>
     );
 };
 
-export default RequestThreadPage;
+export default RequestsPage;

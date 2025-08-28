@@ -1,0 +1,47 @@
+/* src/components/QA/FeedPage.css */
+
+.feed-page-layout {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+}
+
+.feed-main-content {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* --- 🔄 สไตล์สำหรับแถบค้นหาที่เพิ่มเข้ามา --- */
+.feed-search-bar {
+  margin-bottom: 24px;
+}
+/* --- สิ้นสุดส่วนที่เพิ่มเข้ามา --- */
+
+.feed-sidebar {
+  width: 320px;
+  position: sticky;
+  top: 24px;
+}
+
+.feed-post-creator-card {
+  margin-bottom: 24px;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.feed-post-creator-card .ant-avatar {
+  margin-right: 12px;
+}
+
+@media (max-width: 1024px) {
+  .feed-sidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .feed-page-layout {
+    padding: 12px;
+  }
+}

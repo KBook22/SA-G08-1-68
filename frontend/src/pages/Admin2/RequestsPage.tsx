@@ -1,256 +1,436 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Table, Tag, Button, Typography, Space, Modal, message, Descriptions, Input, Avatar, Card } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
-import { EyeOutlined, MessageOutlined, UserOutlined, ClockCircleOutlined, PictureOutlined } from '@ant-design/icons';
-import type { Question, Notification, Answer } from '../../types';
+// // src/pages/Admin2/RequestsPage.tsx
+// import React, { useState, useEffect, useRef } from 'react';
+// import { Table, Tag, Button, Typography, Space, Modal, message, Descriptions, Input, Avatar, Card } from 'antd';
+// import type { ColumnsType } from 'antd/es/table';
+// import { EyeOutlined, MessageOutlined, UserOutlined, ClockCircleOutlined, PictureOutlined } from '@ant-design/icons';
+// // 🔄 แก้ไข: เปลี่ยนการ import type จาก Question เป็น FormQuestion
+// import type { FormQuestion, Answer } from '../../types';
 
-const { Title, Paragraph } = Typography;
+// const { Title, Paragraph } = Typography;
+// const { TextArea } = Input;
+
+// // 🔄 เพิ่ม: กำหนด URL ของ API
+// const API_URL = 'http://localhost:8080/api';
+
+// const RequestsPage: React.FC = () => {
+//     // 🔄 แก้ไข: เปลี่ยน State ให้รองรับ FormQuestion[]
+//     const [requests, setRequests] = useState<FormQuestion[]>([]);
+//     const [loading, setLoading] = useState<boolean>(true); // เพิ่ม State สำหรับ Loading
+//     const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
+//     const [isChatModalVisible, setIsChatModalVisible] = useState(false);
+//     // 🔄 แก้ไข: เปลี่ยน State ให้รองรับ FormQuestion | null
+//     const [selectedRequest, setSelectedRequest] = useState<FormQuestion | null>(null);
+//     const [replyMessage, setReplyMessage] = useState('');
+//     const messagesEndRef = useRef<HTMLDivElement>(null);
+
+//     // 🔄 เพิ่ม: ฟังก์ชันสำหรับดึงข้อมูลคำร้องจาก API
+//     const fetchRequests = async () => {
+//         setLoading(true);
+//         try {
+//             const response = await fetch(`${API_URL}/requests`);
+//             if (!response.ok) {
+//                 throw new Error('Failed to fetch requests from server');
+//             }
+//             const data: FormQuestion[] = await response.json();
+//             setRequests(data);
+//         } catch (error) {
+//             console.error(error);
+//             message.error('ไม่สามารถดึงข้อมูลคำร้องได้');
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
+
+//     // 🔄 แก้ไข: เรียกใช้ fetchRequests เมื่อ component โหลด
+//     useEffect(() => {
+//         fetchRequests();
+//     }, []);
+
+
+//     useEffect(() => {
+//         if (messagesEndRef.current) {
+//             messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+//         }
+//     }, [isChatModalVisible, selectedRequest]);
+
+//     const handleViewDetails = (request: FormQuestion) => {
+//         setSelectedRequest(request);
+//         setIsDetailModalVisible(true);
+//     };
+
+//     const handleOpenChat = (request: FormQuestion) => {
+//         setSelectedRequest(request);
+//         setIsChatModalVisible(true);
+//     };
+
+//     const handleCancelModals = () => {
+//         setIsDetailModalVisible(false);
+//         setIsChatModalVisible(false);
+//         setReplyMessage('');
+//         setSelectedRequest(null);
+//     };
+
+//     const handleSendReply = () => {
+//         // (ส่วนนี้ยังไม่ได้เชื่อมต่อ API จริง)
+//         if (!replyMessage.trim() || !selectedRequest) {
+//             message.error('กรุณาพิมพ์ข้อความตอบกลับ');
+//             return;
+//         }
+//         message.success(`ตอบกลับคำร้องของคุณ "${selectedRequest.name}" สำเร็จ!`);
+//         setReplyMessage('');
+//     };
+
+//     const formatTime = (ts?: string) => {
+//         if (!ts) return '';
+//         return new Date(ts).toLocaleString('th-TH');
+//     };
+
+//     // 🔄 แก้ไข: ปรับ Columns ให้ตรงกับข้อมูลจาก FormQuestion
+//     const columns: ColumnsType<FormQuestion> = [
+//         {
+//             title: 'เวลาที่ส่ง',
+//             dataIndex: 'CreatedAt',
+//             key: 'CreatedAt',
+//             render: (text) => formatTime(text),
+//             sorter: (a, b) => new Date(b.CreatedAt).getTime() - new Date(a.CreatedAt).getTime(),
+//             defaultSortOrder: 'ascend',
+//         },
+//         { title: 'หัวข้อ', dataIndex: 'title', key: 'title', ellipsis: true },
+//         {
+//             title: 'ผู้ส่ง',
+//             key: 'author',
+//             render: (_, record) => `${record.name} ${record.lastname}`,
+//         },
+//         {
+//             title: 'สถานะ',
+//             dataIndex: 'status',
+//             key: 'status',
+//             render: (status: string) => (
+//                 <Tag color={status === 'pending' ? 'warning' : 'success'}>
+//                     {status}
+//                 </Tag>
+//             )
+//         },
+//         {
+//             title: 'การดำเนินการ',
+//             key: 'action',
+//             render: (_, record) => (
+//                 <Space>
+//                     <Button
+//                         icon={<EyeOutlined />}
+//                         onClick={() => handleViewDetails(record)}
+//                     >
+//                         ดูรายละเอียด
+//                     </Button>
+//                     <Button
+//                         type="primary"
+//                         icon={<MessageOutlined />}
+//                         onClick={() => handleOpenChat(record)}
+//                     >
+//                         แชท
+//                     </Button>
+//                 </Space>
+//             ),
+//         },
+//     ];
+
+//     return (
+//         <div>
+//             <Title level={2}>จัดการคำร้อง</Title>
+//             <Table
+//                 columns={columns}
+//                 dataSource={requests}
+//                 rowKey="ID"
+//                 loading={loading} // เพิ่ม: แสดงสถานะโหลด
+//             />
+
+//             {/* Modal สำหรับดูรายละเอียดคำร้อง */}
+//             <Modal
+//                 title="รายละเอียดคำร้อง"
+//                 open={isDetailModalVisible}
+//                 onCancel={handleCancelModals}
+//                 width={700}
+//                 footer={[<Button key="back" onClick={handleCancelModals}>ปิด</Button>]}
+//             >
+//                 {selectedRequest && (
+//                     <Descriptions bordered column={1}>
+//                         <Descriptions.Item label="ID คำร้อง">{selectedRequest.ID}</Descriptions.Item>
+//                         <Descriptions.Item label="ผู้ส่ง">
+//                             <Space>
+//                                 <Avatar size="small" icon={<UserOutlined />} />
+//                                 {`${selectedRequest.name} ${selectedRequest.lastname}`}
+//                             </Space>
+//                         </Descriptions.Item>
+//                         <Descriptions.Item label="หัวข้อเรื่อง">{selectedRequest.title}</Descriptions.Item>
+//                         <Descriptions.Item label="รายละเอียดที่ส่งมา">
+//                             <Paragraph style={{ whiteSpace: 'pre-wrap', margin: 0 }}>
+//                                 {selectedRequest.details || 'ไม่มีรายละเอียด'}
+//                             </Paragraph>
+//                         </Descriptions.Item>
+//                     </Descriptions>
+//                 )}
+//             </Modal>
+            
+//             {/* Modal สำหรับแชท */}
+//             <Modal
+//                 title={`แชทกับ ${selectedRequest?.name}`}
+//                 open={isChatModalVisible}
+//                 onCancel={handleCancelModals}
+//                 footer={null}
+//                 width={700}
+//             >
+//                 {/* เนื้อหาใน Modal Chat ยังคงเดิม */}
+//                 <p>ส่วนการแชทยังอยู่ในระหว่างการพัฒนา</p>
+//             </Modal>
+//         </div>
+//     );
+// };
+
+// export default RequestsPage;
+// src/pages/Admin2/RequestsPage.tsx
+import React, { useState, useEffect } from 'react';
+import { Table, Tag, Button, Typography, Space, Modal, message, Descriptions, Input, Avatar, Card, Divider, Alert } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import { EyeOutlined, UserOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import type { RequestTicket } from '../../types';
+import './RequestsPage.css';
+
+const { Title, Paragraph, Text } = Typography;
 const { TextArea } = Input;
 
-const RequestsPage: React.FC = () => {
-    const [requests, setRequests] = useState<Question[]>([]);
-    const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
-    const [isChatModalVisible, setIsChatModalVisible] = useState(false);
-    const [selectedRequest, setSelectedRequest] = useState<Question | null>(null);
-    const [replyMessage, setReplyMessage] = useState('');
-    const messagesEndRef = useRef<HTMLDivElement>(null);
+const API_URL = 'http://localhost:8080/api';
 
-    const loadRequests = () => {
-        const storedRequests = JSON.parse(localStorage.getItem('userRequests') || '[]');
-        setRequests(storedRequests);
+const RequestsPage: React.FC = () => {
+    const [tickets, setTickets] = useState<RequestTicket[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedTicket, setSelectedTicket] = useState<RequestTicket | null>(null);
+    const [replyMessage, setReplyMessage] = useState('');
+
+    const fetchTickets = async () => {
+        setLoading(true);
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                message.error('ไม่พบ Token สำหรับยืนยันตัวตน');
+                setLoading(false);
+                return;
+            }
+
+            const response = await fetch(`${API_URL}/admin/tickets`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) throw new Error('Failed to fetch tickets');
+            const data: RequestTicket[] = await response.json();
+            const sortedData = data.sort((a, b) => new Date(b.CreatedAt).getTime() - new Date(a.CreatedAt).getTime());
+            setTickets(sortedData);
+        } catch (error) {
+            console.error(error);
+            message.error('ไม่สามารถดึงข้อมูลคำร้องได้');
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
-        loadRequests();
-        window.addEventListener('storage', loadRequests);
-        return () => {
-            window.removeEventListener('storage', loadRequests);
-        };
+        fetchTickets();
     }, []);
 
-    useEffect(() => {
-        if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    const getStatusColor = (status: RequestTicket['status']) => {
+        switch (status) {
+          case 'Open': return 'orange';
+          case 'In Progress': return 'processing';
+          case 'Awaiting Confirmation': return 'blue';
+          case 'Resolved': return 'green';
+          default: return 'default';
         }
-    }, [isChatModalVisible, selectedRequest]);
-
-    const handleViewDetails = (request: Question) => {
-        setSelectedRequest(request);
-        setIsDetailModalVisible(true);
     };
 
-    const handleOpenChat = (request: Question) => {
-        setSelectedRequest(request);
-        setIsChatModalVisible(true);
+    const getStatusText = (status: RequestTicket['status']) => {
+        switch (status) {
+          case 'Open': return 'รอการตอบกลับ';
+          case 'In Progress': return 'กำลังดำเนินการ';
+          case 'Awaiting Confirmation': return 'รอยืนยัน';
+          case 'Resolved': return 'แก้ไขแล้ว';
+          default: return 'ไม่ทราบสถานะ';
+        }
     };
 
-    const handleCancelModals = () => {
-        setIsDetailModalVisible(false);
-        setIsChatModalVisible(false);
+    const handleViewDetails = (ticket: RequestTicket) => {
+        setSelectedTicket(ticket);
+        setIsModalVisible(true);
+    };
+
+    const handleCancelModal = () => {
+        setIsModalVisible(false);
         setReplyMessage('');
-        setSelectedRequest(null);
+        setSelectedTicket(null);
     };
 
-    const handleSendReply = () => {
-        if (!replyMessage.trim() || !selectedRequest) {
+    // --- vvvv แก้ไขฟังก์ชัน handleSendReply vvvv ---
+    const handleSendReply = async () => {
+        if (!replyMessage.trim() || !selectedTicket) {
             message.error('กรุณาพิมพ์ข้อความตอบกลับ');
             return;
         }
+        try {
+            const token = localStorage.getItem('token'); // 1. ดึง Token
+            const response = await fetch(`${API_URL}/tickets/${selectedTicket.ID}/replies`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` // 2. เพิ่ม Token ใน Header
+                },
+                body: JSON.stringify({ message: replyMessage, is_staff_reply: true }),
+            });
+            if (!response.ok) throw new Error((await response.json()).error || 'Failed to send reply');
+            
+            message.success(`ตอบกลับคำร้อง "${selectedTicket.subject}" สำเร็จ!`);
+            setReplyMessage('');
+            
+            // 3. รีเฟรชข้อมูลใน Modal และตารางหลัก
+            fetchTickets(); 
+            const updatedTicketResponse = await fetch(`${API_URL}/tickets/${selectedTicket.ID}`, {
+                 headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const updatedTicketData = await updatedTicketResponse.json();
+            setSelectedTicket(updatedTicketData);
 
-        const newAnswer: Answer = {
-            id: Date.now(),
-            author: 'แอดมิน',
-            text: replyMessage.trim(),
-            isStaff: true,
-            createdAt: Date.now(),
-        };
-
-        const existingRequests = JSON.parse(localStorage.getItem('userRequests') || '[]');
-        const updatedRequests = existingRequests.map((req: Question) => {
-            if (req.id === selectedRequest.id) {
-                return {
-                    ...req,
-                    answers: [...req.answers, newAnswer],
-                    answerCount: req.answerCount + 1,
-                };
-            }
-            return req;
-        });
-        localStorage.setItem('userRequests', JSON.stringify(updatedRequests));
-
-        // สร้าง Notification สำหรับผู้ใช้
-        const newNotification: Notification = {
-            id: Date.now(),
-            message: `แอดมินตอบกลับคำร้องของคุณ: "${selectedRequest.title}"`,
-            read: false,
-            link: `/qa/request/${selectedRequest.id}`,
-            timestamp: Date.now(),
-        };
-
-        const existingNotifications = JSON.parse(localStorage.getItem('notifications') || '[]');
-        localStorage.setItem('notifications', JSON.stringify([newNotification, ...existingNotifications]));
-
-        setReplyMessage('');
-        message.success(`ตอบกลับคำร้องของคุณ "${selectedRequest.author}" สำเร็จ!`);
+        } catch (error) {
+            console.error('Error sending reply:', error);
+            message.error('เกิดข้อผิดพลาดในการส่งข้อความตอบกลับ');
+        }
     };
-
-    const formatTime = (ts?: number) => {
-        if (!ts) return '';
-        return new Date(ts).toLocaleString('th-TH');
-    };
-
-    const renderMessage = (answer: Answer) => (
-        <div
-    key={answer.id}
-    className={`message-bubble ${answer.isStaff ? 'user-message' : 'staff-message'}`}
->
-
-            <div className="message-content">
-                <Space align="start">
-                    <Avatar size="small" icon={<UserOutlined />} />
-                    <div className="message-text-container">
-                        <div className="message-header">
-                            <span className="message-author">
-                                {answer.author}
-                                {answer.isStaff && <Tag color="blue" style={{ marginLeft: 8 }}>แอดมิน</Tag>}
-                            </span>
-                            <span className="message-time">
-                                {new Date(answer.createdAt!).toLocaleString('th-TH')}
-                            </span>
-                        </div>
-                        <p className="message-text">{answer.text}</p>
-                    </div>
-                </Space>
-            </div>
-        </div>
-    );
+    // --- ^^^^ สิ้นสุดการแก้ไข ^^^^ ---
     
+    const handleUpdateStatus = async (status: RequestTicket['status']) => {
+        if (!selectedTicket) return;
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_URL}/admin/tickets/${selectedTicket.ID}/status`, {
+                method: 'PUT',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ status }),
+            });
+            if (!response.ok) throw new Error('Failed to update status');
 
-    const columns: ColumnsType<Question> = [
-        {
-            title: 'เวลาที่ส่ง',
-            dataIndex: 'id',
-            key: 'id',
-            render: (id) => new Date(id).toLocaleString('th-TH'),
-            sorter: (a, b) => b.id - a.id,
-            defaultSortOrder: 'ascend',
+            message.success(`อัปเดตสถานะเป็น "${getStatusText(status)}" สำเร็จ`);
+            const updatedTicketData = await response.json();
+            setSelectedTicket(updatedTicketData);
+            fetchTickets();
+
+        } catch (error) {
+            message.error('เกิดข้อผิดพลาดในการอัปเดตสถานะ');
+        }
+    };
+    
+    const formatTime = (ts?: string) => ts ? new Date(ts).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' }) : '';
+
+    const columns: ColumnsType<RequestTicket> = [
+        { title: 'เวลาที่ส่ง', dataIndex: 'CreatedAt', key: 'CreatedAt', render: formatTime },
+        { title: 'หัวข้อเรื่อง', dataIndex: 'subject', key: 'subject', ellipsis: true },
+        { title: 'ผู้ส่ง', key: 'author', render: (_, record) => <Space><Avatar size="small" icon={<UserOutlined />} />{record.user?.username || 'N/A'}</Space> },
+        { 
+            title: 'สถานะ', 
+            dataIndex: 'status', 
+            key: 'status', 
+            render: (status: RequestTicket['status']) => (
+                <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>
+            )
         },
-        { title: 'หัวข้อ', dataIndex: 'title', key: 'title', ellipsis: true },
-        { title: 'ผู้ส่ง', dataIndex: 'author', key: 'author' },
-        {
-            title: 'สถานะ',
-            key: 'status',
-            render: (record: Question) => {
-                const hasAdminReply = record.answers.some(ans => ans.isStaff && ans.author !== 'ระบบ');
-                return hasAdminReply ? <Tag color="success">ตอบกลับแล้ว</Tag> : <Tag color="warning">รอการตรวจสอบ</Tag>;
-            }
-        },
-        {
-            title: 'การดำเนินการ',
-            key: 'action',
-            render: (_, record) => (
-                <Space>
-                    <Button
-                        icon={<EyeOutlined />}
-                        onClick={() => handleViewDetails(record)}
-                    >
-                        ดูรายละเอียด
-                    </Button>
-                    <Button
-                        type="primary"
-                        icon={<MessageOutlined />}
-                        onClick={() => handleOpenChat(record)}
-                    >
-                        แชท
-                    </Button>
-                </Space>
-            ),
-        },
+        { title: 'การดำเนินการ', key: 'action', render: (_, record) => <Button icon={<EyeOutlined />} onClick={() => handleViewDetails(record)}>ตรวจสอบ</Button> },
     ];
 
     return (
         <div>
             <Title level={2}>จัดการคำร้อง</Title>
-            <Table columns={columns} dataSource={requests} rowKey="id" />
+            <Table columns={columns} dataSource={tickets} rowKey="ID" loading={loading} />
 
-            {/* Modal สำหรับดูรายละเอียดคำร้อง */}
             <Modal
-                title="รายละเอียดคำร้อง"
-                open={isDetailModalVisible}
-                onCancel={handleCancelModals}
-                width={700}
-                footer={[
-                    <Button key="back" onClick={handleCancelModals}>
-                        ปิด
-                    </Button>,
-                ]}
-            >
-                {selectedRequest && (
-                    <Space direction="vertical" style={{ width: '100%' }} size="large">
-                        <Descriptions bordered column={1}>
-                            <Descriptions.Item label="ID คำร้อง">{selectedRequest.id}</Descriptions.Item>
-                            <Descriptions.Item label="ผู้ส่ง">
-                                <Space>
-                                    <Avatar size="small" icon={<UserOutlined />} />
-                                    {selectedRequest.author}
-                                </Space>
-                            </Descriptions.Item>
-                            <Descriptions.Item label="หัวข้อเรื่อง">{selectedRequest.title}</Descriptions.Item>
-                            <Descriptions.Item label="รายละเอียดที่ส่งมา">
-                                <Paragraph style={{ whiteSpace: 'pre-wrap', margin: 0 }}>
-                                    {selectedRequest.answers.find(a => !a.isStaff)?.text || 'ไม่มีรายละเอียด'}
-                                </Paragraph>
-                            </Descriptions.Item>
-                        </Descriptions>
-                    </Space>
-                )}
-            </Modal>
-            
-            {/* Modal สำหรับแชท */}
-            <Modal
-                title={`แชทกับ ${selectedRequest?.author}`}
-                open={isChatModalVisible}
-                onCancel={handleCancelModals}
+                title={`สอบถามเรื่อง: ${selectedTicket?.subject}`}
+                open={isModalVisible}
+                onCancel={handleCancelModal}
+                width={800}
                 footer={null}
-                width={700}
+                className="ticket-modal"
             >
-                {selectedRequest && (
-                    <Card className="requests-chat-card" style={{ boxShadow: 'none' }}>
-                        <div className="thread-messages">
-                            {selectedRequest.answers.map(renderMessage)}
-                            <div ref={messagesEndRef} />
+                {selectedTicket && (
+                    <div style={{ display: 'flex', flexDirection: 'column', height: '75vh' }}>
+                        <div style={{ flexShrink: 0 }}>
+                            <Card>
+                                <Descriptions column={1} size="small" layout="horizontal" bordered>
+                                    <Descriptions.Item label="ผู้ส่งคำร้อง">{selectedTicket.user?.username || 'N/A'}</Descriptions.Item>
+                                    <Descriptions.Item label="สถานะ">
+                                        <Tag color={getStatusColor(selectedTicket.status)}>
+                                            {getStatusText(selectedTicket.status)}
+                                        </Tag>
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="วันที่ส่ง">{formatTime(selectedTicket.CreatedAt)}</Descriptions.Item>
+                                </Descriptions>
+                            </Card>
+                            
+                            <Title level={5} style={{ marginTop: '16px', marginBottom: '8px' }}>ประวัติการสนทนา</Title>
                         </div>
-                        <div className="thread-input-area">
-                            <div className="requests-chat-input-container">
-                                <Input
-                                    value={replyMessage}
-                                    onChange={(e) => setReplyMessage(e.target.value)}
-                                    placeholder={`พิมพ์ข้อความตอบกลับถึงคุณ ${selectedRequest.author}...`}
-                                    className="requests-reply-input"
-                                    onPressEnter={(e) => {
-                                        if (!e.shiftKey) {
-                                            e.preventDefault();
-                                            handleSendReply();
-                                        }
-                                    }}
-                                    suffix={
-                                        <Button
-                                            type="text"
-                                            className="icon-button"
-                                            icon={<PictureOutlined style={{ fontSize: '18px', color: '#888' }} />}
-                                        />
-                                    }
-                                />
+
+                        <div className="conversation-history" style={{ flexGrow: 1, overflowY: 'auto', backgroundColor: '#f5f5f5', padding: '10px', borderRadius: '6px', border: '1px solid #e8e8e8' }}>
+                            <div key={`initial-${selectedTicket.ID}`} className="history-entry user-reply">
+                                <div className="entry-header">
+                                    <Text strong>{selectedTicket.user?.username || 'Unknown'}</Text>
+                                    <Text type="secondary" className="entry-timestamp">{formatTime(selectedTicket.CreatedAt)}</Text>
+                                </div>
+                                <div className="entry-body">
+                                    <Paragraph style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{selectedTicket.initial_message}</Paragraph>
+                                </div>
+                            </div>
+                            {(selectedTicket.replies || []).map((msg: any) => (
+                                <div key={msg.ID} className={`history-entry ${msg.is_staff_reply ? 'staff-reply' : 'user-reply'}`}>
+                                    <div className="entry-header">
+                                        <Text strong>{msg.author?.username || 'Unknown'}</Text>
+                                        {msg.is_staff_reply && <Tag color="blue">เจ้าหน้าที่</Tag>}
+                                        <Text type="secondary" className="entry-timestamp">{formatTime(msg.CreatedAt)}</Text>
+                                    </div>
+                                    <div className="entry-body">
+                                        <Paragraph style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{msg.message}</Paragraph>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        
+                        <div style={{ flexShrink: 0, paddingTop: '16px' }}>
+                             <Divider style={{ margin: '0 0 16px 0' }}/>
+                             <Title level={5} style={{ marginBottom: '8px' }}>ตอบกลับ</Title>
+                             <TextArea
+                                rows={2}
+                                value={replyMessage}
+                                onChange={(e) => setReplyMessage(e.target.value)}
+                                placeholder="พิมพ์คำตอบในฐานะเจ้าหน้าที่..."
+                                disabled={selectedTicket.status === 'Resolved' || selectedTicket.status === 'Awaiting Confirmation'}
+                            />
+                            <Space style={{ marginTop: '12px', justifyContent: 'space-between', width: '100%' }}>
                                 <Button
                                     type="primary"
                                     onClick={handleSendReply}
-                                    className="requests-send-button"
+                                    disabled={selectedTicket.status === 'Resolved' || selectedTicket.status === 'Awaiting Confirmation'}
                                 >
-                                    ส่ง
+                                    ส่งตอบกลับ
                                 </Button>
-                            </div>
+                                { (selectedTicket.status === 'Open' || selectedTicket.status === 'In Progress') && (
+                                    <Button
+                                        icon={<CheckCircleOutlined />}
+                                        onClick={() => handleUpdateStatus('Awaiting Confirmation')}
+                                    >
+                                        จบการสนทนา
+                                    </Button>
+                                )}
+                            </Space>
                         </div>
-                    </Card>
+                    </div>
                 )}
             </Modal>
         </div>

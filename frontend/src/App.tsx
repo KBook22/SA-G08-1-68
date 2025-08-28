@@ -1,10 +1,15 @@
 // src/App.tsx
-import './App.css';
 import React from 'react';
 import AllRoutes from './routes';
-// edit by chompoo
+import { AuthProvider } from './context/AuthContext'; // 👈 1. import AuthProvider
+import './App.css';
 const App: React.FC = () => {
-  return <AllRoutes />;
+  return (
+    // 2. ครอบ AllRoutes ด้วย AuthProvider
+    <AuthProvider>
+      <AllRoutes />
+    </AuthProvider>
+  );
 };
 
 export default App;
