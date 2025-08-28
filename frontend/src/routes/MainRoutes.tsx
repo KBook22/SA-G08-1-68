@@ -32,6 +32,7 @@ import ProfilePageV1 from '../pages/profile';
 import ReviewPage from '../pages/review';
 import PaymentPage from '../pages/payment';
 import JobPost from "../pages/JobPost/JobPost";
+import InterviewScheduling from "../pages/InterviewScheduling/InterviewScheduling";
 
 // --- สร้าง Helper Components เพื่อรับ Context จาก StudentPostManager ---
 const FeedPageRoute = () => {
@@ -107,6 +108,7 @@ const MainRoutes: React.FC = () => {
             <Route path="/payment" element={<PaymentPage />} />
             <Route path="/profile" element={<ProfilePageV1 />} />
             <Route path="/review" element={<ReviewPage />} />
+            <Route path="/Interview-Schedule" element={<InterviewScheduling/>} />
 
             {/* --- ส่วนของนักศึกษา (จะถูกจัดการ State โดย StudentPostManager) --- */}
             <Route element={<StudentPostManager />}>
