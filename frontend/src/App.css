@@ -66,3 +66,6 @@
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
+body, :where(.ant-layout), .ant-card, .ant-card * {
+  font-family: "Kanit", "Sarabun", Arial, sans-serif !important;
+}

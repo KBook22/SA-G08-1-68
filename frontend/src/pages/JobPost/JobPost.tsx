@@ -48,7 +48,8 @@ const JobPost: React.FC = () => {
   };
 
   return (
-    <div
+
+    <div 
       style={{
         paddingTop: 50,
         display: "flex",

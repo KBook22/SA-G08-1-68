@@ -10,7 +10,8 @@ const Board: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <>
+    <div style={{ background: '#F8F8F8', padding: 0, minHeight: '85vh' }}>
+    
       <div className="board-container">
         <div className="board-content">
           <div className="subheadline">
@@ -25,7 +26,11 @@ const Board: React.FC = () => {
               >
                 เริ่มโพสต์ได้เลย
               </Button>
-              <Button type="primary" className="btn-mypost">
+              <Button
+                type="primary"
+                className="btn-mypost"
+                onClick={() => navigate("/Job/Mypost-job")}
+              >
                 โพสต์ของฉัน
               </Button>
             </div>
@@ -34,9 +39,7 @@ const Board: React.FC = () => {
           <div className="banner-container">
             <div className="banner-content">
               <h1>เริ่มต้นประกาศหานักศึกษา</h1>
-              <p>
-                โพสต์ประกาศหานักศึกษามาช่วยงานแบบตรงใจ  ได้เลยทันที
-              </p>
+              <p>โพสต์ประกาศหานักศึกษามาช่วยงานแบบตรงใจ ได้เลยทันที</p>
               <Button
                 type="primary"
                 className="no-border-button"
@@ -52,7 +55,7 @@ const Board: React.FC = () => {
       </div>
 
       <PostBoard />
-    </>
+    </div>
   );
 };
 
