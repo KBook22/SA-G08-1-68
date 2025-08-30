@@ -10,7 +10,7 @@ const Board: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div style={{ background: '#F8F8F8', padding: 0, minHeight: '85vh' }}>
+    <div style={{ background: '#fff', padding: 0, minHeight: '85vh' }}>
     
       <div className="board-container">
         <div className="board-content">

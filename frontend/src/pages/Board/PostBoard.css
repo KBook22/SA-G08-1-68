@@ -1,10 +1,10 @@
 /* ---------------- พื้นหลังส่วนหัวบอร์ด ---------------- */
-/* .bg-gray {
+.bg-gray {
   width: 100%;
   background-color: #f8f8f8;
   padding: 0 0 40px 0; /* เผื่อพื้นที่ให้ footer */
-  /* box-sizing: border-box;
-} */ */
+  box-sizing: border-box;
+}
 
 .board-container {
   width: 100%;
@@ -71,6 +71,7 @@
   transition: box-shadow 0.2s ease, border-color 0.2s ease;
   font-family: "Kanit", sans-serif;
   box-sizing: border-box;
+  cursor: pointer;
 }
 
 .job-card:hover {
@@ -91,16 +92,14 @@
   font-size: 24px;
   font-weight: 600;
   color: #2d2d2d;
-  margin: 0 0 8px 0;
-  margin-left: 30px;
+  margin-left: 50px;
 }
 
 .company {
   font-size: 18px;
   font-weight: 500;
   color: #2d2d2d;
-  margin: 0 0 10px 0;
-  margin-left: 30px;
+  margin-left: 50px;
 }
 
 .job-meta {
@@ -109,7 +108,7 @@
   gap: 4px;
   font-size: 14px;
   color: #2d2d2d;
-  margin-left: 30px;
+  margin-left: 50px;
 }
 
 .job-meta span {
@@ -120,8 +119,8 @@
 
 /* ---------------- โลโก้ฝั่งขวา ---------------- */
 .job-logo img {
-  width: 120px;
-  height: auto;
+  width: 150px;
+  height: 150px;
   object-fit: contain;
 }
 
@@ -139,10 +138,16 @@
 
   .job-title {
     font-size: 20px;
+    margin-left: 0;
   }
 
   .company {
     font-size: 16px;
+    margin-left: 0;
+  }
+
+  .job-meta {
+    margin-left: 0;
   }
 }
 

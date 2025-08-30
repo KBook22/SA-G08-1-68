@@ -1,92 +1,88 @@
 .mypost-container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
+  background: #fff;
+  padding: 24px;
+  min-height: 85vh;
 }
 
-/* .mypost-title {
+.mypost-header {
   text-align: center;
-  font-size: 26px;
-  font-weight: 600;
-  color: #333;
   margin-bottom: 30px;
-  border-bottom: 3px solid #9c27b0;
-  display: inline-block;
-  padding-bottom: 5px;
-  font-family: "Kanit", "Sarabun", Arial, sans-serif;
-} */
-.mypost-title {
-  font-family: "Kanit", "Sarabun", Arial, sans-serif !important;
-  font-size: 16px;
-  font-weight: 500;
-  color: #222;
+  margin-top: 20px;
+  font-size: 28px;
+  font-weight: 600;
+  color: #1e3a5f;
 }
 
-.mypost-title {
-  font-family: "Kanit", "Sarabun", Arial, sans-serif !important;
-  font-size: 30px !important;
-  color: red !important;
-}
-
-
-
-
-
-/* Card หลัก */
-.ant-card {
-  border-radius: 10px;
+.mypost-card {
   margin-bottom: 16px;
+  border-radius: 10px;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* ลด padding body */
-.ant-card .ant-card-body {
-  padding: 8px 12px;
-}
-
-/* ลด action bar */
-.ant-card .ant-card-actions {
-  margin: 0;
-  padding: 4px 0;
-}
-
-/* ข้อมูล job */
-.job-info {
-  flex: 1;
-}
-
-.job-title {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 5px;
-}
-
-.job-company {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 10px;
-}
-
-.job-meta {
+.mypost-content {
   display: flex;
-  gap: 20px;
-  font-size: 14px;
-  color: #444;
-  margin-bottom: 10px;
-}
-
-.job-actions {
-  display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  gap: 8px;
-  min-width: 150px;
 }
 
-/* โลโก้ */
-.job-logo,
-.ant-card .ant-card-cover img {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
-  margin-top: 10px; /* ลดระยะ */
+.mypost-info {
+  flex: 1;
+  padding-right: 20px;
+  text-align: left;
+}
+
+.mypost-title {
+  font-weight: 550;
+  font-size: 32px;
+  margin-left: 50px;
+  text-align: left;
+}
+
+.mypost-company {
+  margin: 0;
+  color: #555;
+  margin-left: 50px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.mypost-detail {
+  display: flex;
+  gap: 20px;       /* ระยะห่างระหว่างแต่ละข้อมูล */
+  flex-wrap: wrap; /* ถ้าจอกว้างไม่พอ ให้ขึ้นบรรทัดใหม่ */
+  margin-left: 50px;
+}
+
+.mypost-detail p,
+.mypost-detail span {
+  margin: 0;
+  color: #333;
+  text-align: left;
+}
+
+.mypost-logo {
+  width: 150px;
+  height: 150px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mypost-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* ขยายเต็มพื้นที่ ไม่บิด */
+  border-radius: 6px;
+
+}
+
+/*  ปุ่มด้านล่าง (ลบ/แก้ไข/ดูรายชื่อ) */
+.mypost-actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
 }
