@@ -212,6 +212,24 @@ func SeedDatabase() {
 		StatusID:         paymentStatuses[1].ID,
 	}
 	db.FirstOrCreate(&payment1, payment1.ID)
+
+	//Pornsiri
+
+
+
+	//Chompoo
+
+
+
+	//Supanut
+
+
+
+	//Kittisak
+
+
+
+	//Netnaphat
 }
 
 func ConnectDB() {
