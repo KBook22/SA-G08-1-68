@@ -11,9 +11,9 @@ interface Post {
   salary: number;
   image_url?: string;
   CreatedAt: string;
-  deadline?: string; 
+  deadline?: string;
   locationjob: string;
-    portfolio_required?: string;
+  portfolio_required?: string;
   Employer?: {
     company_name: string;
   };
@@ -78,26 +78,26 @@ const PostBoard: React.FC = () => {
 
                     <div className="job-details">
                       <div className="job-detail">
-                         <span>⏳ ระยะเวลาการรับสมัคร</span>
+                        <span>⏳ ระยะเวลาการรับสมัคร</span>
                         <strong> {deadlineText}</strong>
                       </div>
                       <div className="job-detail">
-                         <span>💼 ค่าตอบแทน</span>
+                        <span>💼 ค่าตอบแทน</span>
                         <strong> {post.salary.toLocaleString()} บาท</strong>
                       </div>
                       <div className="job-detail">
-                         <span>📍 สถานที่</span>
+                        <span>📍 สถานที่</span>
                         <strong> {post.locationjob}</strong>
                       </div>
                     </div>
                     <a
-  href={`http://localhost:8080/download/${post.portfolio_required?.split("/").pop()}`}
-  target="_blank"
->
-  ดาวน์โหลด Portfolio
-</a>
-
-
+                      href={`http://localhost:8080/download/${post.portfolio_required
+                        ?.split("/")
+                        .pop()}`}
+                      target="_blank"
+                    >
+                      ดาวน์โหลด Portfolio
+                    </a>
                   </div>
 
                   {/* ฝั่งขวา */}
