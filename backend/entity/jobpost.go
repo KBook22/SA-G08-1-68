@@ -22,6 +22,7 @@ type Jobpost struct {
 	ImageURL 			*string 		`gorm:"type:varchar(255)" json:"image_url"` // nullable string
 	PortfolioRequired 	*string 		`gorm:"type:varchar(100)" json:"portfolio_required"` // nullable
 	Salary				int				`json:"salary"`
+	LocationJob 		string 			`gorm:"column:locationjob;type:varchar(255);not null" json:"locationjob"`
 	
 
 
@@ -36,8 +37,9 @@ type Jobpost struct {
 	JobCategoryID		uint			`gorm:"not null" json:"job_category_id"`
 	JobCategory   		JobCategory 	`gorm:"foreignKey:JobCategoryID;references:ID"`
 
-	LocationID			uint			`gorm:"not null" json:"location_id"`
-	Location			Location		`gorm:"foreignKey:LocationID;references:ID"`
+	// LocationID			uint			`gorm:"not null" json:"location_id"`
+	// Location			Location		`gorm:"foreignKey:LocationID;references:ID"`
+	
 
 	EmploymentTypeID 	uint 			`gorm:"not null" json:"employment_type_id"`
 	EmploymentType   	EmploymentType 	`gorm:"foreignKey:EmploymentTypeID;references:ID"`

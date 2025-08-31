@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
+
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
@@ -43,35 +44,38 @@ func main() {
 		protected := api.Group("")
 		// protected.Use(middleware.Authorizes())
 		// {
-			// JobPost (actions)
-			jobpostRoutes := protected.Group("/jobposts")
-			{
-				jobpostRoutes.POST("", controller.CreateJobPost)
-				jobpostRoutes.PUT("/:id", controller.UpdateJobPost)
-				jobpostRoutes.DELETE("/:id", controller.DeleteJobPost)
-			}
+		// JobPost (actions)
+		jobpostRoutes := protected.Group("/jobposts")
+		{
+			jobpostRoutes.POST("", controller.CreateJobPost)
+			jobpostRoutes.PUT("/:id", controller.UpdateJobPost)
+			jobpostRoutes.DELETE("/:id", controller.DeleteJobPost)
+			// เพิ่มตรงนี้
+			jobpostRoutes.POST("/upload-portfolio/:id", controller.UploadPortfolio)
 
-			// Review (actions)
-			reviewRoutes := protected.Group("/reviews")
-			{
-				reviewRoutes.POST("/new-rating", controller.CreateRating)
-				reviewRoutes.GET("", controller.FindRatingsByJobPostID)
-			}
-			
-			// Payment (actions)
-			paymentRoutes := protected.Group("/payments")
-			{
-				paymentRoutes.POST("", controller.CreatePayment)
-				paymentRoutes.GET("", controller.ListPayments)
-				paymentRoutes.GET("/:id", controller.GetPaymentByID)
-			}
-
-			// Other protected routes
-			protected.GET("/payment_reports", controller.ListPaymentReports)
-			protected.GET("/orders", controller.ListOrders)
-			protected.GET("/discounts", controller.ListDiscounts)
-			protected.GET("/billable_items", controller.ListBillableItems)
 		}
+
+		// Review (actions)
+		reviewRoutes := protected.Group("/reviews")
+		{
+			reviewRoutes.POST("/new-rating", controller.CreateRating)
+			reviewRoutes.GET("", controller.FindRatingsByJobPostID)
+		}
+
+		// Payment (actions)
+		paymentRoutes := protected.Group("/payments")
+		{
+			paymentRoutes.POST("", controller.CreatePayment)
+			paymentRoutes.GET("", controller.ListPayments)
+			paymentRoutes.GET("/:id", controller.GetPaymentByID)
+		}
+
+		// Other protected routes
+		protected.GET("/payment_reports", controller.ListPaymentReports)
+		protected.GET("/orders", controller.ListOrders)
+		protected.GET("/discounts", controller.ListDiscounts)
+		protected.GET("/billable_items", controller.ListBillableItems)
+	}
 	{
 		// === 🌏 Public Routes (ไม่ต้อง Login) ===
 		api.POST("/register/student", controller.RegisterStudent)
@@ -111,6 +115,15 @@ func main() {
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "Backend server is running!"})
 	})
+
+	r.GET("/download/:filename", func(c *gin.Context) {
+		filename := c.Param("filename")
+		filepath := "./uploads/" + filename
+		c.FileAttachment(filepath, filename) // บังคับโหลดไฟล์แทนแสดง
+	})
+
+	// เปิดให้เข้าถึงไฟล์ในโฟลเดอร์ uploads
+	r.Static("/uploads", "./uploads")
 
 	r.Run(":8080")
 }

@@ -81,3 +81,42 @@ func DeleteJobPost(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Job post deleted successfully"})
 }
+
+// POST /jobposts/upload-portfolio/:id
+// อัพโหลดไฟล์ Portfolio และอัปเดตใน Jobpost
+func UploadPortfolio(c *gin.Context) {
+    id := c.Param("id") // รับ id ของ jobpost ที่จะอัพเดต
+
+    file, err := c.FormFile("portfolio")
+    if err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "ไม่พบไฟล์"})
+        return
+    }
+
+    filename := file.Filename
+    savePath := "./uploads/" + filename
+
+    if err := c.SaveUploadedFile(file, savePath); err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "ไม่สามารถบันทึกไฟล์ได้"})
+        return
+    }
+
+    // อัปเดตใน DB
+    var jobpost entity.Jobpost
+    if err := config.DB().First(&jobpost, id).Error; err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": "Job post not found"})
+        return
+    }
+
+    jobpost.PortfolioRequired = &savePath
+    if err := config.DB().Save(&jobpost).Error; err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "ไม่สามารถอัปเดต jobpost ได้"})
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{
+        "message":  "อัพโหลดสำเร็จ",
+        "filePath": savePath,
+        "data":     jobpost,
+    })
+}
