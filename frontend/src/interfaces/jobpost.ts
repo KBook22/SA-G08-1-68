@@ -20,8 +20,8 @@ export interface Jobpost {
     employer?: Employer;
     job_category_id: number;
     job_category?: JobCategory;
-    location_id: number;
-    location: Location;
+    locationjob: string;
+
     employment_type_id: number;
     employment_type?: EmploymentType;
     salary_type_id: number;

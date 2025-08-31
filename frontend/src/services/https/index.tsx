@@ -10,7 +10,7 @@ import type {
 import type { Ratingscore } from "../../interfaces/ratingscore";
 import type { Jobpost } from "../../interfaces/jobpost";
 
-const API_URL = import.meta.env.VITE_API_KEY || "http://localhost:8088";
+const API_URL = import.meta.env.VITE_API_KEY || "http://localhost:8080";
 
 const getCookie = (name: string): string | null => {
   const cookies = document.cookie.split("; ");
@@ -155,8 +155,19 @@ export const jobpostAPI = {
   create: (data: Jobpost) => Post("/jobposts", data),
   getAll: () => Get("/jobposts"),
   getById: (id: number) => Get(`/jobposts/${id}`),
-  update: (id: number, data: Partial<Jobpost>) => Update(`/jobposts/${id}`, data),
+  update: (id: number, data: Partial<Jobpost>) =>
+    Update(`/jobposts/${id}`, data),
   delete: (id: number) => Delete(`/jobposts/${id}`),
+
+  // เพิ่ม uploadPortfolio
+  uploadPortfolio: (file: File) => {
+    const formData = new FormData();
+    formData.append("portfolio", file);
+
+    return axios.post(`${API_URL}/jobposts/upload-portfolio`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  },
 };
 
 // Payment APIs
