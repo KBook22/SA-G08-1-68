@@ -121,6 +121,13 @@ func main() {
 		filepath := "./uploads/" + filename
 		c.FileAttachment(filepath, filename) // บังคับโหลดไฟล์แทนแสดง
 	})
+	// add by Netnaphat
+	r.GET("/api/jobcategories", controller.ListJobCategories)
+	r.GET("/api/jobcategories/:id", controller.GetJobCategoryByID)
+
+	// add by Netnaphat
+	r.GET("/api/salarytype", controller.ListSalaryType)
+	r.GET("/api/salarytype/:id", controller.GetSalaryTypeByID)
 
 	// เปิดให้เข้าถึงไฟล์ในโฟลเดอร์ uploads
 	r.Static("/uploads", "./uploads")

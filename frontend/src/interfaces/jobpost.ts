@@ -29,3 +29,4 @@ export interface Jobpost {
     student_id: number;
     student?: Student;
 }
+
