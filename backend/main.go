@@ -129,6 +129,9 @@ func main() {
 	r.GET("/api/salarytype", controller.ListSalaryType)
 	r.GET("/api/salarytype/:id", controller.GetSalaryTypeByID)
 
+	// add by Netnaphat
+	r.GET("/api/employmenttypes", controller.ListEmploymentTypes)
+	r.GET("/api/employmenttypes/:id", controller.GetEmploymentTypeByID)
 	// เปิดให้เข้าถึงไฟล์ในโฟลเดอร์ uploads
 	r.Static("/uploads", "./uploads")
 

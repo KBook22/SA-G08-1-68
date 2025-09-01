@@ -176,6 +176,12 @@ export const jobCategoryAPI = {
   getById: (id: number) => Get(`/jobcategories/${id}`, false),
 };
 
+// Job employmentType APIs
+export const employmentTypeAPI = {
+  getAll: () => Get("/employmenttypes", false),   // ดึงหมวดหมู่ทั้งหมด
+  getById: (id: number) => Get(`/employmenttypes/${id}`, false),
+};
+
 // Payment APIs
 export const paymentAPI = {
   getAll: () => Get("/payments"),

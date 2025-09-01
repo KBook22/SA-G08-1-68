@@ -641,6 +641,11 @@ const JobPost: React.FC = () => {
     { id: number; salary_type_name: string }[]
   >([]);
 
+  //  State สำหรับ employmenttype
+  const [employmenttype, setEmploymentTypes] = useState<
+    { id: number; employment_type_name: string }[]
+  >([]);
+
   // useEffect(() => {
   //   axios
   //     .get("http://localhost:8080/api/jobcategories")
@@ -691,6 +696,21 @@ const JobPost: React.FC = () => {
       })
       .catch((err) => console.error("Error fetching salarytype:", err));
   }, []);
+  
+// โหลด employmenttype จาก backend
+useEffect(() => {
+  axios
+    .get("http://localhost:8080/api/employmenttypes")
+    .then((res) => {
+      const mapped = res.data.data.map((emp: any) => ({
+        id: emp.ID, // ใช้ id สำหรับส่งกลับ
+        employment_type_name: emp.employment_type_name, // ใช้ชื่อสำหรับแสดงผล
+      }));
+      console.log("Mapped employmenttypes:", mapped);
+      setEmploymentTypes(mapped);
+    })
+    .catch((err) => console.error("Error fetching employmenttypes:", err));
+}, []);
 
   const handleFinish = async (values: any) => {
     try {
@@ -781,45 +801,77 @@ const JobPost: React.FC = () => {
     </Row>
   );
 
-  // ประเภทงาน (Employment Type)
-  const EmploymentTypeSelector: React.FC = () => {
-    const [value, setValue] = useState<number>(1);
+  // // ประเภทงาน (Employment Type)
+  // const EmploymentTypeSelector: React.FC = () => {
+  //   const [value, setValue] = useState<number>(1);
 
-    const onChange = (e: RadioChangeEvent) => {
-      setValue(e.target.value);
-    };
+  //   const onChange = (e: RadioChangeEvent) => {
+  //     setValue(e.target.value);
+  //   };
 
-    const employmentTypes = [
-      { label: "Full Time", value: 1 },
-      { label: "Part Time", value: 2 },
-      { label: "Freelance", value: 3 },
-      { label: "Contract", value: 4 },
-    ];
+  //   const employmentTypes = [
+  //     { label: "Full Time", value: 1 },
+  //     { label: "Part Time", value: 2 },
+  //     { label: "Freelance", value: 3 },
+  //     { label: "Contract", value: 4 },
+  //   ];
 
-    return (
-      <Form.Item
-        label="ประเภทงาน"
-        name="employmentTypeId"
-        rules={[{ required: true, message: "กรุณาเลือกประเภทงาน" }]}
-      >
-        <Radio.Group onChange={onChange} value={value}>
-          <div style={{ display: "grid", gap: 12 }}>
-            {employmentTypes.map((type) => (
-              <Card
-                key={type.value}
-                onClick={() =>
-                  onChange({ target: { value: type.value } } as any)
-                }
-                className={value === type.value ? "custom-card-selected" : ""}
-              >
-                <Radio value={type.value}>{type.label}</Radio>
-              </Card>
-            ))}
-          </div>
-        </Radio.Group>
-      </Form.Item>
-    );
+  //   return (
+  //     <Form.Item
+  //       label="ประเภทงาน"
+  //       name="employmentTypeId"
+  //       rules={[{ required: true, message: "กรุณาเลือกประเภทงาน" }]}
+  //     >
+  //       <Radio.Group onChange={onChange} value={value}>
+  //         <div style={{ display: "grid", gap: 12 }}>
+  //           {employmentTypes.map((type) => (
+  //             <Card
+  //               key={type.value}
+  //               onClick={() =>
+  //                 onChange({ target: { value: type.value } } as any)
+  //               }
+  //               className={value === type.value ? "custom-card-selected" : ""}
+  //             >
+  //               <Radio value={type.value}>{type.label}</Radio>
+  //             </Card>
+  //           ))}
+  //         </div>
+  //       </Radio.Group>
+  //     </Form.Item>
+  //   );
+  // };
+// ประเภทงาน (Employment Type)
+const EmploymentTypeSelector: React.FC = () => {
+  const [value, setValue] = useState<number | null>(null);
+
+  const onChange = (e: RadioChangeEvent) => {
+    setValue(e.target.value);
   };
+
+  return (
+    <Form.Item
+      label="ประเภทงาน"
+      name="employmentTypeId"
+      rules={[{ required: true, message: "กรุณาเลือกประเภทงาน" }]}
+    >
+      <Radio.Group onChange={onChange} value={value}>
+        <div style={{ display: "grid", gap: 12 }}>
+          {employmenttype.map((emp) => (
+            <Card
+              key={emp.id}
+              onClick={() =>
+                onChange({ target: { value: emp.id } } as any)
+              }
+              className={value === emp.id ? "custom-card-selected" : ""}
+            >
+              <Radio value={emp.id}>{emp.employment_type_name}</Radio>
+            </Card>
+          ))}
+        </div>
+      </Radio.Group>
+    </Form.Item>
+  );
+};
 
   //   // หมวดหมู่ของงาน
   //   const JobCategorySelector: React.FC = () => (
