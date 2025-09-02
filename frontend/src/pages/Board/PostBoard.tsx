@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Empty, Spin } from "antd";
+import { Empty, message, Spin } from "antd";
 import PageHeader from "../../components/PageHeader";
 import "./PostBoard.css";
 import lahui from "../../assets/lahui.svg"; // รูป default
+import { jobPostAPI } from "../../services/https"; //  import api
 
 interface Post {
   ID: number;
@@ -15,30 +16,35 @@ interface Post {
   locationjob: string;
   portfolio_required?: string;
   Employer?: {
-    company_name: string;
-  };
-}
+  company_name: string;
+    };
+  }
 
 const PostBoard: React.FC = () => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch("http://localhost:8080/api/jobposts")
-      .then((res) => res.json())
-      .then((result) => {
-        const sorted = result.data.sort(
+useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        setLoading(true);
+        const res = await jobPostAPI.getAll();   // ใช้ api service
+        const result = res.data || res;          // เผื่อ backend ส่ง {data:[]} หรือ [] มา
+        const sorted = result.sort(
           (a: Post, b: Post) =>
             new Date(b.CreatedAt).getTime() - new Date(a.CreatedAt).getTime()
         );
         setPosts(sorted);
-        setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Error fetching posts:", err);
+        message.error("โหลดโพสต์งานไม่สำเร็จ");
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchPosts();
   }, []);
 
   return (

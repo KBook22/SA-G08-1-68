@@ -120,3 +120,20 @@ func UploadPortfolio(c *gin.Context) {
         "data":     jobpost,
     })
 }
+
+// GET /employer/myposts/:employer_id
+// ดึงประกาศงานทั้งหมดที่สร้างโดย employer_id นั้น
+func GetEmployerPosts(c *gin.Context) {
+    employerID := c.Param("employer_id")
+    var jobposts []entity.Jobpost
+
+    if err := config.DB().
+        Preload("Employer").
+        Where("employer_id = ?", employerID).
+        Find(&jobposts).Error; err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{"data": jobposts})
+}

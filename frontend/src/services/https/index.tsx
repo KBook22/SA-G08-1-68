@@ -8,7 +8,8 @@ import type {
   FindReviewRequest,
 } from "../../interfaces/review";
 import type { Ratingscore } from "../../interfaces/ratingscore";
-import type { Jobpost } from "../../interfaces/jobpost";
+// import type { Jobpost } from "../../interfaces/jobpost";
+import type { Jobpost, CreateJobpost } from "../../interfaces/jobpost";
 
 const API_URL = import.meta.env.VITE_API_KEY || "http://localhost:8080";
 
@@ -149,37 +150,41 @@ export const reviewAPI = {
 export const ratingScoreAPI = {
   getAll: (): Promise<Ratingscore[]> => Get("/ratingscores"),
 };
-
 // Job Post APIs
-export const jobpostAPI = {
-  create: (data: Jobpost) => Post("/jobposts", data),
-  getAll: () => Get("/jobposts"),
-  getById: (id: number) => Get(`/jobposts/${id}`),
+export const jobPostAPI = {
+  create: (data: CreateJobpost) => Post("/api/jobposts", data),
+  getAll: () => Get("/api/jobposts"),
+  getById: (id: number) => Get(`/api/jobposts/${id}`),
   update: (id: number, data: Partial<Jobpost>) =>
-    Update(`/jobposts/${id}`, data),
-  delete: (id: number) => Delete(`/jobposts/${id}`),
+    Update(`/api/jobposts/${id}`, data),
+  delete: (id: number) => Delete(`/api/jobposts/${id}`),
 
-  // เพิ่ม uploadPortfolio
-  uploadPortfolio: (file: File) => {
+  uploadPortfolio: (id: number, file: File) => {
     const formData = new FormData();
     formData.append("portfolio", file);
-
-    return axios.post(`${API_URL}/jobposts/upload-portfolio`, formData, {
+    return axios.post(`${API_URL}/api/jobposts/upload-portfolio/${id}`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
   },
 };
 
 // Job Category APIs
+
 export const jobCategoryAPI = {
-  getAll: () => Get("/jobcategories", false),   // ดึงหมวดหมู่ทั้งหมด
-  getById: (id: number) => Get(`/jobcategories/${id}`, false),
+  getAll: () => Get("/api/jobcategories", false),
+  getById: (id: number) => Get(`/api/jobcategories/${id}`, false),
 };
 
 // Job employmentType APIs
 export const employmentTypeAPI = {
-  getAll: () => Get("/employmenttypes", false),   // ดึงหมวดหมู่ทั้งหมด
-  getById: (id: number) => Get(`/employmenttypes/${id}`, false),
+  getAll: () => Get("/api/employmenttypes", false), 
+  getById: (id: number) => Get(`/api/employmenttypes/${id}`, false),
+};
+
+// Salary Type APIs
+export const salaryTypeAPI = {
+  getAll: () => Get("/api/salarytype", false),
+  getById: (id: number) => Get(`/api/salarytype/${id}`, false),
 };
 
 // Payment APIs

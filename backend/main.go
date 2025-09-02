@@ -4,7 +4,7 @@ import (
 	"github.com/KBook22/System-Analysis-and-Design/config"
 	"github.com/KBook22/System-Analysis-and-Design/controller"
 	"github.com/KBook22/System-Analysis-and-Design/middleware"
-	"github.com/gin-contrib/cors"
+	// "github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -27,8 +27,12 @@ func main() {
 	config.SetupDatabase()
 	config.SeedDatabase() // 1. เปิดใช้งานการ Seed ข้อมูล
 
+	// r := gin.Default()
+	// r.Use(cors.Default())
+	// // r.Use(CORSMiddleware()) //ใช้ middleware 
 	r := gin.Default()
-	r.Use(cors.Default())
+	r.Use(CORSMiddleware())
+
 
 	// --- API Routes ---
 	api := r.Group("/api")
