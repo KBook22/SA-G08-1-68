@@ -1,13 +1,22 @@
 import type React from "react"
 import { useState, useEffect } from "react"
-import { Layout, List, Avatar, Input, Button, Space, Typography, Row, Col } from "antd"
-import { PictureOutlined, UserOutlined } from "@ant-design/icons"
+import { Layout, List, Avatar, Input, Button, Space, Typography, Row, Col, type MenuProps, Dropdown } from "antd"
+import { DownOutlined, PictureOutlined, UserOutlined } from "@ant-design/icons"
 import { type ChatHistory, type ChatRoom } from "../../interfaces/Chat"
 import "./Chat.css" // <-- import ไฟล์ CSS ที่สร้างขึ้นมา
 
 const { Sider, Content } = Layout
 const { Text, Title } = Typography
-
+const items: MenuProps['items'] = [
+  {
+    label: (
+      <a style={{color: "red"}}>
+        Block
+      </a>
+    ),
+    key: '0',
+  }
+];
 const Chat: React.FC = () => {
   // Define Data
   const [selectedUser, setSelectedUser] = useState<number | null>(null)
@@ -38,7 +47,7 @@ const Chat: React.FC = () => {
       const fetchMessages = async () => {
         const mockMessages: ChatHistory[] = [
             { id: 1, chatRoomId: 1, sender: "นักศึกษา C", message: "สวัสดีครับ", time: "13:03", isOwn: true },
-            { id: 2, chatRoomId: 1, sender: "นายจ้าง A", message: "สวัสดีครับ", time: "13:05", isOwn: false },
+            { id: 2, chatRoomId: 1, sender: "นายจ้าง A", message: "สวัสดีครับAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", time: "13:05", isOwn: false },
         ]
         setCurrentMessages(mockMessages)
       }
@@ -125,10 +134,22 @@ const Chat: React.FC = () => {
             <Content className="chat-main-content">
               {/* Chat Header */}
               {selectedUserData && (
-                <div className="chat-conversation-header">
+                <div className="chat-conversation-header">
                   <Text strong className="chat-conversation-title">
                     {selectedUserData.name}
                   </Text>
+                  {/* Help Menu */}
+                  <div className="help">
+                      <Dropdown menu={{ items }} trigger={['click']}>
+                        <a onClick={(e) => e.preventDefault()}>
+                          <Space>
+                            HELP
+                            <DownOutlined />
+                          </Space>
+                        </a>
+                      </Dropdown>
+                  </div>
+                  {/* Help Menu */}
                 </div>
               )}
 
