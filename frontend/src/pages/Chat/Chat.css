@@ -2,15 +2,18 @@
 
 /* Layout หลักของหน้าแชท */
 .chat-layout {
-  height: calc(100vh - 120px); /* Adjust this value if Header/Footer height changes */
+  /* คำนวณความสูงจาก Header , Footer */
+  min-height: calc(100vh - (64px + 50px + 20px));
+  max-height: calc(100vh - (64px + 50px + 20px));
   width: 100%;
 }
 
 .chat-content-layout {
+  min-height: fit-content;
   display: flex;     /* ให้จัดเรียงลูกแนวนอน */
   flex-direction: row;
   background-color: #f5f5f5;
-  height: 100%;      /* สำคัญมาก เพื่อให้ลูกใช้ % ได้จริง */
+  /* height: 70%;      สำคัญมาก เพื่อให้ลูกใช้ % ได้จริง */
 }
 /* ส่วนหัวของหน้าแชท */
 .chat-header {
@@ -22,7 +25,8 @@
 }
 
 .chat-sider {
-  height: 92vh;
+  /* คำนวณความสูงจาก Header , Footer */
+  height: calc(100vh - (64px + 50px + 20px));
   background-color: #fff;
   border-right: 1px solid #f0f0f0;
   width: 20%;
@@ -59,8 +63,13 @@
 }
 
 /* ส่วนแสดงผลหลักของข้อความ */
-.chat-main-content {
-
+.chat-area {
+  /* คำนวณความสูงจาก Header , Footer */
+  min-height: calc(100vh - (64px + 50px + 20px));
+  max-height: calc(100vh - (64px + 50px + 20px));
+  display: flex;
+  flex-direction: column;
+  min-width: 80%;
 }
 /* Header ของบทสนทนาแชท */
 .chat-conversation-header {
@@ -79,11 +88,13 @@
 
 /* พื้นที่แสดงข้อความ */
 .messages-area {
+  /* คำนวณความสูงจาก Header , Footer , content */
+  min-height: calc(100vh - (64px + 50px + 20px + 160px));
+  max-height: calc(100vh - (64px + 50px + 20px + 160px));
   /* กรอบล่องหน */
   padding: 24px;
   overflow-y: auto;
   background-color: #fafafa;
-  height: 73vh;
 }
 
 .messages-space {

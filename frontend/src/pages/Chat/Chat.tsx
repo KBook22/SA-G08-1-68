@@ -1,13 +1,12 @@
 //Chat.tsx
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Layout, List, Avatar, Input, Button, Space, Typography, Row, Col, type MenuProps, Dropdown } from "antd"
 import { DownOutlined, PictureOutlined, UserOutlined } from "@ant-design/icons"
 import { type ChatHistory, type ChatRoom } from "../../interfaces/Chat"
 import "./Chat.css" // <-- import ไฟล์ CSS ที่สร้างขึ้นมา
 
-const { Sider, Content } = Layout
-const { Text, Title } = Typography
+const { Text } = Typography
 const items: MenuProps['items'] = [
   {
     label: (
@@ -24,6 +23,21 @@ const Chat: React.FC = () => {
   const [newMessage, setNewMessage] = useState<string>("")
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([])
   const [currentMessages, setCurrentMessages] = useState<ChatHistory[]>([])
+  //to go bottom if send new message
+  const messagesEndRef = useRef<HTMLDivElement | null>(null)
+  // scroll แบบ smooth เวลา currentMessages มีการเปลี่ยน (เช่น ได้ข้อความใหม่ หรือเราส่ง)
+  useEffect(() => {
+  if (messagesEndRef.current) {
+    messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+  }
+}, [currentMessages]);
+
+  // scroll แบบ instant เฉพาะตอนเปลี่ยนห้อง (เปิดห้องครั้งแรก)
+  useEffect(() => {
+    if (messagesEndRef.current && currentMessages.length > 0) {
+      messagesEndRef.current.scrollIntoView({ behavior: "auto" }) // instant
+    }
+  }, [selectedUser]) // trigger ตอนเปลี่ยนห้อง
 
   useEffect(() => {
     const fetchChatRooms = async () => {
@@ -34,10 +48,6 @@ const Chat: React.FC = () => {
         { id: 4, name: "นายจ้าง D", lastMessage: "GOOD!" },
       ]
       setChatRooms(mockRooms)
-      if (mockRooms.length > 0) {
-        //ควรเอาออกเพราะไม่ควรโหลดหน้าแชทอะไรก็ไม่รู้ขึ้นมา
-        //setSelectedUser(mockRooms[0].id)
-      }
     }
     fetchChatRooms()
   }, [])
@@ -94,7 +104,7 @@ const Chat: React.FC = () => {
     <Layout className="chat-layout">
         <Layout className="chat-content-layout">
           {/*Side bar*/}
-          <Sider width="20%" className="chat-sider">
+          <div className="chat-sider">
             <div className="chat-sider-list">
               <List
                 dataSource={chatRooms}
@@ -120,18 +130,17 @@ const Chat: React.FC = () => {
                 )}
               />
             </div>
-          </Sider>
+          </div>
 
           {/* Chat Area */}
-          <Layout>
-            <Content className="chat-main-content">
+          <div className="chat-area">
               {/* Chat Header */}
-              {selectedUserData && (
                 <div className="chat-conversation-header">
                   <Text strong className="chat-conversation-title">
-                    {selectedUserData.name}
+                    {selectedUserData ? selectedUserData.name : "เลือกห้องแชท"}
                   </Text>
                   {/* Help Menu */}
+                  {selectedUserData && (
                   <div className="help">
                       <Dropdown menu={{ items }} trigger={['click']}>
                         <a onClick={(e) => e.preventDefault()}>
@@ -142,9 +151,9 @@ const Chat: React.FC = () => {
                         </a>
                       </Dropdown>
                   </div>
+                  )}
                   {/* Help Menu */}
                 </div>
-              )}
 
               {/* Messages Area */}
               <div className="messages-area">
@@ -183,33 +192,40 @@ const Chat: React.FC = () => {
                       </Col>
                     </Row>
                   ))}
+                  <div ref={messagesEndRef} />
                 </Space>
               </div>
               {/* Message Input */}
-              <div className="message-input-area">
-                <Row gutter={12} align="middle">
-                  <Col>
-                    <Button type="text" icon={<PictureOutlined />} size="large" />
-                  </Col>
-                  <Col flex="auto">
-                    <Input
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      onKeyDown={handleKeyPress}
-                      placeholder="พิมพ์ข้อความ..."
-                      size="large"
-                      className="message-input"
-                    />
-                  </Col>
-                  <Col>
-                    <Button type="primary" onClick={handleSendMessage} size="large" className="send-button">
-                      ส่ง
-                    </Button>
-                  </Col>
-                </Row>
-              </div>
-            </Content>
-          </Layout>
+              {selectedUser && (
+                <div className="message-input-area">
+                  <Row gutter={12} align="middle">
+                    <Col>
+                      <Button type="text" icon={<PictureOutlined />} size="large" />
+                    </Col>
+                    <Col flex="auto">
+                      <Input
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        onKeyDown={handleKeyPress}
+                        placeholder="พิมพ์ข้อความ..."
+                        size="large"
+                        className="message-input"
+                      />
+                    </Col>
+                    <Col>
+                      <Button
+                        type="primary"
+                        onClick={handleSendMessage}
+                        size="large"
+                        className="send-button"
+                      >
+                        ส่ง
+                      </Button>
+                    </Col>
+                  </Row>
+                </div>
+              )}
+          </div>
         </Layout>
      </Layout>
   )
