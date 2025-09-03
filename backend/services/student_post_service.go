@@ -9,7 +9,7 @@ import (
 // ✨ 1. แก้ไขฟังก์ชันให้รับ studentID เพิ่มเข้ามา
 func CreateStudentProfilePost(post *entity.StudentProfilePost, studentID uint) (*entity.StudentProfilePost, error) {
 	// ✨ 2. กำหนด StudentID ของโพสต์จากค่าที่ได้รับมา
-	post.StudentID = studentID
+	post.StudentID = &studentID
 
 	// ดึงข้อมูล Student มา Preload เพื่อให้ Response ที่ส่งกลับไปมีข้อมูลครบถ้วน
 	if err := config.DB().Create(post).Error; err != nil {

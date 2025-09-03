@@ -1,6 +1,162 @@
+// // src/layouts/FullLayout/index.tsx
+// import React from "react";
+// import { Link, useLocation, Outlet, useOutletContext } from "react-router-dom";
+// import {
+//   Layout,
+//   Menu,
+//   theme,
+//   Button,
+//   Flex,
+//   Space,
+//   Dropdown,
+// } from "antd";
+// import { DownOutlined, BellOutlined } from "@ant-design/icons";
+// import type { MenuProps } from "antd";
+// import logoImage from '../../assets/logo.svg';
+
+// const { Header, Content, Footer } = Layout;
+
+// type MenuItem = Required<MenuProps>["items"][number];
+
+// const createMenuItem = (key: string, label: React.ReactNode): MenuItem => {
+//   const path = key === "home" ? "/" : `/${key}`;
+//   return {
+//     key,
+//     label: <Link to={path}>{label}</Link>,
+//     style: { paddingInline: "20px" },
+//   } as MenuItem;
+// };
+
+// const navItems: MenuItem[] = [
+//   createMenuItem("home", "Home"),
+//   createMenuItem("Job/Board", "Jobs"),
+//   createMenuItem("my-jobs", "My Job"),
+//   createMenuItem("payment-report", "Payment Report"),
+//   createMenuItem("help", "Help"),
+//   createMenuItem("chat", "Chat"),
+//   createMenuItem("interview","Interview Table"),
+//   createMenuItem("students","Students List"),
+//   createMenuItem("report","Report"),
+//   // 👇 3. แก้ไขชื่อเมนูตรงนี้
+//   createMenuItem("feed", "Feed"), 
+// ];
+
+// const FullLayout: React.FC = () => {
+//   const {
+//     token: { colorText },
+//   } = theme.useToken();
+//   const location = useLocation();
+//   const currentPageKey = location.pathname.split("/")[1] || "home";
+
+//   const context = useOutletContext();
+
+//   return (
+//     <Layout style={{ minHeight: "auto" }}>
+//       <Header
+//         style={{
+//           position: "sticky",
+//           top: 0,
+//           zIndex: 1,
+//           width: "100%",
+//           display: "flex",
+//           alignItems: "center",
+//           justifyContent: "space-between",
+//           backgroundColor: "#fff",
+//           padding: "0 24px",
+//           height: "64px",
+//           borderBottom: "1px solid #f0f0f0",
+//         }}
+//       >
+//         <div
+//           style={{
+//             display: "flex",
+//             alignItems: "center",
+//             flex: 1,
+//             minWidth: 0,
+//           }}
+//         >
+//           <div className="website-logo" style={{ marginRight: "24px" }}>
+//             <Link to="/">
+//               <img
+//                 src={logoImage}
+//                 alt="SUT Career Logo"
+//                 style={{
+//                   height: "50px",
+//                   width: "auto",
+//                   display: "block",
+//                 }}
+//               />
+//             </Link>
+//           </div>
+//           <Menu
+//             theme="light"
+//             mode="horizontal"
+//             selectedKeys={[currentPageKey]}
+//             items={navItems}
+//             style={{
+//               borderBottom: "none",
+//               flex: 1,
+//               minWidth: 0,
+//               justifyContent: "flex-start",
+//             }}
+//           />
+//         </div>
+//         <Flex align="center">
+//           <Space size="middle">
+//             <BellOutlined style={{ fontSize: "20px", color: colorText }} />
+//             <Dropdown
+//               menu={{
+//                 items: [
+//                   {
+//                     key: "th",
+//                     label: "TH",
+//                   },
+//                 ],
+//               }}
+//             >
+//               <Button type="text" style={{
+//                   fontSize: "16px",
+//                   color: colorText
+//                 }}>
+//                 <Space>
+//                   TH
+//                   <DownOutlined />
+//                 </Space>
+//               </Button>
+//             </Dropdown>
+//             <Link to="/profile">
+//               <Button
+//                 type="text"
+//                 style={{
+//                   fontSize: "20px",
+//                   border: "1px solid #d9d9d9",
+//                   borderRadius: "6px",
+//                   color: "#0088FF",
+//                 }}
+//               >
+//                 Profile
+//               </Button>
+//             </Link>
+//           </Space>
+//         </Flex>
+//       </Header>
+//       <Content>
+//         <Outlet context={context} />
+//       </Content>
+//       <Footer style={{ textAlign: "center" }}>
+//         SUT Career ©{new Date().getFullYear()} Created with Ant Design
+//       </Footer>
+//     </Layout>
+//   );
+// };
+
+// export default FullLayout;
+
 // src/layouts/FullLayout/index.tsx
 import React from "react";
-import { Link, useLocation, Outlet, useOutletContext } from "react-router-dom";
+// --- vvvv 1. Import useNavigate และ useAuth เข้ามา vvvv ---
+import { Link, useLocation, Outlet, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import {
   Layout,
   Menu,
@@ -9,8 +165,9 @@ import {
   Flex,
   Space,
   Dropdown,
+  Avatar, // เพิ่ม Avatar สำหรับแสดงรูปโปรไฟล์
 } from "antd";
-import { DownOutlined, BellOutlined } from "@ant-design/icons";
+import { DownOutlined, BellOutlined, UserOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import logoImage from '../../assets/logo.svg';
 
@@ -28,18 +185,19 @@ const createMenuItem = (key: string, label: React.ReactNode): MenuItem => {
 };
 
 const navItems: MenuItem[] = [
-  createMenuItem("home", "Home"),
-  createMenuItem("Job/Board", "Jobs"),
-  createMenuItem("my-jobs", "My Job"),
-  createMenuItem("payment-report", "Payment Report"),
-  createMenuItem("help", "Help"),
-  createMenuItem("chat", "Chat"),
-  createMenuItem("interview","Interview Table"),
-  createMenuItem("students","Students List"),
-  createMenuItem("report","Report"),
-  // 👇 3. แก้ไขชื่อเมนูตรงนี้
-  createMenuItem("feed", "Feed"), 
+    createMenuItem("home", "Home"),
+    createMenuItem("Board", "Jobs"), // แก้ไข path ให้ตรงกับ MainRoutes
+    createMenuItem("myjob", "My Job"), // แก้ไข path ให้ตรงกับ MainRoutes
+    createMenuItem("paymentreport", "Payment Report"), // แก้ไข path ให้ตรงกับ MainRoutes
+    createMenuItem("StudentPost", "Help"), // แก้ไข path ให้ตรงกับ MainRoutes
+    createMenuItem("chat", "Chat"),
+    createMenuItem("Interview", "Interview Table"), // แก้ไข path ให้ตรงกับ MainRoutes
+    createMenuItem("worklog", "Students List"), // แก้ไข path ให้ตรงกับ MainRoutes
+    createMenuItem("Reportpage", "Report"), // แก้ไข path ให้ตรงกับ MainRoutes
+    createMenuItem("feed", "Feed"),
+    createMenuItem("help", "Help"), // แก้ไข path ให้ตรงกับ MainRoutes
 ];
+
 
 const FullLayout: React.FC = () => {
   const {
@@ -47,8 +205,31 @@ const FullLayout: React.FC = () => {
   } = theme.useToken();
   const location = useLocation();
   const currentPageKey = location.pathname.split("/")[1] || "home";
+  
+  // --- vvvv 2. ดึงข้อมูล user และฟังก์ชัน logout จาก AuthContext vvvv ---
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
-  const context = useOutletContext();
+  // สร้าง Menu Items สำหรับ Dropdown ของโปรไฟล์
+  const profileMenuItems: MenuProps['items'] = user ? [
+    {
+      key: "profile",
+      label: "Profile",
+      onClick: () => navigate(`/profile/${user.id}`), // Navigate ไปหน้าโปรไฟล์
+    },
+    {
+      key: "logout",
+      label: "Logout",
+      onClick: logout, // เรียกใช้ฟังก์ชัน logout
+      danger: true,
+    },
+  ] : [
+    {
+      key: "login",
+      label: "Login",
+      onClick: () => navigate('/login'),
+    }
+  ];
 
   return (
     <Layout style={{ minHeight: "auto" }}>
@@ -104,44 +285,28 @@ const FullLayout: React.FC = () => {
         <Flex align="center">
           <Space size="middle">
             <BellOutlined style={{ fontSize: "20px", color: colorText }} />
+            
+            {/* --- vvvv 3. เปลี่ยนปุ่ม Profile เป็น Dropdown ที่จัดการได้ทั้ง Login และ Logout vvvv --- */}
             <Dropdown
               menu={{
-                items: [
-                  {
-                    key: "th",
-                    label: "TH",
-                  },
-                ],
+                items: profileMenuItems,
               }}
+              trigger={['click']}
             >
-              <Button type="text" style={{
-                  fontSize: "16px",
-                  color: colorText
-                }}>
+              <a onClick={(e) => e.preventDefault()}>
                 <Space>
-                  TH
+                  <Avatar icon={<UserOutlined />} />
+                  {user ? user.username : 'Guest'}
                   <DownOutlined />
                 </Space>
-              </Button>
+              </a>
             </Dropdown>
-            <Link to="/profile">
-              <Button
-                type="text"
-                style={{
-                  fontSize: "20px",
-                  border: "1px solid #d9d9d9",
-                  borderRadius: "6px",
-                  color: "#0088FF",
-                }}
-              >
-                Profile
-              </Button>
-            </Link>
+
           </Space>
         </Flex>
       </Header>
       <Content>
-        <Outlet context={context} />
+        <Outlet /> {/* ไม่จำเป็นต้องส่ง context ลงไป Outlet จะจัดการเอง */}
       </Content>
       <Footer style={{ textAlign: "center" }}>
         SUT Career ©{new Date().getFullYear()} Created with Ant Design
@@ -151,6 +316,8 @@ const FullLayout: React.FC = () => {
 };
 
 export default FullLayout;
+
+
 
 
 // src/layout/FullLayout/index.tsx

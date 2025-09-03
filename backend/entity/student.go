@@ -59,7 +59,7 @@ const (
 
 type Student struct {
 	gorm.Model
-	// ID 		  string     `gorm:"primaryKey;type:varchar(50)" json:"id"`
+	ID               uint   `gorm:"primaryKey" json:"id"`
 	Email     string     `gorm:"type:varchar(255);not null" json:"email"`
 	FirstName string     `gorm:"type:varchar(100);not null" json:"first_name"`
 	LastName  string     `gorm:"type:varchar(100);not null" json:"last_name"`
@@ -85,3 +85,5 @@ type Student struct {
 	
 	Bank		*Banks		`gorm:"foreignKey: bank_id" json:"bank"`
 }
+
+

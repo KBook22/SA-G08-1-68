@@ -21,7 +21,7 @@ import {
   PlusOutlined,
   ExclamationCircleFilled,
 } from "@ant-design/icons";
-import type { Notification } from "../types";
+import type { Notification } from "../../types";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/th";

@@ -7,22 +7,16 @@ import { MdOutlinePhotoSizeSelectActual } from 'react-icons/md';
 import { IoLocationOutline } from 'react-icons/io5';
 import { FaUserCircle } from 'react-icons/fa';
 import { GlobalOutlined, LockOutlined, DownOutlined, PlusOutlined } from '@ant-design/icons';
-import type { UploadFile, UploadProps } from 'antd';
-import type { Post } from '../../types';
+import type { UploadProps } from 'antd';
+import type { FeedPost as Post } from '../../types'; // Renamed Post to FeedPost for clarity and consistency
+import { createStudentProfilePost } from '../../services/studentPostService'; // Import API service for creating posts
 import "../../pages/StudentPost/StudentPost.css";
 
 interface PostCreatorProps {
-  onAddPost: (
-    content: string,
-    privacy: Post['privacy'],
-    skills: string[],
-    file?: File,
-    image?: File,
-    location?: { lat: number, lng: number }
-  ) => void;
+  onSuccess: () => void; // New prop to notify parent on successful post creation
 }
 
-const PostCreator: React.FC<PostCreatorProps> = ({ onAddPost }) => {
+const PostCreator: React.FC<PostCreatorProps> = ({ onSuccess }) => {
   const [content, setContent] = useState('');
   const [skills, setSkills] = useState<string[]>([]);
   const [skillInput, setSkillInput] = useState('');
@@ -43,17 +37,35 @@ const PostCreator: React.FC<PostCreatorProps> = ({ onAddPost }) => {
     setSkills(skills.filter(skill => skill !== removedSkill));
   };
 
-  const handlePost = () => {
+  const handlePost = async () => {
     if (content.trim() || file || image || location) {
-      onAddPost(content, privacy, skills, file || undefined, image || undefined, location || undefined);
-      // Reset state
-      setContent('');
-      setSkills([]);
-      setFile(null);
-      setImage(null);
-      setLocation(null);
-      setPrivacy('public');
+      try {
+        const response = await createStudentProfilePost({
+          introduction: content,
+          job_type: "full-time", // Default or let user select if UI allows
+          skills: skills.join(','),
+          phone: "123-456-7890", // Placeholder, retrieve from user context later
+          email: "user@example.com", // Placeholder, retrieve from user context later
+          year: 2024, // Placeholder, retrieve from user context later
+          portfolio_url: "", // Placeholder
+        });
 
+        if (response) {
+          message.success('โพสต์สำเร็จ!');
+          setContent('');
+          setSkills([]);
+          setFile(null);
+          setImage(null);
+          setLocation(null);
+          setPrivacy('public');
+          onSuccess(); // Notify parent component to refresh posts
+        } else {
+          message.error('เกิดข้อผิดพลาดในการโพสต์');
+        }
+      } catch (error) {
+        console.error('Error creating post:', error);
+        message.error('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+      }
     } else {
       message.warning('กรุณาใส่เนื้อหาหรือแนบไฟล์/รูปภาพ/ตำแหน่งที่ตั้งก่อนโพสต์');
     }
