@@ -118,7 +118,7 @@ const Board: React.FC = () => {
                 >
                   เริ่มโพสต์ได้เลย
                 </Button>
-                {/* ✅ แสดงปุ่มเฉพาะ employer */}
+                {/* แสดงปุ่มเฉพาะ employer */}
                 {role === "employer" && (
                   <Button
                     type="primary"
