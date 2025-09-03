@@ -19,21 +19,21 @@ interface Post {
   Employer?: {
     company_name: string;
   };
-  employer_id: number;  
+  employer_id: number;
 }
-
 
 const PostBoard: React.FC = () => {
   const navigate = useNavigate();
+
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
-useEffect(() => {
+  useEffect(() => {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const res = await jobPostAPI.getAll();   // ใช้ api service
-        const result = res.data || res;          // เผื่อ backend ส่ง {data:[]} หรือ [] มา
+        const res = await jobPostAPI.getAll(); // ใช้ api service
+        const result = res.data || res; // เผื่อ backend ส่ง {data:[]} หรือ [] มา
         const sorted = result.sort(
           (a: Post, b: Post) =>
             new Date(b.CreatedAt).getTime() - new Date(a.CreatedAt).getTime()
@@ -109,7 +109,7 @@ useEffect(() => {
                     </a>
                   </div>
 
-                  {/* ฝั่งขวา */}
+                  ฝั่งขวา
                   <div className="job-right">
                     <img
                       src={post.image_url || lahui}

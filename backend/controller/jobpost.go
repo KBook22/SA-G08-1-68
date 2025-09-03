@@ -77,6 +77,7 @@ func ListJobPosts(c *gin.Context) {
     Preload("JobCategory").
     Preload("EmploymentType").
     Preload("SalaryType").
+	Order("created_at DESC"). // เรียงใหม่ เก่า
     Find(&jobposts).Error; err != nil {
     c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
     return

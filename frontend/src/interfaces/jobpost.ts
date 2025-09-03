@@ -7,6 +7,9 @@ import type { SalaryType } from "./salary_type";
 
 export interface Jobpost {
     ID: number;
+    CreatedAt: string;  // เพิ่มตรงนี้
+    UpdatedAt: string;  // เผื่อใช้
+    DeletedAt?: string | null;
     title: string;
     description: string;
     deadline: Date;
@@ -21,6 +24,9 @@ export interface Jobpost {
     job_category_id: number;
     job_category?: JobCategory;
     locationjob: string;
+     Employer?: {
+    company_name: string;
+  };
 
     employment_type_id: number;
     employment_type?: EmploymentType;

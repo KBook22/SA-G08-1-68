@@ -128,11 +128,10 @@
 // };
 
 // export default PostLayout;
-
 import React, { useEffect, useState } from "react";
 import { Button, Spin, message } from "antd";
 import lahui from "../../assets/lahui.svg";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "./JobDetail.css";
 import "../../index.css";
 import "../../Layout.css";
@@ -141,27 +140,23 @@ import {
   DollarCircleOutlined,
   EnvironmentOutlined,
 } from "@ant-design/icons";
-import { jobPostAPI } from "../../services/https"; //  เพิ่ม API
+import { jobPostAPI } from "../../services/https";
 import type { Jobpost } from "../../interfaces/jobpost";
 
-// interface Post {
-//   ID: number;
-//   title: string;
-//   image_url?: string;
-//   description?: string;
-//   deadline?: string;
-//   salary: number;
-//   locationjob: string;
-//   Employer?: {
-//     company_name: string;
-//   };
-// }
-
 const PostLayout: React.FC = () => {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const role = user.role;
+
   const [posts, setPosts] = useState<Jobpost[]>([]);
   const [selectedPost, setSelectedPost] = useState<Jobpost | null>(null);
   const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
+  const location = useLocation();
+  const { id } = useParams<{ id: string }>();
+
+  // ✅ ใช้ message.useMessage() สำหรับ AntD v5
+  const [messageApi, contextHolder] = message.useMessage();
 
   // ดึงโพสต์ทั้งหมดจาก API
   useEffect(() => {
@@ -169,30 +164,44 @@ const PostLayout: React.FC = () => {
       try {
         setLoading(true);
         const res = await jobPostAPI.getAll();
-        const data = res.data || res;
+        const data = res.data?.data || res.data || res;
 
         if (!data || data.length === 0) {
-          message.warning("ยังไม่มีประกาศงาน");
+          messageApi.warning("ยังไม่มีประกาศงาน");
           setPosts([]);
           return;
         }
 
-        setPosts(data);
+        const sortedData = data.sort(
+          (a: Jobpost, b: Jobpost) =>
+            new Date(b.CreatedAt).getTime() - new Date(a.CreatedAt).getTime()
+        );
 
-        // ถ้ายังไม่ได้เลือกโพสต์ → เลือกโพสต์แรกเป็น default
-        if (!selectedPost) {
-          setSelectedPost(data[0]);
+        setPosts(sortedData);
+
+        const statePost = (location.state as { post?: Jobpost })?.post;
+        if (statePost) {
+          setSelectedPost(statePost);
+          return;
         }
+
+        if (id) {
+          const found = sortedData.find((p: Jobpost) => p.ID === Number(id));
+          setSelectedPost(found || sortedData[0]);
+          return;
+        }
+
+        setSelectedPost(sortedData[0]);
       } catch (err) {
         console.error("Error fetching job post:", err);
-        message.error("โหลดโพสต์งานไม่สำเร็จ");
+        messageApi.error("โหลดโพสต์งานไม่สำเร็จ");
       } finally {
         setLoading(false);
       }
     };
 
     fetchPost();
-  }, []);
+  }, [id, location.state]);
 
   if (loading) {
     return (
@@ -203,91 +212,125 @@ const PostLayout: React.FC = () => {
   }
 
   return (
-    <div className="post-layout-container">
-      {/* ฝั่งซ้าย: รายการโพสต์ */}
-      <div className="post-list-sidebar">
-        {posts.map((post) => (
-          <div
-            key={post.ID}
-            className={`post-preview ${
-              selectedPost?.ID === post.ID ? "selected" : ""
-            }`}
-            onClick={() => setSelectedPost(post)}
-          >
-            <div className="post-text">
-              <h4>{post.title}</h4>
-              <p className="post-subtitle">
-                {post.employer?.company_name || "ไม่ระบุบริษัท"}
-              </p>
+    <>
+      {/* ✅ ต้องใส่ contextHolder */}
+      {contextHolder}
 
-              <div className="post-meta-icons">
-                <div className="meta-item">
-                  <ClockCircleOutlined />
-                  <span>
-                    {post.deadline
-                      ? new Date(post.deadline).toLocaleDateString("th-TH")
-                      : "จนกว่าจะปิดรับสมัคร"}
-                  </span>
-                </div>
-                <div className="meta-item">
-                  <DollarCircleOutlined />
-                  <span>{post.salary.toLocaleString()} บาท</span>
-                </div>
-                <div className="meta-item">
-                  <EnvironmentOutlined />
-                  <span>{post.locationjob}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="post-image-wrapper">
-              <img
-                className="post-image-detail"
-                src={post.image_url || lahui}
-                alt={post.title}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* ฝั่งขวา: รายละเอียดโพสต์ */}
-      <div className="post-full-detail">
-        {selectedPost && (
-          <>
-            <div className="wrap-title-detail">
-              <div>
-                <h2 className="title-detail">{selectedPost.title}</h2>
-                <div className="image-subtitle-row">
-                  <img
-                    src={selectedPost.image_url || lahui}
-                    className="post-detail-image"
-                    alt={selectedPost.title}
-                  />
-                  <p className="post-subtitle-detail">
-                    {selectedPost.employer?.company_name || "ไม่ระบุบริษัท"}
-                  </p>
+      <div className="post-layout-container">
+        {/* ฝั่งซ้าย: รายการโพสต์ */}
+        <div className="post-list-sidebar">
+          {posts.map((post) => (
+            <div
+              key={post.ID}
+              className={`post-preview ${
+                selectedPost?.ID === post.ID ? "selected" : ""
+              }`}
+              onClick={() =>
+                navigate(`/Job/post-detail/${post.ID}`, {
+                  state: { post },
+                  replace: true,
+                })
+              }
+            >
+              <div className="post-text">
+                <h4>{post.title}</h4>
+                <p className="post-subtitle">
+                  {post.Employer?.company_name || "ไม่ระบุบริษัท"}
+                </p>
+                <div className="post-meta-icons">
+                  <div className="meta-item">
+                    <ClockCircleOutlined />
+                    <span>
+                      {post.deadline
+                        ? new Date(post.deadline).toLocaleDateString("th-TH")
+                        : "จนกว่าจะปิดรับสมัคร"}
+                    </span>
+                  </div>
+                  <div className="meta-item">
+                    <DollarCircleOutlined />
+                    <span>{post.salary.toLocaleString()} บาท</span>
+                  </div>
+                  <div className="meta-item">
+                    <EnvironmentOutlined />
+                    <span>{post.locationjob}</span>
+                  </div>
                 </div>
               </div>
+              <div className="post-image-wrapper">
+                <img
+                  className="post-image-detail"
+                  src={post.image_url || lahui}
+                  alt={post.title}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
 
-              <Button
-                className="btn-Job-Application"
-                type="primary"
-                onClick={() =>
-                  navigate("/Job/ApplyJob", { state: { post: selectedPost } })
-                }
-              >
-                ยื่นสมัครงาน
-              </Button>
-            </div>
-            <div className="box-with-top-bottom-border">
-              {selectedPost.description || "ไม่มีรายละเอียดเพิ่มเติม"}
-            </div>
-          </>
-        )}
+        {/* ฝั่งขวา: รายละเอียดโพสต์ */}
+        <div className="post-full-detail">
+          {selectedPost && (
+            <>
+              <div className="wrap-title-detail">
+                <div>
+                  <h2 className="title-detail">{selectedPost.title}</h2>
+                  <div className="image-subtitle-row">
+                    <img
+                      src={selectedPost.image_url || lahui}
+                      className="post-detail-image"
+                      alt={selectedPost.title}
+                    />
+                    <p className="post-subtitle-detail">
+                      {selectedPost.employer?.company_name || "ไม่ระบุบริษัท"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* ปุ่มยื่นสมัครงาน */}
+                {role === "student" ? (
+                  <Button
+                    className="btn-Job-Application"
+                    type="primary"
+                    onClick={() =>
+                      navigate("/Job/ApplyJob", { state: { post: selectedPost } })
+                    }
+                  >
+                    ยื่นสมัครงาน
+                  </Button>
+                ) : role === "employer" ? (
+                  <Button
+                    className="btn-Job-Application"
+                    type="default"
+                    onClick={() =>
+                      messageApi.warning(
+                        "คุณเป็นผู้ว่าจ้าง ไม่สามารถสมัครงานได้"
+                      )
+                    }
+                  >
+                    ยื่นสมัครงาน
+                  </Button>
+                ) : (
+                  <Button
+                    className="btn-Job-Application"
+                    type="primary"
+                    onClick={() =>
+                      messageApi.warning("กรุณาเข้าสู่ระบบก่อนสมัครงาน")
+                    }
+                  >
+                    ยื่นสมัครงาน
+                  </Button>
+                )}
+              </div>
+              <div className="box-with-top-bottom-border">
+                {selectedPost.description || "ไม่มีรายละเอียดเพิ่มเติม"}
+              </div>
+            </>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
 export default PostLayout;
+
