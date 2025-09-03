@@ -4,6 +4,7 @@ import (
 	"github.com/KBook22/System-Analysis-and-Design/config"
 	"github.com/KBook22/System-Analysis-and-Design/controller"
 	"github.com/KBook22/System-Analysis-and-Design/middleware"
+	"github.com/KBook22/System-Analysis-and-Design/seed"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -31,6 +32,10 @@ func main() {
 	// สร้าง router หลัก
 	r := gin.Default()
 	r.Use(CORSMiddleware())
+
+	// Seed ข้อมูลนักศึกษา 30 คน
+	db := config.DB()
+	seed.SeedStudents(db)
 
 	// --------------------  Public Routes --------------------
 	api := r.Group("/api")

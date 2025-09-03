@@ -34,7 +34,7 @@ func SetupDatabase() {
 		&entity.EmploymentType{},
 		&entity.SalaryType{},
 		&entity.JobCategory{},
-		
+		&entity.JobApplication{},
 		//
 		&entity.Reviews{},
 		&entity.Ratingscores{},

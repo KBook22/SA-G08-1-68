@@ -128,7 +128,7 @@
 // };
 
 // export default PostLayout;
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Button, Spin, message } from "antd";
 import lahui from "../../assets/lahui.svg";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
@@ -150,13 +150,16 @@ const PostLayout: React.FC = () => {
   const [posts, setPosts] = useState<Jobpost[]>([]);
   const [selectedPost, setSelectedPost] = useState<Jobpost | null>(null);
   const [loading, setLoading] = useState(true);
+  const sidebarRef = useRef<HTMLDivElement>(null);
 
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams<{ id: string }>();
 
-  // ✅ ใช้ message.useMessage() สำหรับ AntD v5
   const [messageApi, contextHolder] = message.useMessage();
+
+  // เก็บ scroll ใน sessionStorage (ไม่หายเมื่อ navigate)
+  const SCROLL_KEY = "sidebar-scroll";
 
   // ดึงโพสต์ทั้งหมดจาก API
   useEffect(() => {
@@ -203,6 +206,15 @@ const PostLayout: React.FC = () => {
     fetchPost();
   }, [id, location.state]);
 
+  // ✅ restore scroll position ก่อน render
+  useLayoutEffect(() => {
+    const savedScroll = sessionStorage.getItem(SCROLL_KEY);
+    if (sidebarRef.current && savedScroll) {
+      sidebarRef.current.scrollTop = parseInt(savedScroll, 10);
+    }
+  }, [location.pathname]);
+
+  // โหลดข้อมูลอยู่ → แสดง Loading
   if (loading) {
     return (
       <div style={{ textAlign: "center", padding: 40 }}>
@@ -213,24 +225,40 @@ const PostLayout: React.FC = () => {
 
   return (
     <>
-      {/* ✅ ต้องใส่ contextHolder */}
       {contextHolder}
 
       <div className="post-layout-container">
         {/* ฝั่งซ้าย: รายการโพสต์ */}
-        <div className="post-list-sidebar">
+        <div className="post-list-sidebar" ref={sidebarRef}>
           {posts.map((post) => (
             <div
               key={post.ID}
+              id={`post-${post.ID}`}
               className={`post-preview ${
                 selectedPost?.ID === post.ID ? "selected" : ""
               }`}
-              onClick={() =>
-                navigate(`/Job/post-detail/${post.ID}`, {
-                  state: { post },
-                  replace: true,
-                })
-              }
+              // onClick={() => {
+              //   // ✅ บันทึกตำแหน่ง scroll ก่อน navigate
+              //   if (sidebarRef.current) {
+              //     sessionStorage.setItem(
+              //       SCROLL_KEY,
+              //       sidebarRef.current.scrollTop.toString()
+              //     );
+              //   }
+
+              //   // ✅ navigate ไปโพสต์ที่เลือก โดยไม่ reset scroll
+              //   navigate(`/Job/post-detail/${post.ID}`, {
+              //     state: { post },
+              //     replace: true,
+              //   });
+              // }}
+              onClick={() => {
+              // ✅ ไม่ใช้ navigate → เปลี่ยนเฉพาะ selectedPost
+              setSelectedPost(post);
+
+              // ✅ เปลี่ยน URL ให้เหมือน navigate แต่ไม่ reload หน้า
+              window.history.replaceState(null, "", `/Job/post-detail/${post.ID}`);
+              }}  
             >
               <div className="post-text">
                 <h4>{post.title}</h4>
@@ -287,7 +315,7 @@ const PostLayout: React.FC = () => {
                 </div>
 
                 {/* ปุ่มยื่นสมัครงาน */}
-                {role === "student" ? (
+                {role === "Student" ? (
                   <Button
                     className="btn-Job-Application"
                     type="primary"
@@ -297,19 +325,7 @@ const PostLayout: React.FC = () => {
                   >
                     ยื่นสมัครงาน
                   </Button>
-                ) : role === "employer" ? (
-                  <Button
-                    className="btn-Job-Application"
-                    type="default"
-                    onClick={() =>
-                      messageApi.warning(
-                        "คุณเป็นผู้ว่าจ้าง ไม่สามารถสมัครงานได้"
-                      )
-                    }
-                  >
-                    ยื่นสมัครงาน
-                  </Button>
-                ) : (
+                ) : role === "employer" ? null : (
                   <Button
                     className="btn-Job-Application"
                     type="primary"
@@ -333,4 +349,3 @@ const PostLayout: React.FC = () => {
 };
 
 export default PostLayout;
-

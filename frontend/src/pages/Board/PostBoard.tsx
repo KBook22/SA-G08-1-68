@@ -109,7 +109,7 @@ const PostBoard: React.FC = () => {
                     </a>
                   </div>
 
-                  ฝั่งขวา
+                  {/* ฝั่งขวา */}
                   <div className="job-right">
                     <img
                       src={post.image_url || lahui}
