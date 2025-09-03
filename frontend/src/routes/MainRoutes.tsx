@@ -31,19 +31,6 @@ import RequestSentPage from '../pages/StudentPost/RequestSentPage'; // เพิ
 import MyPost from '../pages/MyPost/Mypost'
 
 // Helper components to pass context from Outlet
-const FeedPageRoute = () => {
-    const context: any = useOutletContext();
-    return <FeedPage
-              posts={context.posts}
-              onDelete={context.handleDeletePost}
-              onLike={context.handleLikePost}
-              onAddComment={context.handleAddComment}
-              onAddReport={context.onAddReport}
-              onAddPost={context.handleAddPost}
-              onEdit={context.handleEditPost}
-              onLikeComment={context.handleLikeComment}
-           />;
-};
 const PostCreatorRoute = () => {
   const { handleAddPost }: any = useOutletContext();
   return <PostCreator onAddPost={handleAddPost} />;

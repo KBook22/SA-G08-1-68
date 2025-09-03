@@ -1,3 +1,4 @@
+//Chat.tsx
 import type React from "react"
 import { useState, useEffect } from "react"
 import { Layout, List, Avatar, Input, Button, Space, Typography, Row, Col, type MenuProps, Dropdown } from "antd"
@@ -14,7 +15,7 @@ const items: MenuProps['items'] = [
         Block
       </a>
     ),
-    key: '0',
+    key: 'Block',
   }
 ];
 const Chat: React.FC = () => {
@@ -91,17 +92,9 @@ const Chat: React.FC = () => {
 
   return (
     <Layout className="chat-layout">
-      <Layout>
-        {/* Chat Title Header */}
-        <div className="chat-header">
-          <Title level={2} className="chat-title">
-            Chat
-          </Title>
-        </div>
-        {/* Chat Title Header */}
         <Layout className="chat-content-layout">
           {/*Side bar*/}
-          <Sider width={320} className="chat-sider">
+          <Sider width="20%" className="chat-sider">
             <div className="chat-sider-list">
               <List
                 dataSource={chatRooms}
@@ -218,8 +211,7 @@ const Chat: React.FC = () => {
             </Content>
           </Layout>
         </Layout>
-    </Layout>
-  </Layout>
+     </Layout>
   )
 }
 
