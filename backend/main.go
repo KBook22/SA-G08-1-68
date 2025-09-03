@@ -3,31 +3,21 @@ package main
 import (
 	"github.com/KBook22/System-Analysis-and-Design/config"
 	"github.com/KBook22/System-Analysis-and-Design/controller"
-	"github.com/KBook22/System-Analysis-and-Design/middleware"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"github.com/KBook22/System-Analysis-and-Design/middleware"
 )
-func CORSMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
-		c.Next()
-	}
-}
+
+const PORT = "8080"
+
 func main() {
 	config.ConnectionDB()
 	config.SetupDatabase()
 	config.SeedDatabase() // 1. เปิดใช้งานการ Seed ข้อมูล
 
+
 	r := gin.Default()
-	r.Use(cors.Default())
+	r.Use(CORSMiddleware())
 
 	// --- API Routes ---
 	api := r.Group("/api")
@@ -37,13 +27,33 @@ func main() {
 		api.GET("/reviews/scores", controller.ListRatingScores)
 		api.GET("/payments/statuses", controller.ListPaymentStatuses)
 		api.GET("/payments/methods", controller.ListPaymentMethods)
+		
 		// api.GET("/banks", controller.ListBanks)
 		// api.GET("/genders", controller.ListGenders)
+		
+		
+
+
+		//=====================================
+
+		api.GET("/reportstatus",controller.GetReportstatus)
+
+		api.GET("/reports", controller.GetAllReports)
+		api.GET("/reports/:id", controller.GetReportByID)
+		api.GET("/reports/user/:user_id", controller.GetReportByUserID)
+		api.POST("/reports", controller.CreateReport)
+		api.DELETE("/reports/:id", controller.DeleteReport)
+		api.PUT("/reports/:id", controller.UpdateReport)
+	
+
+		//=====================================
+
 
 		protected := api.Group("")
 		// protected.Use(middleware.Authorizes())
 		// {
 			// JobPost (actions)
+
 			jobpostRoutes := protected.Group("/jobposts")
 			{
 				jobpostRoutes.POST("", controller.CreateJobPost)
@@ -94,6 +104,11 @@ func main() {
 			auth.GET("/tickets", controller.GetMyRequestTickets) // เพิ่มเส้นทางนี้
 			auth.GET("/tickets/:id", controller.GetRequestTicketByID)
 			auth.POST("/tickets/:id/replies", controller.CreateTicketReply)
+
+
+		
+
+			
 		}
 
 		// === 🔑 Admin Routes (ต้องมี Role Admin) ===
@@ -108,9 +123,24 @@ func main() {
 		}
 	}
 
+
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "Backend server is running!"})
 	})
 
-	r.Run(":8080")
+	r.Run("localhost:"+ PORT)
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+		c.Next()
+	}
 }

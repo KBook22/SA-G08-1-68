@@ -6,14 +6,12 @@
 type ReportStatus struct{
 	gorm.Model
 	
-	Firstname 	string	`json:"first_name"`
-	Lasttname 	string	`json:"last_name"`
-	Phone		string	`json:"phone"`
-	Email		string  `json:"email"`
+	Statusname 	string	`json:"status_name"`
+	
 
 
 	//FK
-	Report 	[]Report    `gorm:"foreignKey: ReportStatusID"`
+	Report 	[]Report    `gorm:"foreignKey: ReportStatusID" json:"report"`
 
 	
 

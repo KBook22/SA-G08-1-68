@@ -6,9 +6,11 @@ import(
 )
 type Report struct{
 	gorm.Model
-	Date 			time.Time		`json:"date"`
+	Title 			string			`json:"title"`
+	Datetime 		time.Time		`json:"datetime"`		
+	Place 			string			`json:"place"`
 	Discription 	string			`json:"discription"`
-	Hours			int  			`json:"hours"`
+
 
 
 
@@ -18,7 +20,7 @@ type Report struct{
 	User			User            `gorm:"foreignKey:UserID" json:"user"`
 
 	ReportStatusID	uint			`json:"report_status_id"`
-	ReportStatus	ReportStatus    `gorm:"foreignKey:ReportStatusID" json:"report"`
+	ReportStatus	ReportStatus    `gorm:"foreignKey:ReportStatusID" json:"report_status"`
 
 	AdminID			uint			`json:"admin_id"`
 	Admin			Admin   		`gorm:"foreignKey:AdminID" json:"adimin"`

@@ -10,7 +10,7 @@ import type {
 import type { Ratingscore } from "../../interfaces/ratingscore";
 import type { Jobpost } from "../../interfaces/jobpost";
 
-const API_URL = import.meta.env.VITE_API_KEY || "http://localhost:8088";
+const API_URL = import.meta.env.VITE_API_KEY || "http://localhost:8080";
 
 const getCookie = (name: string): string | null => {
   const cookies = document.cookie.split("; ");
@@ -164,4 +164,13 @@ export const paymentAPI = {
   getAll: () => Get("/payments"),
   getById: (id: number) => Get(`/payment/${id}`),
   create: (data: any) => Post("/payment", data),
+};
+
+// report APIs
+export const reportAPI = {
+  create: (data: any) => Post("/api/reports", data),
+  getAll: () => Get("/api/reports"),
+  getById: (id: number) => Get(`/api reports/${id}`),
+  update: (id: number, data: Partial<any>) => Update(`/api/reports/${id}`, data),
+  delete: (id: number) => Delete(`/api/reports/${id}`),
 };
