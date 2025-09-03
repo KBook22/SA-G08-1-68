@@ -29,8 +29,10 @@ type Jobpost struct {
 	BillableItemID uint           `json:"billable_item_id"`
 	BillableItem   *BillableItems `gorm:"foreignKey: billable_item_id" json:"billable_item"`
 
-	EmployerID uint     `gorm:"not null" json:"employer_id"`
-	Employer   Employer `gorm:"foreignKey:EmployerID;references:ID"`
+	// EmployerID uint     `gorm:"not null" json:"employer_id"`
+	// Employer   Employer `gorm:"foreignKey:EmployerID;references:ID"`
+	EmployerID uint     `gorm:"column:employer_id;not null" json:"employer_id"`
+	Employer   Employer `gorm:"foreignKey:EmployerID;references:ID" json:"Employer"`
 
 	JobCategoryID uint        `json:"job_category_id"`
 	JobCategory   JobCategory `gorm:"foreignKey:JobCategoryID"`

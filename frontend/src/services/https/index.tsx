@@ -25,12 +25,16 @@ const getCookie = (name: string): string | null => {
   return null;
 };
 
-const getConfig = () => ({
-  headers: {
-    Authorization: `Bearer ${getCookie("auth_token")}`, // Using a generic cookie name
-    "Content-Type": "application/json",
-  },
-});
+
+const getConfig = () => {
+  const token = localStorage.getItem("token");
+  return {
+    headers: {
+      Authorization: token ? `Bearer ${token}` : "",
+      "Content-Type": "application/json",
+    },
+  };
+};
 
 const getConfigWithoutAuth = () => ({
   headers: {
@@ -48,10 +52,10 @@ export const Post = async (
     .post(`${API_URL}${url}`, data, config)
     .then((res) => res)
     .catch((error: AxiosError) => {
-      if (error?.response?.status === 401) {
-        localStorage.clear();
-        window.location.reload();
-      }
+      // if (error?.response?.status === 401) {
+      //   localStorage.clear();
+      //   window.location.reload();
+      // }
       return error.response;
     });
 };
@@ -68,10 +72,10 @@ export const Get = async (
       if (error?.message === "Network Error") {
         return error.response;
       }
-      if (error?.response?.status === 401) {
-        localStorage.clear();
-        window.location.reload();
-      }
+      // if (error?.response?.status === 401) {
+      //   localStorage.clear();
+      //   window.location.reload();
+      // }
       return error.response;
     });
 };
@@ -86,10 +90,10 @@ export const Update = async (
     .put(`${API_URL}${url}`, data, config)
     .then((res) => res.data)
     .catch((error: AxiosError) => {
-      if (error?.response?.status === 401) {
-        localStorage.clear();
-        window.location.reload();
-      }
+      // if (error?.response?.status === 401) {
+      //   localStorage.clear();
+      //   window.location.reload();
+      // }
       return error.response;
     });
 };
@@ -103,10 +107,10 @@ export const Delete = async (
     .delete(`${API_URL}${url}`, config)
     .then((res) => res.data)
     .catch((error: AxiosError) => {
-      if (error?.response?.status === 401) {
-        localStorage.clear();
-        window.location.reload();
-      }
+      // if (error?.response?.status === 401) {
+      //   localStorage.clear();
+      //   window.location.reload();
+      // }
       return error.response;
     });
 };
@@ -158,6 +162,8 @@ export const jobPostAPI = {
   update: (id: number, data: Partial<Jobpost>) =>
     Update(`/api/jobposts/${id}`, data),
   delete: (id: number) => Delete(`/api/jobposts/${id}`),
+  getMyPosts: () => Get("/api/employer/myposts"), // ใช้ token จาก localStorage
+
 
   uploadPortfolio: (id: number, file: File) => {
     const formData = new FormData();

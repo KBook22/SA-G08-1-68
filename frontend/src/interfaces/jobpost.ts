@@ -6,7 +6,7 @@ import type { EmploymentType } from "./employment_type";
 import type { SalaryType } from "./salary_type";
 
 export interface Jobpost {
-    id: number;
+    ID: number;
     title: string;
     description: string;
     deadline: Date;
@@ -44,4 +44,5 @@ export interface CreateJobpost {
   employment_type_id: number;
   salary_type_id: number;
   image_url?: string | null;
+  employer_id: number;
 }

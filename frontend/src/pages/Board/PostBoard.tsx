@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Empty, message, Spin } from "antd";
+import { Empty, Spin } from "antd";
 import PageHeader from "../../components/PageHeader";
 import "./PostBoard.css";
 import lahui from "../../assets/lahui.svg"; // รูป default
 import { jobPostAPI } from "../../services/https"; //  import api
+import { message } from "antd";
 
 interface Post {
   ID: number;
@@ -16,9 +17,11 @@ interface Post {
   locationjob: string;
   portfolio_required?: string;
   Employer?: {
-  company_name: string;
-    };
-  }
+    company_name: string;
+  };
+  employer_id: number;  
+}
+
 
 const PostBoard: React.FC = () => {
   const navigate = useNavigate();
@@ -60,7 +63,7 @@ useEffect(() => {
             <Empty description="ยังไม่มีโพสต์งาน" />
           ) : (
             posts.map((post) => {
-              // ✅ format deadline
+              //  format deadline
               const deadlineText = post.deadline
                 ? new Date(post.deadline).toLocaleDateString("th-TH", {
                     year: "numeric",

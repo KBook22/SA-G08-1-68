@@ -80,32 +80,45 @@
 //   );
 // };
 
-// export default MyPost;
 import React, { useEffect, useState } from "react";
-import { Card, Button, Empty, Spin } from "antd";
-import "./MyPost.css";
+import { Card, Button, Empty, Spin, message } from "antd";
+import { jobPostAPI } from "../../services/https";
 import type { Jobpost } from "../../interfaces/jobpost";
+import "./MyPost.css";
+import lahui from "../../assets/lahui.svg"; // รูป default
 
 const MyPost: React.FC = () => {
   const [posts, setPosts] = useState<Jobpost[]>([]);
   const [loading, setLoading] = useState(true);
 
- useEffect(() => {
-  const employerId = localStorage.getItem("employer_id"); // ต้องเก็บตอน login
-
-  fetch(`http://localhost:8080/api/employer/myposts/${employerId}`)
-    .then((res) => res.json())
-    .then((result) => {
-      console.log("Employer posts:", result);
-      setPosts(result.data || []);
-      setLoading(false);
-    })
-    .catch((err) => {
+  const fetchMyPosts = async () => {
+    try {
+      setLoading(true);
+      const res = await jobPostAPI.getMyPosts();
+      setPosts(res.data);
+    } catch (err) {
       console.error("Error fetching employer posts:", err);
+      message.error("โหลดโพสต์งานไม่สำเร็จ");
+    } finally {
       setLoading(false);
-    });
-}, []);
+    }
+  };
 
+  console.log(" posts:", posts);
+
+  useEffect(() => {
+    fetchMyPosts();
+  }, []);
+
+  const handleDelete = async (id: number) => {
+    try {
+      await jobPostAPI.delete(id);
+      message.success("ลบโพสต์เรียบร้อยแล้ว");
+      fetchMyPosts();
+    } catch (err) {
+      message.error("ลบโพสต์ไม่สำเร็จ");
+    }
+  };
 
   if (loading) {
     return (
@@ -123,7 +136,7 @@ const MyPost: React.FC = () => {
         <Empty description="ยังไม่มีโพสต์งาน" />
       ) : (
         posts.map((post) => (
-          <Card key={post.id} className="mypost-card">
+          <Card key={post.ID} className="mypost-card">
             <div className="mypost-content">
               <div className="mypost-info">
                 <h3 className="mypost-title">{post.title}</h3>
@@ -147,7 +160,14 @@ const MyPost: React.FC = () => {
               </div>
 
               <div className="mypost-logo">
-                <img src={post.image_url} alt={post.title} />
+                <img
+                  src={post.image_url || lahui} // ถ้ามีรูปจริง ใช้, ถ้าไม่มี ใช้ lahui.svg
+                  alt={post.title || "default-logo"}
+                  
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = lahui; // fallback ถ้ารูปโหลดไม่ได้
+                  }}
+                />
               </div>
             </div>
 
@@ -155,7 +175,7 @@ const MyPost: React.FC = () => {
               <Button size="small" type="default">
                 แก้ไข
               </Button>
-              <Button danger size="small">
+              <Button danger size="small" onClick={() => handleDelete(post.ID)}>
                 ลบโพสต์
               </Button>
               <Button type="primary" size="small">

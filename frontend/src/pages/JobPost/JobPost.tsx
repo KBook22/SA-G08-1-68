@@ -304,7 +304,7 @@
 
 // export default JobPost;
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import {
   Form,
   Input,
@@ -320,6 +320,7 @@ import {
   Row,
   Col,
 } from "antd";
+import { useAuth } from "../../context/AuthContext";
 import type { RadioChangeEvent } from "antd";
 import "./JobPost.css";
 import PageHeader from "../../components/PageHeader";
@@ -334,10 +335,13 @@ import type { CreateJobpost } from "../../interfaces/jobpost";
 const { TextArea } = Input;
 
 const JobPost: React.FC = () => {
+  const { user } = useAuth();
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [portfolioFile, setPortfolioFile] = useState<File | null>(null);
+
+  console.log(user)
 
   // state
   const [categories, setCategories] = useState<
@@ -394,6 +398,7 @@ const JobPost: React.FC = () => {
       .catch((err) => console.error("Error fetching employment types:", err));
   }, []);
 
+
   // ส่งฟอร์ม สร้าง payload ที่ตรงกับ interface CreateJobpost
   const handleFinish = async (values: any) => {
     try {
@@ -409,6 +414,7 @@ const JobPost: React.FC = () => {
         employment_type_id: values.employmentTypeId,
         salary_type_id: values.salaryTypeId,
         image_url: imagePreview || null,
+        employer_id: Number(user?.id), // จาก context
       };
       console.log("ส่งไป backend:", payload);
       const res = await jobPostAPI.create(payload);
