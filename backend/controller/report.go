@@ -14,24 +14,24 @@ import (
 
 //  returned by report ID
 type ResultByReportID struct {
-		Title      string    `json:"title"`
-		Date       time.Time `json:"date"`
-		Place      string    `json:"place"`
-        Discription  string `json:"discription"`
-        Username     string `json:"username"`
-        Statusname   string `json:"statusname"`
-        AdminEmail   string `json:"admin_email"`
+		Title      		string    `json:"title"`
+		Datetime   		time.Time `json:"datetime"`
+		Place      		string    `json:"place"`
+        Discription  	string `json:"discription"`
+        Username     	string `json:"username"`
+        Statusname   	string `json:"statusname"`
+        AdminEmail   	string `json:"admin_email"`
     }
 
 // result returned by user ID
 type ResultByUserID struct {
-		ID         uint      `json:"id"`
-		Title      string    `json:"title"`
-		Date       time.Time `json:"date"`
-		Place      string    `json:"place"`
-        Discription  string `json:"discription"`
-        Username     string `json:"username"`
-        Statusname   string `json:"statusname"`
+		ID        		uint      	`json:"id"`
+		Title      		string    	`json:"title"`
+		Datetime  		time.Time 	`json:"datetime"`
+		Place      		string    	`json:"place"`
+        Discription 	string 		`json:"discription"`
+        Username    	string 		`json:"username"`
+        Statusname  	string 		`json:"statusname"`
     }
 
 // Create report
