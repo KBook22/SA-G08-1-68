@@ -103,7 +103,7 @@ const MainRoutes: React.FC = () => {
             <Route path="/payment-report" element={<PaymentReportPage />} />
             <Route path="/payment" element={<PaymentPage />} />
             <Route path="/review" element={<ReviewPage />} />
-            <Route path="/InterviewScheduling" element={<InterviewScheduling/>} />
+            <Route path="/Interview-Schedule" element={<InterviewScheduling/>} />
             <Route path="/profile-v1" element={<ProfilePageV1 />} />
             <Route path="/review-page" element={<ReviewPage />} />
             
