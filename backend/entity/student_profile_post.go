@@ -41,7 +41,7 @@ type StudentProfilePost struct {
     Availability        string  `json:"availability" gorm:"type:varchar(255);not null"`
     PreferredLocation   string  `json:"preferred_location" gorm:"type:varchar(255);not null"`
     ExpectedCompensation string `json:"expected_compensation" gorm:"type:text"`
-    Content             string  `json:"content" gorm:"type:text;not null"`
+    
     
     // ✅ ข้อมูลเก่าที่ยังใช้ได้
     Introduction        string  `json:"introduction" gorm:"type:text"`

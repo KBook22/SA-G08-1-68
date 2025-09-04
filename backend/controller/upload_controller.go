@@ -45,6 +45,7 @@ func UploadToSupabase(c *gin.Context) {
 		".gif":  true,
 		".webp": true,
 		".bmp":  true,
+		".pdf": true,
 	}
 
 	ext := strings.ToLower(filepath.Ext(header.Filename))

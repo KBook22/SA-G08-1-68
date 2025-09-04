@@ -5,33 +5,33 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	
-	"github.com/gin-gonic/gin"
+
 	"github.com/KBook22/System-Analysis-and-Design/config"
 	"github.com/KBook22/System-Analysis-and-Design/entity"
+	"github.com/gin-gonic/gin"
 )
 
 // GetSkills ดึงรายการทักษะทั้งหมด
 func GetSkills(c *gin.Context) {
 	search := c.Query("search")
-	
+
 	var skills []entity.Skill
 	query := config.DB()
-	
+
 	if search != "" {
 		query = query.Where("skill_name LIKE ?", "%"+search+"%")
 	}
-	
+
 	query = query.Order("skill_name ASC")
-	
+
 	if err := query.Find(&skills).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to fetch skills",
+			"error":   "Failed to fetch skills",
 			"message": err.Error(),
 		})
 		return
 	}
-	
+
 	var response []entity.SkillResponse
 	for _, skill := range skills {
 		response = append(response, entity.SkillResponse{
@@ -39,7 +39,7 @@ func GetSkills(c *gin.Context) {
 			SkillName: skill.SkillName,
 		})
 	}
-	
+
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data":    response,
@@ -50,7 +50,7 @@ func GetSkills(c *gin.Context) {
 // CreateSkill เพิ่มทักษะใหม่
 func CreateSkill(c *gin.Context) {
 	var req entity.SkillRequest
-	
+
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
@@ -59,7 +59,7 @@ func CreateSkill(c *gin.Context) {
 		})
 		return
 	}
-	
+
 	skillName := strings.TrimSpace(req.SkillName)
 	if skillName == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -68,7 +68,7 @@ func CreateSkill(c *gin.Context) {
 		})
 		return
 	}
-	
+
 	// ตรวจสอบว่ามีทักษะนี้อยู่แล้วหรือไม่
 	var existingSkill entity.Skill
 	if err := config.DB().Where("LOWER(skill_name) = LOWER(?)", skillName).First(&existingSkill).Error; err == nil {
@@ -84,12 +84,12 @@ func CreateSkill(c *gin.Context) {
 		})
 		return
 	}
-	
+
 	// เพิ่มทักษะใหม่
 	newSkill := entity.Skill{
 		SkillName: skillName,
 	}
-	
+
 	if err := config.DB().Create(&newSkill).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -98,7 +98,7 @@ func CreateSkill(c *gin.Context) {
 		})
 		return
 	}
-	
+
 	c.JSON(http.StatusCreated, gin.H{
 		"success": true,
 		"message": "Skill created successfully",
@@ -113,7 +113,7 @@ func CreateSkill(c *gin.Context) {
 // GetSkillByID ดึงทักษะตาม ID
 func GetSkillByID(c *gin.Context) {
 	id := c.Param("id")
-	
+
 	var skill entity.Skill
 	if err := config.DB().First(&skill, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
@@ -122,7 +122,7 @@ func GetSkillByID(c *gin.Context) {
 		})
 		return
 	}
-	
+
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data": entity.SkillResponse{
@@ -136,7 +136,7 @@ func GetSkillByID(c *gin.Context) {
 func SearchSkills(c *gin.Context) {
 	search := c.Query("q")
 	limitStr := c.DefaultQuery("limit", "20")
-	
+
 	if search == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
@@ -144,17 +144,17 @@ func SearchSkills(c *gin.Context) {
 		})
 		return
 	}
-	
+
 	limit, err := strconv.Atoi(limitStr)
 	if err != nil {
 		limit = 20
 	}
-	
+
 	var skills []entity.Skill
-	
+
 	// ✅ แก้ไข: ใช้ Raw SQL แทน Order() ที่มี arguments
 	orderSQL := fmt.Sprintf("CASE WHEN skill_name LIKE '%s%%' THEN 1 ELSE 2 END, skill_name ASC", search)
-	
+
 	if err := config.DB().
 		Where("skill_name LIKE ?", "%"+search+"%").
 		Order(orderSQL).
@@ -166,7 +166,7 @@ func SearchSkills(c *gin.Context) {
 		})
 		return
 	}
-	
+
 	var response []entity.SkillResponse
 	for _, skill := range skills {
 		response = append(response, entity.SkillResponse{
@@ -174,7 +174,7 @@ func SearchSkills(c *gin.Context) {
 			SkillName: skill.SkillName,
 		})
 	}
-	
+
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data":    response,

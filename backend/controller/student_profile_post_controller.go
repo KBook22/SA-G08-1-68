@@ -263,10 +263,7 @@ func CreateStudentProfilePost(c *gin.Context) {
         c.JSON(http.StatusBadRequest, gin.H{"error": "Preferred location is required"})
         return
     }
-    if post.Content == "" {
-        c.JSON(http.StatusBadRequest, gin.H{"error": "Content is required"})
-        return
-    }
+    
     
     // ใส่ StudentID และ Status
     post.StudentID = &student.ID
@@ -358,7 +355,7 @@ func UpdateStudentProfilePost(c *gin.Context) {
     existingPost.Availability = updateData.Availability
     existingPost.PreferredLocation = updateData.PreferredLocation
     existingPost.ExpectedCompensation = updateData.ExpectedCompensation
-    existingPost.Content = updateData.Content
+   
     existingPost.Introduction = updateData.Introduction
     existingPost.PortfolioURL = updateData.PortfolioURL
     

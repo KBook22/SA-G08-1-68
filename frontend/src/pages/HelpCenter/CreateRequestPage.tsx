@@ -278,78 +278,83 @@
 // };
 
 // export default CreateRequestPage;
-
-
-// src/pages/HelpCenter/CreateRequestPage.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Card, Form, Input, Button, Typography, Space, message,
-  Steps, Row, Col, Alert, Upload, Image, Progress
+  Card,
+  Form,
+  Input,
+  Button,
+  Typography,
+  Space,
+  message,
+  Steps,
+  Row,
+  Col,
+  Alert,
+  Upload,
 } from 'antd';
+import type { UploadFile, UploadProps } from 'antd';
 import {
-  ArrowLeftOutlined, SendOutlined, FileTextOutlined,
-  CheckCircleOutlined, PictureOutlined, DeleteOutlined
+  ArrowLeftOutlined,
+  SendOutlined,
+  FileTextOutlined,
+  CheckCircleOutlined,
+  PaperClipOutlined,
 } from '@ant-design/icons';
-import type { UploadFile } from 'antd';
-import { uploadHelpCenterImage } from '../../lib/firebase';
 
-const { Title, Text, Paragraph } = Typography;
+const { Title, Paragraph } = Typography;
 const { TextArea } = Input;
-const { Dragger } = Upload;
 
+// ชี้ไปยัง Backend ของคุณ
 const API_URL = 'http://localhost:8080/api';
+
+type Attachment = { url: string; name: string; type: string };
 
 const CreateRequestPage: React.FC = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  
-  // ✨ เพิ่ม states สำหรับรูปภาพ
-  const [imageFiles, setImageFiles] = useState<UploadFile[]>([]);
-  const [uploadProgress, setUploadProgress] = useState<{[key: string]: number}>({});
-  const [uploadingImages, setUploadingImages] = useState(false);
 
-  // ✨ ฟังก์ชันจัดการการอัปโหลดรูป
-  const handleImageUpload = async (file: File): Promise<string | null> => {
+  // --- อัปโหลดรูปภาพไปยัง Supabase ผ่าน Backend ---
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+
+  const uploadToBackend: UploadProps['customRequest'] = async (options) => {
+    const { file, onSuccess, onError } = options;
     try {
-      setUploadingImages(true);
-      setUploadProgress(prev => ({ ...prev, [file.name]: 0 }));
+      const realFile = file as File;
 
-      // Simulate progress (Firebase doesn't provide real progress for uploads)
-      const progressInterval = setInterval(() => {
-        setUploadProgress(prev => {
-          const current = prev[file.name] || 0;
-          if (current < 90) {
-            return { ...prev, [file.name]: current + 10 };
-          }
-          return prev;
-        });
-      }, 100);
-
-      const result = await uploadHelpCenterImage(file, 'ticket');
-      
-      clearInterval(progressInterval);
-      setUploadProgress(prev => ({ ...prev, [file.name]: 100 }));
-      
-      if (result) {
-        message.success(`อัปโหลดรูป ${result.originalName} สำเร็จ`);
-        return result.url;
+      // Backend ปัจจุบันรับเฉพาะ "images" (jpg/png/webp/gif/bmp)
+      if (!realFile.type?.startsWith('image/')) {
+        message.error('อนุญาตเฉพาะไฟล์รูปภาพเท่านั้น');
+        onError?.(new Error('invalid file type'));
+        return;
       }
-      return null;
-    } catch (error: any) {
-      message.error(error.message || 'เกิดข้อผิดพลาดในการอัปโหลดรูป');
-      return null;
-    } finally {
-      setUploadingImages(false);
-      setTimeout(() => {
-        setUploadProgress(prev => {
-          const newProgress = { ...prev };
-          delete newProgress[file.name];
-          return newProgress;
-        });
-      }, 1000);
+
+      const fd = new FormData();
+      fd.append('file', realFile);
+
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_URL}/upload`, {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        body: fd,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || 'อัปโหลดไม่สำเร็จ');
+
+      // เก็บ URL เพื่อแนบไปกับ Ticket
+      setAttachments((prev) => [
+        ...prev,
+        { url: data.url, name: realFile.name, type: realFile.type || 'image/*' },
+      ]);
+      onSuccess?.(data as any);
+      message.success('อัปโหลดไฟล์สำเร็จ');
+    } catch (err: any) {
+      message.error(err?.message || 'การอัปโหลดไฟล์ล้มเหลว');
+      onError?.(err);
     }
   };
 
@@ -363,259 +368,224 @@ const CreateRequestPage: React.FC = () => {
         return;
       }
 
-      // ✨ อัปโหลดรูปทั้งหมดก่อน
-      const imageUrls: string[] = [];
-      for (const fileObj of imageFiles) {
-        if (fileObj.originFileObj) {
-          const url = await handleImageUpload(fileObj.originFileObj);
-          if (url) imageUrls.push(url);
-        }
-      }
-
-      const requestData = {
-        subject: values.subject,
-        initial_message: values.initial_message,
-        images: imageUrls // ✨ เพิ่มรูปภาพ
-      };
-
+      // ✅ ส่งไฟล์แนบเมื่อสร้าง Ticket
       const response = await fetch(`${API_URL}/tickets`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(requestData)
+        body: JSON.stringify({
+          subject: values.subject,
+          initial_message: values.initial_message,
+          attachments, // <<<< สำคัญ
+        }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create ticket');
+        throw new Error(errorData.error || 'สร้าง Ticket ไม่สำเร็จ');
       }
 
-      const ticketData = await response.json();
-      setCurrentStep(1);
-      message.success('ส่งคำร้องสำเร็จแล้ว! กำลังนำทางไปหน้าศูนย์ช่วยเหลือ...');
-      
-      setTimeout(() => {
-        navigate('/help?tab=2');
-      }, 2000);
+      await response.json();
 
+      setCurrentStep(1);
+      message.success('ส่งคำร้องสำเร็จ! กำลังเปลี่ยนเส้นทางไปยังศูนย์ช่วยเหลือ...');
+      setTimeout(() => navigate('/help?tab=2'), 2000);
     } catch (error: any) {
       console.error('Error creating ticket:', error);
-      message.error(error.message || 'เกิดข้อผิดพลาดในการส่งคำร้อง');
+      message.error(error.message || 'เกิดข้อผิดพลาดขณะส่งคำร้อง');
     } finally {
       setLoading(false);
     }
   };
 
-  // ✨ การจัดการไฟล์อัปโหลด
-  const uploadProps = {
-    beforeUpload: (file: File) => {
-      // ตรวจสอบประเภทไฟล์
-      if (!file.type.startsWith('image/')) {
-        message.error('กรุณาเลือกไฟล์รูปภาพเท่านั้น');
-        return false;
-      }
-      
-      // ตรวจสอบขนาดไฟล์ (5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        message.error('ไฟล์รูปภาพต้องมีขนาดไม่เกิน 5MB');
-        return false;
-      }
-
-      return false; // ป้องกันการอัปโหลดอัตโนมัติ
-    },
-    onChange: ({ fileList }: { fileList: UploadFile[] }) => {
-      setImageFiles(fileList.slice(-3)); // จำกัดแค่ 3 รูป
-    },
-    onRemove: (file: UploadFile) => {
-      setImageFiles(prev => prev.filter(f => f.uid !== file.uid));
-    },
-    fileList: imageFiles,
-    multiple: true,
-    accept: 'image/*',
-    listType: 'picture-card' as const,
-  };
-
   const steps = [
-    {
-      title: 'กรอกข้อมูล',
-      icon: <FileTextOutlined />,
-      description: 'กรอกรายละเอียดคำร้อง'
-    },
-    {
-      title: 'สำเร็จ',
-      icon: <CheckCircleOutlined />,
-      description: 'ส่งคำร้องเรียบร้อย'
-    }
+    { title: 'กรอกข้อมูล', icon: <FileTextOutlined /> },
+    { title: 'สำเร็จ', icon: <CheckCircleOutlined /> },
   ];
-
-  if (currentStep === 1) {
-    return (
-      <div className="help-center-container">
-        <Card 
-          style={{ 
-            maxWidth: 600, 
-            margin: '50px auto',
-            borderRadius: '16px',
-            textAlign: 'center'
-          }}
-        >
-          <Space direction="vertical" size="large" style={{ width: '100%' }}>
-            <Steps current={1} items={steps} />
-            
-            <div className="success-icon">
-              <CheckCircleOutlined style={{ fontSize: '64px', color: '#52c41a' }} />
-            </div>
-            
-            <Title level={3} style={{ color: '#52c41a' }}>
-              ส่งคำร้องสำเร็จแล้ว!
-            </Title>
-            
-            <Paragraph>
-              เราได้รับคำร้องของคุณแล้ว และจะดำเนินการตอบกลับโดยเร็วที่สุด
-              กำลังนำทางไปยังศูนย์ช่วยเหลือ...
-            </Paragraph>
-
-            <div className="success-redirect">
-              <Progress percent={100} showInfo={false} />
-            </div>
-          </Space>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="help-center-container">
-      <Row justify="center">
-        <Col xs={24} sm={20} md={16} lg={12}>
-          <Card 
-            className="create-request-form"
-            style={{ 
-              borderRadius: '16px',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)'
-            }}
-          >
-            {/* Header */}
-            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-              <Button 
-                icon={<ArrowLeftOutlined />}
-                type="text" 
-                onClick={() => navigate('/help')}
-                style={{ float: 'left' }}
-              >
-                กลับ
-              </Button>
-              
-              <Title level={3} style={{ margin: 0, color: '#1d39c4' }}>
-                <FileTextOutlined /> ส่งคำร้องขอความช่วยเหลือ
-              </Title>
-              
-              <Text type="secondary">
-                กรุณากรอกรายละเอียดปัญหาที่คุณพบ เราจะตอบกลับโดยเร็วที่สุด
-              </Text>
-            </div>
-
-            <Steps current={0} items={steps} style={{ marginBottom: '32px' }} />
-
-            <Form
-              form={form}
-              layout="vertical"
-              onFinish={handleSubmit}
-              size="large"
+      {/* ส่วนหัว */}
+      <Card
+        style={{
+          marginBottom: '24px',
+          borderRadius: '16px',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          border: 'none',
+          color: 'white',
+        }}
+      >
+        <Row justify="space-between" align="middle">
+          <Col>
+            <Button
+              icon={<ArrowLeftOutlined />}
+              onClick={() => navigate('/help')}
+              style={{
+                background: 'rgba(255, 255, 255, 0.2)',
+                border: 'none',
+                color: 'white',
+                borderRadius: '8px',
+              }}
             >
-              <Form.Item
-                name="subject"
-                label="หัวข้อคำร้อง"
-                rules={[
-                  { required: true, message: 'กรุณากรอกหัวข้อคำร้อง' },
-                  { min: 5, message: 'หัวข้อต้องมีอย่างน้อย 5 ตัวอักษร' }
-                ]}
-              >
-                <Input 
-                  placeholder="เช่น ปัญหาการเข้าสู่ระบบ, ข้อผิดพลาดในการใช้งาน"
-                  style={{ borderRadius: '8px' }}
-                />
-              </Form.Item>
+              กลับไปที่ศูนย์ช่วยเหลือ
+            </Button>
+          </Col>
+        </Row>
 
-              <Form.Item
-                name="initial_message"
-                label="รายละเอียดปัญหา"
-                rules={[
-                  { required: true, message: 'กรุณากรอกรายละเอียดปัญหา' },
-                  { min: 10, message: 'รายละเอียดต้องมีอย่างน้อย 10 ตัวอักษร' }
-                ]}
-              >
-                <TextArea
-                  rows={6}
-                  placeholder="กรุณาอธิบายปัญหาที่พบให้ละเอียด เพื่อให้เราสามารถช่วยเหลือคุณได้อย่างมีประสิทธิภาพ..."
-                  style={{ borderRadius: '8px' }}
-                />
-              </Form.Item>
+        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+          <Title level={2} style={{ color: 'white', margin: '0 0 8px 0' }}>
+            ส่งคำร้องขอความช่วยเหลือ
+          </Title>
+          <Paragraph style={{ color: 'rgba(255, 255, 255, 0.8)', margin: 0, fontSize: '16px' }}>
+            กรุณาให้รายละเอียดเกี่ยวกับปัญหาของคุณ แล้วเราจะติดต่อกลับโดยเร็วที่สุด
+          </Paragraph>
+        </div>
+      </Card>
 
-              {/* ✨ ส่วนอัปโหลดรูปภาพ */}
-              <Form.Item label="แนบรูปภาพประกอบ (ไม่บังคับ)">
-                <Dragger {...uploadProps} style={{ borderRadius: '8px' }}>
-                  <p className="ant-upload-drag-icon">
-                    <PictureOutlined style={{ fontSize: '48px', color: '#1890ff' }} />
-                  </p>
-                  <p className="ant-upload-text">
-                    คลิกหรือลากไฟล์รูปภาพมาที่นี่
-                  </p>
-                  <p className="ant-upload-hint">
-                    รองรับไฟล์ JPG, PNG, GIF (ขนาดไม่เกิน 5MB, สูงสุด 3 รูป)
-                  </p>
-                </Dragger>
+      {/* ขั้นตอน */}
+      <Card style={{ marginBottom: '24px', borderRadius: '12px' }}>
+        <Steps current={currentStep} items={steps} style={{ maxWidth: '400px', margin: '0 auto' }} />
+      </Card>
 
-                {/* แสดง Progress การอัปโหลด */}
-                {Object.entries(uploadProgress).map(([fileName, progress]) => (
-                  <div key={fileName} style={{ marginTop: '8px' }}>
-                    <Text style={{ fontSize: '12px' }}>กำลังอัปโหลด {fileName}</Text>
-                    <Progress percent={progress} size="small" />
-                  </div>
-                ))}
-              </Form.Item>
-
-              <Alert
-                message="ข้อแนะนำ"
-                description="การแนบรูปภาพที่แสดงปัญหาจะช่วยให้เราเข้าใจและแก้ไขปัญหาได้รวดเร็วขึ้น"
-                type="info"
-                showIcon
-                style={{ marginBottom: '24px', borderRadius: '8px' }}
+      {/* ฟอร์ม */}
+      {currentStep === 0 && (
+        <Card
+          title={
+            <Space>
+              <FileTextOutlined style={{ color: '#1890ff' }} />
+              <span>รายละเอียดคำร้อง</span>
+            </Space>
+          }
+          style={{ borderRadius: '12px' }}
+        >
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleSubmit}
+            style={{ maxWidth: '800px', margin: '0 auto' }}
+            size="large"
+          >
+            <Form.Item
+              label="หัวข้อ"
+              name="subject"
+              rules={[
+                { required: true, message: 'กรุณากรอกหัวข้อ' },
+                { min: 5, message: 'หัวข้อต้องมีความยาวอย่างน้อย 5 ตัวอักษร' },
+              ]}
+            >
+              <Input
+                placeholder="เช่น ปัญหาการเข้าสู่ระบบ, คำถามเกี่ยวกับการใช้งาน"
+                style={{ borderRadius: '8px', height: '48px' }}
               />
+            </Form.Item>
 
-              <Form.Item style={{ marginBottom: 0, textAlign: 'center' }}>
-                <Space size="middle">
-                  <Button 
-                    size="large"
-                    onClick={() => navigate('/help')}
-                    style={{ borderRadius: '8px', minWidth: '120px' }}
-                  >
-                    ยกเลิก
-                  </Button>
-                  
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    loading={loading || uploadingImages}
-                    icon={<SendOutlined />}
-                    size="large"
-                    style={{
-                      borderRadius: '8px',
-                      minWidth: '160px',
-                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                      border: 'none'
-                    }}
-                  >
-                    {uploadingImages ? 'กำลังอัปโหลดรูป...' : loading ? 'กำลังส่ง...' : 'ส่งคำร้อง'}
-                  </Button>
-                </Space>
-              </Form.Item>
-            </Form>
-          </Card>
-        </Col>
-      </Row>
+            <Form.Item
+              label="รายละเอียดปัญหา"
+              name="initial_message"
+              rules={[
+                { required: true, message: 'กรุณากรอกรายละเอียดปัญหา' },
+                { min: 20, message: 'รายละเอียดต้องมีความยาวอย่างน้อย 20 ตัวอักษร' },
+              ]}
+            >
+              <TextArea
+                rows={6}
+                placeholder="กรุณาอธิบายปัญหาของคุณให้ละเอียดที่สุด เพื่อให้เราสามารถช่วยเหลือได้อย่างถูกต้อง"
+                style={{ borderRadius: '8px' }}
+              />
+            </Form.Item>
+
+            {/* แนบรูปภาพ (อัปโหลดไปที่ Supabase ผ่าน Backend) */}
+            <Form.Item
+              label="แนบรูปภาพ (อัปโหลดเข้าระบบ)"
+              extra="รองรับ .jpg, .jpeg, .png, .gif, .webp, .bmp"
+            >
+              <Upload
+                multiple
+                accept="image/*"
+                listType="picture"
+                fileList={fileList}
+                customRequest={uploadToBackend}
+                beforeUpload={(file) => {
+                  if (!file.type?.startsWith('image/')) {
+                    message.error('อนุญาตเฉพาะไฟล์รูปภาพเท่านั้น');
+                    return Upload.LIST_IGNORE;
+                  }
+                  return true;
+                }}
+                onChange={({ fileList: fl }) => setFileList(fl)}
+                onRemove={(file) => {
+                  setAttachments((prev) => prev.filter((a) => a.name !== file.name));
+                  return true;
+                }}
+              >
+                <Button icon={<PaperClipOutlined />}>แนบรูปภาพ</Button>
+              </Upload>
+            </Form.Item>
+
+            <Alert
+              message="ข้อมูลเพิ่มเติม"
+              description="ปัญหาของคุณจะได้รับการดูแลภายใน 24 ชั่วโมง ให้บริการตลอด 24 ชั่วโมง"
+              type="info"
+              showIcon
+              style={{ marginBottom: '24px', borderRadius: '8px' }}
+            />
+
+            <Form.Item style={{ textAlign: 'center', marginBottom: 0 }}>
+              <Space size="large">
+                <Button
+                  size="large"
+                  onClick={() => navigate('/help')}
+                  style={{ borderRadius: '8px', minWidth: '120px' }}
+                >
+                  ยกเลิก
+                </Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={loading}
+                  size="large"
+                  icon={<SendOutlined />}
+                  style={{
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    border: 'none',
+                    borderRadius: '8px',
+                    minWidth: '120px',
+                  }}
+                >
+                  ส่งคำร้อง
+                </Button>
+              </Space>
+            </Form.Item>
+          </Form>
+        </Card>
+      )}
+
+      {/* ขั้นตอนสำเร็จ */}
+      {currentStep === 1 && (
+        <Card
+          style={{
+            borderRadius: '12px',
+            textAlign: 'center',
+            background: 'linear-gradient(135deg, #52c41a 0%, #389e0d 100%)',
+            color: 'white',
+            border: 'none',
+          }}
+        >
+          <div className="success-icon">
+            <CheckCircleOutlined style={{ fontSize: '64px', color: 'white', marginBottom: '16px' }} />
+          </div>
+          <Title level={2} style={{ color: 'white', margin: '0 0 16px 0' }}>
+            ส่งคำร้องสำเร็จ!
+          </Title>
+          <Paragraph style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '16px' }}>
+            เราได้รับคำร้องของคุณแล้ว และจะติดต่อกลับโดยเร็วที่สุด
+            <br />
+            คุณสามารถติดตามสถานะได้ที่แท็บ "คำร้องของฉัน"
+          </Paragraph>
+        </Card>
+      )}
     </div>
   );
 };

@@ -1,30 +1,30 @@
 // // src/pages/StudentFeed/StudentFeedPage.tsx
 // import React, { useState, useEffect, useCallback } from 'react';
-// import { 
-//   Card, 
-//   Col, 
-//   Row, 
-//   Typography, 
-//   Tag, 
-//   Avatar, 
-//   Button, 
-//   Input, 
-//   Space, 
-//   Modal, 
-//   Spin, 
+// import {
+//   Card,
+//   Col,
+//   Row,
+//   Typography,
+//   Tag,
+//   Avatar,
+//   Button,
+//   Input,
+//   Space,
+//   Modal,
+//   Spin,
 //   message,
 //   Empty,
 //   Divider,
-//   Pagination 
+//   Pagination
 // } from 'antd';
-// import { 
-//   UserOutlined, 
-//   SearchOutlined, 
+// import {
+//   UserOutlined,
+//   SearchOutlined,
 //   EyeOutlined,
 //   PhoneOutlined,
 //   MailOutlined,
 //   BookOutlined,
-//   StarOutlined 
+//   StarOutlined
 // } from '@ant-design/icons';
 // import { useNavigate } from 'react-router-dom';
 // import { getStudentProfilePosts } from '../../services/studentPostService';
@@ -128,7 +128,7 @@
 
 //     const searchLower = value.toLowerCase();
 //     const filtered = posts.filter(post => {
-//       const studentName = post.student ? 
+//       const studentName = post.student ?
 //         `${post.student.first_name || ''} ${post.student.last_name || ''}`.toLowerCase() : '';
 //       const facultyName = post.faculty?.Name?.toLowerCase() || post.student?.faculty?.toLowerCase() || '';
 //       const departmentName = post.department?.Name?.toLowerCase() || '';
@@ -172,11 +172,11 @@
 
 //   if (loading) {
 //     return (
-//       <div style={{ 
-//         display: 'flex', 
-//         justifyContent: 'center', 
-//         alignItems: 'center', 
-//         minHeight: '50vh' 
+//       <div style={{
+//         display: 'flex',
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         minHeight: '50vh'
 //       }}>
 //         <Spin size="large" />
 //         <Text style={{ marginLeft: '16px' }}>กำลังโหลดข้อมูลโพสต์...</Text>
@@ -221,7 +221,7 @@
 //           <>
 //             <Row gutter={[16, 16]}>
 //               {currentPosts.map((post) => {
-//                 const studentName = post.student ? 
+//                 const studentName = post.student ?
 //                   `${post.student.first_name || ''} ${post.student.last_name || ''}`.trim() || 'ไม่ระบุชื่อ'
 //                   : 'ไม่ระบุชื่อ';
 
@@ -233,31 +233,31 @@
 //                   <Col xs={24} sm={12} lg={8} xl={6} key={post.ID}>
 //                     <Card
 //                       hoverable
-//                       style={{ 
+//                       style={{
 //                         height: '100%',
 //                         borderRadius: '12px',
 //                         boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
 //                       }}
 //                       cover={
-//                         <div style={{ 
-//                           height: '120px', 
+//                         <div style={{
+//                           height: '120px',
 //                           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
 //                           display: 'flex',
 //                           alignItems: 'center',
 //                           justifyContent: 'center',
 //                           position: 'relative'
 //                         }}>
-//                           <Avatar 
-//                             size={64} 
+//                           <Avatar
+//                             size={64}
 //                             src={post.student?.profile_image_url}
 //                             icon={<UserOutlined />}
 //                             style={{ border: '3px solid white' }}
 //                           />
-//                           <Tag 
-//                             color="blue" 
-//                             style={{ 
-//                               position: 'absolute', 
-//                               top: '12px', 
+//                           <Tag
+//                             color="blue"
+//                             style={{
+//                               position: 'absolute',
+//                               top: '12px',
 //                               right: '12px',
 //                               borderRadius: '12px'
 //                             }}
@@ -267,15 +267,15 @@
 //                         </div>
 //                       }
 //                       actions={[
-//                         <Button 
-//                           type="text" 
+//                         <Button
+//                           type="text"
 //                           icon={<EyeOutlined />}
 //                           onClick={() => showPostDetail(post)}
 //                         >
 //                           ดูรายละเอียด
 //                         </Button>,
-//                         <Button 
-//                           type="text" 
+//                         <Button
+//                           type="text"
 //                           icon={<UserOutlined />}
 //                           onClick={() => goToProfile(post.student?.ID || post.student?.id || post.student_id || 0)}
 //                         >
@@ -298,10 +298,10 @@
 //                           </Text>
 //                         </div>
 
-//                         <Paragraph 
-//                           ellipsis={{ rows: 2 }} 
-//                           style={{ 
-//                             fontSize: '13px', 
+//                         <Paragraph
+//                           ellipsis={{ rows: 2 }}
+//                           style={{
+//                             fontSize: '13px',
 //                             marginBottom: '12px',
 //                             minHeight: '36px'
 //                           }}
@@ -344,7 +344,7 @@
 //                 onChange={(page) => setCurrentPage(page)}
 //                 showSizeChanger={false}
 //                 showQuickJumper
-//                 showTotal={(total, range) => 
+//                 showTotal={(total, range) =>
 //                   `${range[0]}-${range[1]} จาก ${total} โพสต์`
 //                 }
 //               />
@@ -353,7 +353,7 @@
 //         ) : (
 //           <Empty
 //             description={
-//               searchTerm 
+//               searchTerm
 //                 ? `ไม่พบโพสต์ที่ตรงกับ "${searchTerm}"`
 //                 : "ยังไม่มีโพสต์หางานจากนักศึกษา"
 //             }
@@ -393,14 +393,14 @@
 //               {/* Student Info */}
 //               <Card size="small" style={{ marginBottom: '16px' }}>
 //                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-//                   <Avatar 
-//                     size={64} 
+//                   <Avatar
+//                     size={64}
 //                     src={selectedPost.student?.profile_image_url}
 //                     icon={<UserOutlined />}
 //                   />
 //                   <div>
 //                     <Title level={5} style={{ margin: 0 }}>
-//                       {selectedPost.student ? 
+//                       {selectedPost.student ?
 //                         `${selectedPost.student.first_name || ''} ${selectedPost.student.last_name || ''}`.trim() || 'ไม่ระบุชื่อ'
 //                         : 'ไม่ระบุชื่อ'
 //                       }
@@ -455,9 +455,9 @@
 //                 <div style={{ marginBottom: '16px' }}>
 //                   <Text strong>ผลงาน:</Text>
 //                   <div style={{ marginTop: '4px' }}>
-//                     <a 
-//                       href={selectedPost.portfolio_url} 
-//                       target="_blank" 
+//                     <a
+//                       href={selectedPost.portfolio_url}
+//                       target="_blank"
 //                       rel="noopener noreferrer"
 //                       style={{ color: '#1890ff' }}
 //                     >
@@ -514,26 +514,26 @@
 
 // // src/pages/StudentFeed/StudentFeedPage.tsx
 // import React, { useState, useEffect, useCallback } from 'react';
-// import { 
-//   Card, 
-//   Col, 
-//   Row, 
-//   Typography, 
-//   Tag, 
-//   Avatar, 
-//   Button, 
-//   Input, 
-//   Space, 
-//   Modal, 
-//   Spin, 
+// import {
+//   Card,
+//   Col,
+//   Row,
+//   Typography,
+//   Tag,
+//   Avatar,
+//   Button,
+//   Input,
+//   Space,
+//   Modal,
+//   Spin,
 //   message,
 //   Empty,
 //   Divider,
-//   Pagination 
+//   Pagination
 // } from 'antd';
-// import { 
-//   UserOutlined, 
-//   SearchOutlined, 
+// import {
+//   UserOutlined,
+//   SearchOutlined,
 //   EyeOutlined,
 //   PhoneOutlined,
 //   MailOutlined,
@@ -545,10 +545,8 @@
 // import { useAuth } from '../../context/AuthContext'; // เพิ่มนี้
 // import { getStudentProfilePosts } from '../../services/studentPostService';
 
-
 // const { Title, Text, Paragraph } = Typography;
 // const { Search } = Input;
-
 
 // // Interface สำหรับ StudentProfilePost
 // interface Student {
@@ -563,18 +561,15 @@
 //   year?: number;
 // }
 
-
 // interface Faculty {
 //   ID: number;
 //   Name: string;
 // }
 
-
 // interface Department {
 //   ID: number;
 //   Name: string;
 // }
-
 
 // interface StudentProfilePost {
 //   ID: number;
@@ -594,7 +589,6 @@
 //   department?: Department;
 // }
 
-
 // const StudentFeedPage: React.FC = () => {
 //   const navigate = useNavigate();
 //   const { user } = useAuth(); // เพิ่มนี้
@@ -610,7 +604,6 @@
 //   // ตรวจสอบว่าเป็นนักศึกษาหรือไม่ - เพิ่มนี้
 //   const isStudent = user && (user.role === 'student' || user.role === 'stu');
 
-
 //   // ดึงข้อมูลโพสต์จาก API
 //   const fetchPosts = useCallback(async () => {
 //     try {
@@ -618,10 +611,8 @@
 //       const response = await getStudentProfilePosts();
 //       console.log('📄 Student posts response:', response);
 
-
 //       // ตรวจสอบโครงสร้างข้อมูลที่ได้รับ
 //       const postsData = response?.data || response || [];
-
 
 //       if (Array.isArray(postsData)) {
 //         setPosts(postsData);
@@ -641,34 +632,29 @@
 //     }
 //   }, []);
 
-
 //   useEffect(() => {
 //     fetchPosts();
 //   }, [fetchPosts]);
-
 
 //   // ฟังก์ชันค้นหา
 //   const handleSearch = useCallback((value: string) => {
 //     setSearchTerm(value);
 //     setCurrentPage(1);
 
-
 //     if (!value.trim()) {
 //       setFilteredPosts(posts);
 //       return;
 //     }
 
-
 //     const searchLower = value.toLowerCase();
 //     const filtered = posts.filter(post => {
-//       const studentName = post.student ? 
+//       const studentName = post.student ?
 //         `${post.student.first_name || ''} ${post.student.last_name || ''}`.toLowerCase() : '';
 //       const facultyName = post.faculty?.Name?.toLowerCase() || post.student?.faculty?.toLowerCase() || '';
 //       const departmentName = post.department?.Name?.toLowerCase() || '';
 //       const skills = post.skills?.toLowerCase() || '';
 //       const introduction = post.introduction?.toLowerCase() || '';
 //       const jobType = post.job_type?.toLowerCase() || '';
-
 
 //       return (
 //         studentName.includes(searchLower) ||
@@ -680,10 +666,8 @@
 //       );
 //     });
 
-
 //     setFilteredPosts(filtered);
 //   }, [posts]);
-
 
 //   // แสดง Modal รายละเอียด
 //   const showPostDetail = (post: StudentProfilePost) => {
@@ -691,12 +675,10 @@
 //     setIsModalVisible(true);
 //   };
 
-
 //   const closeModal = () => {
 //     setIsModalVisible(false);
 //     setSelectedPost(null);
 //   };
-
 
 //   // ไปหน้าโปรไฟล์
 //   const goToProfile = (studentId: number) => {
@@ -708,27 +690,24 @@
 //     navigate('/feed');
 //   };
 
-
 //   // คำนวณข้อมูลสำหรับ Pagination
 //   const startIndex = (currentPage - 1) * pageSize;
 //   const endIndex = startIndex + pageSize;
 //   const currentPosts = filteredPosts.slice(startIndex, endIndex);
 
-
 //   if (loading) {
 //     return (
-//       <div style={{ 
-//         display: 'flex', 
-//         justifyContent: 'center', 
-//         alignItems: 'center', 
-//         minHeight: '50vh' 
+//       <div style={{
+//         display: 'flex',
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         minHeight: '50vh'
 //       }}>
 //         <Spin size="large" />
 //         <Text style={{ marginLeft: '16px' }}>กำลังโหลดข้อมูลโพสต์...</Text>
 //       </div>
 //     );
 //   }
-
 
 //   return (
 //     <div style={{ padding: '24px', background: '#f0f2f5', minHeight: '100vh' }}>
@@ -746,16 +725,16 @@
 //                 </Text>
 //               </div>
 //             </Col>
-            
+
 //             {/* ปุ่มโพสต์ - แสดงเฉพาะนักศึกษา */}
 //             {isStudent && (
 //               <Col>
-//                 <Button 
-//                   type="primary" 
+//                 <Button
+//                   type="primary"
 //                   size="large"
 //                   icon={<PlusOutlined />}
 //                   onClick={goToCreatePost}
-//                   style={{ 
+//                   style={{
 //                     borderRadius: '8px',
 //                     fontWeight: '500'
 //                   }}
@@ -766,7 +745,6 @@
 //             )}
 //           </Row>
 //         </div>
-
 
 //         {/* Search Bar */}
 //         <Card style={{ marginBottom: '24px' }}>
@@ -780,7 +758,6 @@
 //             style={{ maxWidth: '600px', display: 'block', margin: '0 auto' }}
 //           />
 
-
 //           <div style={{ marginTop: '16px', textAlign: 'center' }}>
 //             <Text type="secondary">
 //               พบ {filteredPosts.length} โพสต์{searchTerm && ` จาก "${searchTerm}"`}
@@ -788,51 +765,48 @@
 //           </div>
 //         </Card>
 
-
 //         {/* Posts Grid */}
 //         {currentPosts.length > 0 ? (
 //           <>
 //             <Row gutter={[16, 16]}>
 //               {currentPosts.map((post) => {
-//                 const studentName = post.student ? 
+//                 const studentName = post.student ?
 //                   `${post.student.first_name || ''} ${post.student.last_name || ''}`.trim() || 'ไม่ระบุชื่อ'
 //                   : 'ไม่ระบุชื่อ';
-
 
 //                 const facultyName = post.faculty?.Name || post.student?.faculty || 'ไม่ระบุคณะ';
 //                 const departmentName = post.department?.Name || 'ไม่ระบุสาขา';
 //                 const skillsArray = post.skills ? post.skills.split(',').map(s => s.trim()).filter(Boolean) : [];
 
-
 //                 return (
 //                   <Col xs={24} sm={12} lg={8} xl={6} key={post.ID}>
 //                     <Card
 //                       hoverable
-//                       style={{ 
+//                       style={{
 //                         height: '100%',
 //                         borderRadius: '12px',
 //                         boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
 //                       }}
 //                       cover={
-//                         <div style={{ 
-//                           height: '120px', 
+//                         <div style={{
+//                           height: '120px',
 //                           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
 //                           display: 'flex',
 //                           alignItems: 'center',
 //                           justifyContent: 'center',
 //                           position: 'relative'
 //                         }}>
-//                           <Avatar 
-//                             size={64} 
+//                           <Avatar
+//                             size={64}
 //                             src={post.student?.profile_image_url}
 //                             icon={<UserOutlined />}
 //                             style={{ border: '3px solid white' }}
 //                           />
-//                           <Tag 
-//                             color="blue" 
-//                             style={{ 
-//                               position: 'absolute', 
-//                               top: '12px', 
+//                           <Tag
+//                             color="blue"
+//                             style={{
+//                               position: 'absolute',
+//                               top: '12px',
 //                               right: '12px',
 //                               borderRadius: '12px'
 //                             }}
@@ -842,15 +816,15 @@
 //                         </div>
 //                       }
 //                       actions={[
-//                         <Button 
-//                           type="text" 
+//                         <Button
+//                           type="text"
 //                           icon={<EyeOutlined />}
 //                           onClick={() => showPostDetail(post)}
 //                         >
 //                           ดูรายละเอียด
 //                         </Button>,
-//                         <Button 
-//                           type="text" 
+//                         <Button
+//                           type="text"
 //                           icon={<UserOutlined />}
 //                           onClick={() => goToProfile(post.student?.ID || post.student?.id || post.student_id || 0)}
 //                         >
@@ -863,7 +837,6 @@
 //                           {studentName}
 //                         </Title>
 
-
 //                         <div style={{ textAlign: 'center', marginBottom: '12px' }}>
 //                           <Text type="secondary" style={{ fontSize: '13px' }}>
 //                             {facultyName}
@@ -874,18 +847,16 @@
 //                           </Text>
 //                         </div>
 
-
-//                         <Paragraph 
-//                           ellipsis={{ rows: 2 }} 
-//                           style={{ 
-//                             fontSize: '13px', 
+//                         <Paragraph
+//                           ellipsis={{ rows: 2 }}
+//                           style={{
+//                             fontSize: '13px',
 //                             marginBottom: '12px',
 //                             minHeight: '36px'
 //                           }}
 //                         >
 //                           {post.introduction || 'ไม่มีการแนะนำตัว'}
 //                         </Paragraph>
-
 
 //                         <div>
 //                           <Text strong style={{ fontSize: '12px', color: '#666' }}>ทักษะ:</Text>
@@ -913,7 +884,6 @@
 //               })}
 //             </Row>
 
-
 //             {/* Pagination */}
 //             <div style={{ textAlign: 'center', marginTop: '32px' }}>
 //               <Pagination
@@ -923,7 +893,7 @@
 //                 onChange={(page) => setCurrentPage(page)}
 //                 showSizeChanger={false}
 //                 showQuickJumper
-//                 showTotal={(total, range) => 
+//                 showTotal={(total, range) =>
 //                   `${range[0]}-${range[1]} จาก ${total} โพสต์`
 //                 }
 //               />
@@ -932,7 +902,7 @@
 //         ) : (
 //           <Empty
 //             description={
-//               searchTerm 
+//               searchTerm
 //                 ? `ไม่พบโพสต์ที่ตรงกับ "${searchTerm}"`
 //                 : "ยังไม่มีโพสต์หางานจากนักศึกษา"
 //             }
@@ -940,8 +910,8 @@
 //           >
 //             {/* ปุ่มสร้างโพสต์ใน Empty State */}
 //             {isStudent && !searchTerm && (
-//               <Button 
-//                 type="primary" 
+//               <Button
+//                 type="primary"
 //                 icon={<PlusOutlined />}
 //                 onClick={goToCreatePost}
 //                 size="large"
@@ -951,7 +921,6 @@
 //             )}
 //           </Empty>
 //         )}
-
 
 //         {/* Detail Modal */}
 //         <Modal
@@ -985,14 +954,14 @@
 //               {/* Student Info */}
 //               <Card size="small" style={{ marginBottom: '16px' }}>
 //                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-//                   <Avatar 
-//                     size={64} 
+//                   <Avatar
+//                     size={64}
 //                     src={selectedPost.student?.profile_image_url}
 //                     icon={<UserOutlined />}
 //                   />
 //                   <div>
 //                     <Title level={5} style={{ margin: 0 }}>
-//                       {selectedPost.student ? 
+//                       {selectedPost.student ?
 //                         `${selectedPost.student.first_name || ''} ${selectedPost.student.last_name || ''}`.trim() || 'ไม่ระบุชื่อ'
 //                         : 'ไม่ระบุชื่อ'
 //                       }
@@ -1008,7 +977,6 @@
 //                 </div>
 //               </Card>
 
-
 //               {/* Job Type */}
 //               <div style={{ marginBottom: '16px' }}>
 //                 <Text strong>ประเภทงานที่ต้องการ:</Text>
@@ -1019,7 +987,6 @@
 //                 </div>
 //               </div>
 
-
 //               {/* Introduction */}
 //               <div style={{ marginBottom: '16px' }}>
 //                 <Text strong>แนะนำตัว:</Text>
@@ -1027,7 +994,6 @@
 //                   {selectedPost.introduction || 'ไม่มีการแนะนำตัว'}
 //                 </Paragraph>
 //               </div>
-
 
 //               {/* Skills */}
 //               <div style={{ marginBottom: '16px' }}>
@@ -1045,15 +1011,14 @@
 //                 </div>
 //               </div>
 
-
 //               {/* Portfolio */}
 //               {selectedPost.portfolio_url && (
 //                 <div style={{ marginBottom: '16px' }}>
 //                   <Text strong>ผลงาน:</Text>
 //                   <div style={{ marginTop: '4px' }}>
-//                     <a 
-//                       href={selectedPost.portfolio_url} 
-//                       target="_blank" 
+//                     <a
+//                       href={selectedPost.portfolio_url}
+//                       target="_blank"
 //                       rel="noopener noreferrer"
 //                       style={{ color: '#1890ff' }}
 //                     >
@@ -1062,7 +1027,6 @@
 //                   </div>
 //                 </div>
 //               )}
-
 
 //               {/* Contact Info */}
 //               <Divider />
@@ -1087,7 +1051,6 @@
 //                 </div>
 //               </div>
 
-
 //               {/* Created Date */}
 //               <div style={{ marginTop: '16px', textAlign: 'right' }}>
 //                 <Text type="secondary" style={{ fontSize: '12px' }}>
@@ -1108,33 +1071,31 @@
 //   );
 // };
 
-
 // export default StudentFeedPage;
-
 
 // src/pages/StudentFeed/StudentFeedPage.tsx
 // import React, { useState, useEffect, useCallback } from 'react';
-// import { 
-//   Card, 
-//   Col, 
-//   Row, 
-//   Typography, 
-//   Tag, 
-//   Avatar, 
-//   Button, 
-//   Input, 
-//   Space, 
-//   Modal, 
-//   Spin, 
+// import {
+//   Card,
+//   Col,
+//   Row,
+//   Typography,
+//   Tag,
+//   Avatar,
+//   Button,
+//   Input,
+//   Space,
+//   Modal,
+//   Spin,
 //   message,
 //   Empty,
 //   Divider,
 //   Pagination,
 //   Badge
 // } from 'antd';
-// import { 
-//   UserOutlined, 
-//   SearchOutlined, 
+// import {
+//   UserOutlined,
+//   SearchOutlined,
 //   EyeOutlined,
 //   PhoneOutlined,
 //   MailOutlined,
@@ -1250,7 +1211,7 @@
 
 //     const searchLower = value.toLowerCase();
 //     const filtered = posts.filter(post => {
-//       const studentName = post.student ? 
+//       const studentName = post.student ?
 //         `${post.student.first_name || ''} ${post.student.last_name || ''}`.toLowerCase() : '';
 //       const facultyName = post.faculty?.Name?.toLowerCase() || post.student?.faculty?.toLowerCase() || '';
 //       const departmentName = post.department?.Name?.toLowerCase() || '';
@@ -1312,10 +1273,10 @@
 
 //   if (loading) {
 //     return (
-//       <div style={{ 
-//         display: 'flex', 
-//         justifyContent: 'center', 
-//         alignItems: 'center', 
+//       <div style={{
+//         display: 'flex',
+//         justifyContent: 'center',
+//         alignItems: 'center',
 //         minHeight: '100vh',
 //         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
 //         flexDirection: 'column'
@@ -1329,9 +1290,9 @@
 //           textAlign: 'center'
 //         }}>
 //           <Spin size="large" />
-//           <Text style={{ 
-//             marginTop: '20px', 
-//             color: '#666', 
+//           <Text style={{
+//             marginTop: '20px',
+//             color: '#666',
 //             fontSize: '16px',
 //             display: 'block'
 //           }}>
@@ -1343,7 +1304,7 @@
 //   }
 
 //   return (
-//     <div style={{ 
+//     <div style={{
 //       minHeight: '100vh',
 //       background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
 //       position: 'relative'
@@ -1372,14 +1333,14 @@
 //         zIndex: 0
 //       }} />
 
-//       <div style={{ 
+//       <div style={{
 //         padding: '40px 24px',
 //         position: 'relative',
 //         zIndex: 1
 //       }}>
 //         <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
 //           {/* Header */}
-//           <div style={{ 
+//           <div style={{
 //             marginBottom: '40px',
 //             textAlign: 'center',
 //             position: 'relative'
@@ -1395,8 +1356,8 @@
 //               <Row justify="space-between" align="middle">
 //                 <Col flex="auto">
 //                   <Space direction="vertical" size={0} style={{ width: '100%' }}>
-//                     <Title level={1} style={{ 
-//                       margin: 0, 
+//                     <Title level={1} style={{
+//                       margin: 0,
 //                       background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
 //                       WebkitBackgroundClip: 'text',
 //                       WebkitTextFillColor: 'transparent',
@@ -1407,8 +1368,8 @@
 //                       <TrophyOutlined style={{ marginRight: '16px' }} />
 //                       โพสต์หางานของนักศึกษา
 //                     </Title>
-//                     <Text style={{ 
-//                       fontSize: '18px', 
+//                     <Text style={{
+//                       fontSize: '18px',
 //                       color: '#666',
 //                       marginTop: '8px'
 //                     }}>
@@ -1416,15 +1377,15 @@
 //                     </Text>
 //                   </Space>
 //                 </Col>
-                
+
 //                 {isStudent && (
 //                   <Col>
-//                     <Button 
-//                       type="primary" 
+//                     <Button
+//                       type="primary"
 //                       size="large"
 //                       icon={<PlusOutlined />}
 //                       onClick={goToCreatePost}
-//                       style={{ 
+//                       style={{
 //                         height: '56px',
 //                         padding: '0 32px',
 //                         borderRadius: '16px',
@@ -1453,7 +1414,7 @@
 //           </div>
 
 //           {/* Search Bar */}
-//           <Card style={{ 
+//           <Card style={{
 //             marginBottom: '32px',
 //             borderRadius: '20px',
 //             border: 'none',
@@ -1466,7 +1427,7 @@
 //                 placeholder="🔍 ค้นหาตามชื่อ, คณะ, สาขา, ทักษะ, หรือประเภทงาน..."
 //                 allowClear
 //                 enterButton={
-//                   <Button 
+//                   <Button
 //                     icon={<SearchOutlined />}
 //                     style={{
 //                       background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -1478,30 +1439,30 @@
 //                 size="large"
 //                 onSearch={handleSearch}
 //                 onChange={(e) => !e.target.value && handleSearch('')}
-//                 style={{ 
+//                 style={{
 //                   maxWidth: '700px',
 //                   borderRadius: '12px',
 //                   overflow: 'hidden'
 //                 }}
 //               />
 
-//               <div style={{ 
-//                 marginTop: '20px', 
-//                 display: 'flex', 
+//               <div style={{
+//                 marginTop: '20px',
+//                 display: 'flex',
 //                 justifyContent: 'center',
 //                 alignItems: 'center',
 //                 gap: '16px'
 //               }}>
-//                 <Badge 
-//                   count={filteredPosts.length} 
-//                   showZero 
-//                   style={{ 
+//                 <Badge
+//                   count={filteredPosts.length}
+//                   showZero
+//                   style={{
 //                     backgroundColor: '#52c41a',
 //                     fontWeight: 'bold'
 //                   }}
 //                 >
-//                   <Text style={{ 
-//                     fontSize: '16px', 
+//                   <Text style={{
+//                     fontSize: '16px',
 //                     color: '#666',
 //                     marginRight: '8px'
 //                   }}>
@@ -1509,9 +1470,9 @@
 //                   </Text>
 //                 </Badge>
 //                 {searchTerm && (
-//                   <Tag 
-//                     color="blue" 
-//                     style={{ 
+//                   <Tag
+//                     color="blue"
+//                     style={{
 //                       fontSize: '14px',
 //                       padding: '4px 12px',
 //                       borderRadius: '20px'
@@ -1529,7 +1490,7 @@
 //             <>
 //               <Row gutter={[24, 24]}>
 //                 {currentPosts.map((post) => {
-//                   const studentName = post.student ? 
+//                   const studentName = post.student ?
 //                     `${post.student.first_name || ''} ${post.student.last_name || ''}`.trim() || 'ไม่ระบุชื่อ'
 //                     : 'ไม่ระบุชื่อ';
 
@@ -1541,7 +1502,7 @@
 //                     <Col xs={24} sm={12} lg={8} xl={6} key={post.ID}>
 //                       <Card
 //                         hoverable
-//                         style={{ 
+//                         style={{
 //                           height: '100%',
 //                           borderRadius: '20px',
 //                           border: 'none',
@@ -1560,8 +1521,8 @@
 //                           e.currentTarget.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.08)';
 //                         }}
 //                         cover={
-//                           <div style={{ 
-//                             height: '140px', 
+//                           <div style={{
+//                             height: '140px',
 //                             background: getJobTypeGradient(post.job_type || 'default'),
 //                             display: 'flex',
 //                             alignItems: 'center',
@@ -1579,28 +1540,28 @@
 //                               backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
 //                               opacity: 0.3
 //                             }} />
-                            
-//                             <Avatar 
-//                               size={80} 
+
+//                             <Avatar
+//                               size={80}
 //                               src={post.student?.profile_image_url}
 //                               icon={<UserOutlined />}
-//                               style={{ 
+//                               style={{
 //                                 border: '4px solid rgba(255, 255, 255, 0.8)',
 //                                 boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)',
 //                                 position: 'relative',
 //                                 zIndex: 2
 //                               }}
 //                             />
-                            
+
 //                             <div style={{
 //                               position: 'absolute',
 //                               top: '16px',
 //                               right: '16px',
 //                               zIndex: 3
 //                             }}>
-//                               <Tag 
+//                               <Tag
 //                                 color="rgba(255, 255, 255, 0.9)"
-//                                 style={{ 
+//                                 style={{
 //                                   color: '#333',
 //                                   fontWeight: '600',
 //                                   borderRadius: '20px',
@@ -1630,11 +1591,11 @@
 //                           </div>
 //                         }
 //                         actions={[
-//                           <Button 
-//                             type="text" 
+//                           <Button
+//                             type="text"
 //                             icon={<EyeOutlined />}
 //                             onClick={() => showPostDetail(post)}
-//                             style={{ 
+//                             style={{
 //                               color: '#1890ff',
 //                               fontWeight: '500',
 //                               border: 'none',
@@ -1643,11 +1604,11 @@
 //                           >
 //                             ดูรายละเอียด
 //                           </Button>,
-//                           <Button 
-//                             type="text" 
+//                           <Button
+//                             type="text"
 //                             icon={<UserOutlined />}
 //                             onClick={() => goToProfile(post.student?.ID || post.student?.id || post.student_id || 0)}
-//                             style={{ 
+//                             style={{
 //                               color: '#52c41a',
 //                               fontWeight: '500',
 //                               border: 'none',
@@ -1659,8 +1620,8 @@
 //                         ]}
 //                       >
 //                         <div style={{ padding: '8px 16px' }}>
-//                           <Title level={4} style={{ 
-//                             margin: '0 0 12px 0', 
+//                           <Title level={4} style={{
+//                             margin: '0 0 12px 0',
 //                             textAlign: 'center',
 //                             color: '#262626',
 //                             fontSize: '18px',
@@ -1669,14 +1630,14 @@
 //                             {studentName}
 //                           </Title>
 
-//                           <div style={{ 
-//                             textAlign: 'center', 
+//                           <div style={{
+//                             textAlign: 'center',
 //                             marginBottom: '16px',
 //                             background: '#f8f9fa',
 //                             padding: '12px',
 //                             borderRadius: '12px'
 //                           }}>
-//                             <Text style={{ 
+//                             <Text style={{
 //                               fontSize: '14px',
 //                               color: '#1890ff',
 //                               fontWeight: '500',
@@ -1685,7 +1646,7 @@
 //                             }}>
 //                               🏛️ {facultyName}
 //                             </Text>
-//                             <Text style={{ 
+//                             <Text style={{
 //                               fontSize: '13px',
 //                               color: '#666'
 //                             }}>
@@ -1693,10 +1654,10 @@
 //                             </Text>
 //                           </div>
 
-//                           <Paragraph 
-//                             ellipsis={{ rows: 2 }} 
-//                             style={{ 
-//                               fontSize: '14px', 
+//                           <Paragraph
+//                             ellipsis={{ rows: 2 }}
+//                             style={{
+//                               fontSize: '14px',
 //                               marginBottom: '16px',
 //                               minHeight: '40px',
 //                               color: '#666',
@@ -1707,8 +1668,8 @@
 //                           </Paragraph>
 
 //                           <div>
-//                             <Text strong style={{ 
-//                               fontSize: '13px', 
+//                             <Text strong style={{
+//                               fontSize: '13px',
 //                               color: '#8c8c8c',
 //                               display: 'block',
 //                               marginBottom: '8px'
@@ -1718,9 +1679,9 @@
 //                             <div style={{ minHeight: '32px' }}>
 //                               {skillsArray.length > 0 ? (
 //                                 skillsArray.slice(0, 2).map((skill, index) => (
-//                                   <Tag 
-//                                     key={index} 
-//                                     style={{ 
+//                                   <Tag
+//                                     key={index}
+//                                     style={{
 //                                       fontSize: '11px',
 //                                       marginBottom: '4px',
 //                                       borderRadius: '12px',
@@ -1738,7 +1699,7 @@
 //                                 </Text>
 //                               )}
 //                               {skillsArray.length > 2 && (
-//                                 <Tag style={{ 
+//                                 <Tag style={{
 //                                   fontSize: '11px',
 //                                   background: 'rgba(0, 0, 0, 0.05)',
 //                                   color: '#666',
@@ -1758,8 +1719,8 @@
 //               </Row>
 
 //               {/* Pagination */}
-//               <div style={{ 
-//                 textAlign: 'center', 
+//               <div style={{
+//                 textAlign: 'center',
 //                 marginTop: '48px',
 //                 padding: '24px',
 //                 background: 'rgba(255, 255, 255, 0.8)',
@@ -1774,10 +1735,10 @@
 //                   onChange={(page) => setCurrentPage(page)}
 //                   showSizeChanger={false}
 //                   showQuickJumper
-//                   showTotal={(total, range) => 
+//                   showTotal={(total, range) =>
 //                     `📄 ${range[0]}-${range[1]} จาก ${total} โพสต์`
 //                   }
-//                   style={{ 
+//                   style={{
 //                     fontSize: '16px'
 //                   }}
 //                 />
@@ -1795,14 +1756,14 @@
 //               <Empty
 //                 description={
 //                   <div>
-//                     <Text style={{ 
+//                     <Text style={{
 //                       fontSize: '18px',
 //                       color: '#666',
 //                       display: 'block',
 //                       marginBottom: '8px'
 //                     }}>
-//                       {searchTerm ? 
-//                         `🔍 ไม่พบโพสต์ที่ตรงกับ "${searchTerm}"` : 
+//                       {searchTerm ?
+//                         `🔍 ไม่พบโพสต์ที่ตรงกับ "${searchTerm}"` :
 //                         "📝 ยังไม่มีโพสต์หางานจากนักศึกษา"
 //                       }
 //                     </Text>
@@ -1814,8 +1775,8 @@
 //                 image={Empty.PRESENTED_IMAGE_SIMPLE}
 //               >
 //                 {isStudent && !searchTerm && (
-//                   <Button 
-//                     type="primary" 
+//                   <Button
+//                     type="primary"
 //                     icon={<PlusOutlined />}
 //                     onClick={goToCreatePost}
 //                     size="large"
@@ -1849,7 +1810,7 @@
 //               borderRadius: '20px',
 //               overflow: 'hidden'
 //             }}
-//             bodyStyle={{ 
+//             bodyStyle={{
 //               padding: 0,
 //               borderRadius: '20px',
 //               overflow: 'hidden'
@@ -1866,20 +1827,20 @@
 //                   textAlign: 'center',
 //                   color: 'white'
 //                 }}>
-//                   <Avatar 
-//                     size={80} 
+//                   <Avatar
+//                     size={80}
 //                     src={selectedPost.student?.profile_image_url}
 //                     icon={<UserOutlined />}
-//                     style={{ 
+//                     style={{
 //                       marginBottom: '16px',
 //                       border: '3px solid rgba(255, 255, 255, 0.8)'
 //                     }}
 //                   />
-//                   <Title level={3} style={{ 
-//                     color: 'white', 
-//                     margin: '0 0 8px 0' 
+//                   <Title level={3} style={{
+//                     color: 'white',
+//                     margin: '0 0 8px 0'
 //                   }}>
-//                     {selectedPost.student ? 
+//                     {selectedPost.student ?
 //                       `${selectedPost.student.first_name || ''} ${selectedPost.student.last_name || ''}`.trim() || 'ไม่ระบุชื่อ'
 //                       : 'ไม่ระบุชื่อ'
 //                     }
@@ -1925,13 +1886,13 @@
 //                     <Title level={5} style={{ color: '#333', marginBottom: '12px' }}>
 //                       💭 แนะนำตัว
 //                     </Title>
-//                     <div style={{ 
-//                       background: '#f8f9fa', 
-//                       padding: '20px', 
+//                     <div style={{
+//                       background: '#f8f9fa',
+//                       padding: '20px',
 //                       borderRadius: '12px',
 //                       border: '1px solid #e9ecef'
 //                     }}>
-//                       <Paragraph style={{ 
+//                       <Paragraph style={{
 //                         margin: 0,
 //                         fontSize: '15px',
 //                         lineHeight: '1.6',
@@ -1950,9 +1911,9 @@
 //                     <div>
 //                       {selectedPost.skills ? (
 //                         selectedPost.skills.split(',').map((skill, index) => (
-//                           <Tag 
-//                             key={index} 
-//                             style={{ 
+//                           <Tag
+//                             key={index}
+//                             style={{
 //                               marginBottom: '8px',
 //                               fontSize: '13px',
 //                               padding: '6px 12px',
@@ -1978,10 +1939,10 @@
 //                         <Title level={5} style={{ color: '#333', marginBottom: '12px' }}>
 //                           🎨 ผลงาน
 //                         </Title>
-//                         <Button 
+//                         <Button
 //                           type="primary"
-//                           href={selectedPost.portfolio_url} 
-//                           target="_blank" 
+//                           href={selectedPost.portfolio_url}
+//                           target="_blank"
 //                           rel="noopener noreferrer"
 //                           style={{
 //                             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -2008,8 +1969,8 @@
 //                     }}>
 //                       {selectedPost.email && (
 //                         <div style={{ marginBottom: '12px', display: 'flex', alignItems: 'center' }}>
-//                           <MailOutlined style={{ 
-//                             marginRight: '12px', 
+//                           <MailOutlined style={{
+//                             marginRight: '12px',
 //                             color: '#1890ff',
 //                             fontSize: '16px'
 //                           }} />
@@ -2020,8 +1981,8 @@
 //                       )}
 //                       {selectedPost.phone && (
 //                         <div style={{ display: 'flex', alignItems: 'center' }}>
-//                           <PhoneOutlined style={{ 
-//                             marginRight: '12px', 
+//                           <PhoneOutlined style={{
+//                             marginRight: '12px',
 //                             color: '#52c41a',
 //                             fontSize: '16px'
 //                           }} />
@@ -2041,7 +2002,7 @@
 //                   {/* Action Buttons */}
 //                   <div style={{ textAlign: 'center', marginTop: '32px' }}>
 //                     <Space size="middle">
-//                       <Button 
+//                       <Button
 //                         type="primary"
 //                         size="large"
 //                         icon={<UserOutlined />}
@@ -2060,7 +2021,7 @@
 //                       >
 //                         ดูโปรไฟล์เต็ม
 //                       </Button>
-//                       <Button 
+//                       <Button
 //                         size="large"
 //                         onClick={closeModal}
 //                         style={{
@@ -2076,7 +2037,7 @@
 //                   </div>
 
 //                   {/* Created Date */}
-//                   <div style={{ 
+//                   <div style={{
 //                     textAlign: 'center',
 //                     marginTop: '24px',
 //                     paddingTop: '16px',
@@ -2112,7 +2073,8 @@
 // src/pages/StudentFeed/StudentFeedPage.tsx
 // src/pages/StudentFeed/StudentFeedPage.tsx
 // src/pages/StudentFeed/StudentFeedPage.tsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from "react";
+
 import {
   Card,
   Col,
@@ -2133,8 +2095,9 @@ import {
   Popconfirm,
   Dropdown,
   Menu,
-  Divider
-} from 'antd';
+  Divider,
+} from "antd";
+
 import {
   UserOutlined,
   EyeOutlined,
@@ -2148,163 +2111,253 @@ import {
   ClockCircleOutlined,
   EnvironmentOutlined,
   DollarOutlined,
-  TagOutlined
-} from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { getStudentProfilePosts } from '../../services/studentPostService';
-import CreateStudentPostModal from '../../components/CreateStudentPostModal';
+  TagOutlined,
+  AppstoreOutlined,
+} from "@ant-design/icons";
+
+import { useNavigate } from "react-router-dom";
+
+import { useAuth } from "../../context/AuthContext";
+
+import { getStudentProfilePosts } from "../../services/studentPostService";
+
+import CreateStudentPostModal from "../../components/CreateStudentPostModal";
 
 const { Title, Text, Paragraph } = Typography;
+
 const { Search } = Input;
+
 const { TextArea } = Input;
+
 const { Option } = Select;
 
-// ✅ อัปเดต Interface สำหรับข้อมูลใหม่
+// Interface definitions (same as before)
+
 interface Student {
   ID: number;
+
   id?: number;
+
   first_name: string;
+
   last_name: string;
+
   email?: string;
+
   phone?: string;
+
   profile_image_url?: string;
+
   faculty: string;
+
   year?: number;
+
   UserID?: number;
+
   user_id?: number;
 }
 
 interface Faculty {
   ID: number;
+
   Name: string;
 }
 
 interface Department {
   ID: number;
+
   Name: string;
 }
 
 interface StudentProfilePost {
   ID: number;
+
   CreatedAt: string;
+
   UpdatedAt: string;
-  
-  // ✅ ข้อมูลใหม่ที่เพิ่มเข้ามา
+
   title?: string;
+
   job_type: string;
+
   skills: string;
+
   availability?: string;
+
   preferred_location?: string;
+
   expected_compensation?: string;
+
   content?: string;
-  
-  // ✅ ข้อมูลเก่าที่ยังใช้ได้ (backward compatibility)
+
   introduction?: string;
+
   portfolio_url?: string;
-  
-  // ความสัมพันธ์
+
   year?: number;
+
   phone?: string;
+
   email?: string;
+
   student_id?: number;
+
   student?: Student;
+
   faculty_id?: number;
+
   faculty?: Faculty;
+
   department_id?: number;
+
   department?: Department;
 }
 
 const StudentFeedPage: React.FC = () => {
   const navigate = useNavigate();
+
   const { user } = useAuth();
+
   const [posts, setPosts] = useState<StudentProfilePost[]>([]);
+
   const [filteredPosts, setFilteredPosts] = useState<StudentProfilePost[]>([]);
+
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedPost, setSelectedPost] = useState<StudentProfilePost | null>(null);
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const [selectedJobType, setSelectedJobType] = useState<string>("");
+
+  const [selectedPost, setSelectedPost] = useState<StudentProfilePost | null>(
+    null
+  );
+
   const [isModalVisible, setIsModalVisible] = useState(false);
+
   const [currentPage, setCurrentPage] = useState(1);
+
   const [pageSize] = useState(12);
-  const [isCreatePostModalVisible, setIsCreatePostModalVisible] = useState(false);
-  const [editingPost, setEditingPost] = useState<StudentProfilePost | null>(null);
+
+  const [isCreatePostModalVisible, setIsCreatePostModalVisible] =
+    useState(false);
+
+  const [editingPost, setEditingPost] = useState<StudentProfilePost | null>(
+    null
+  );
+
   const [editModalVisible, setEditModalVisible] = useState(false);
+
   const [editForm] = Form.useForm();
 
-  const isStudent = user && (user.role === 'student' || user.role === 'stu');
+  const isStudent =
+    user?.role &&
+    (user.role.toLowerCase() === "student" ||
+      user.role.toLowerCase() === "stu");
 
-  // ✅ ทักษะที่ให้เลือก - ครอบคลุมหลายด้าน
-  const skillOptions = [
-    // ด้าน IT & Programming
-    'JavaScript', 'Python', 'Java', 'C++', 'HTML/CSS', 'React', 'Node.js', 'PHP',
-    'SQL', 'Database Management', 'Web Development', 'Mobile App Development',
-    
-    // ด้าน Design & Creative
-    'Photoshop', 'Illustrator', 'Figma', 'Canva', 'Video Editing', 'After Effects',
-    'Premiere Pro', 'UI/UX Design', 'Graphic Design', '3D Modeling',
-    
-    // ด้าน Office & Documentation
-    'Microsoft Office', 'Excel Advanced', 'PowerPoint', 'Word Processing',
-    'Data Entry', 'Typing (Fast)', 'Google Workspace', 'PDF Editing',
-    
-    // ด้านภาษา
-    'English (Fluent)', 'Chinese', 'Japanese', 'Korean', 'Translation',
-    'Content Writing', 'Copywriting', 'Proofreading',
-    
-    // ด้าน Marketing & Sales
-    'Social Media Marketing', 'Content Marketing', 'SEO', 'Google Ads',
-    'Facebook Marketing', 'Sales', 'Customer Service', 'Event Planning',
-    
-    // ด้าน Business & Analysis
-    'Data Analysis', 'Financial Analysis', 'Project Management', 'Research',
-    'Market Research', 'Business Planning', 'Accounting', 'Bookkeeping',
-    
-    // ด้าน Technical Skills
-    'AutoCAD', 'SolidWorks', 'MATLAB', 'R Programming', 'SPSS', 'Tableau',
-    'Machine Learning', 'AI Development', 'Network Administration',
-    
-    // ด้าน Creative & Arts
-    'Photography', 'Music Production', 'Writing', 'Blogging', 'Podcasting',
-    'Voice Over', 'Acting', 'Dancing', 'Singing',
-    
-    // ด้าน Manual & Service
-    'Tutoring', 'Teaching', 'Cooking', 'Cleaning', 'Delivery', 'Driver',
-    'Pet Care', 'Child Care', 'Elder Care', 'Gardening',
-    
-    // ด้าน Specialized
-    'Laboratory Work', 'Engineering', 'Architecture', 'Medical Assistance',
-    'Legal Research', 'Survey', 'Quality Control', 'Testing'
+  // ประเภทงาน 6 ตัวเลือกตามรูป
+
+  const jobTypeOptions = [
+    { label: "งานประจำ", value: "งานประจำ" },
+
+    { label: "งานพาร์ทไทม์", value: "งานพาร์ทไทม์" },
+
+    { label: "ฟรีแลนซ์", value: "ฟรีแลนซ์" },
+
+    { label: "ฝึกงาน", value: "ฝึกงาน" },
+
+    { label: "งานชั่วคราว", value: "งานชั่วคราว" },
+
+    { label: "งานโครงการ", value: "งานโครงการ" },
   ];
 
-  // ตรวจสอบว่าเป็นโพสต์ของตัวเอง
+  // Skill options
+
+  const skillOptions = [
+    "JavaScript",
+    "Python",
+    "Java",
+    "C++",
+    "HTML/CSS",
+    "React",
+    "Node.js",
+    "PHP",
+
+    "SQL",
+    "Database Management",
+    "Web Development",
+    "Mobile App Development",
+
+    "Photoshop",
+    "Illustrator",
+    "Figma",
+    "Canva",
+    "Video Editing",
+    "After Effects",
+
+    "Premiere Pro",
+    "UI/UX Design",
+    "Graphic Design",
+    "3D Modeling",
+
+    "Microsoft Office",
+    "Excel Advanced",
+    "PowerPoint",
+    "Word Processing",
+
+    "Data Entry",
+    "Typing (Fast)",
+    "Google Workspace",
+    "PDF Editing",
+
+    "English (Fluent)",
+    "Chinese",
+    "Japanese",
+    "Korean",
+    "Translation",
+
+    "Content Writing",
+    "Copywriting",
+    "Proofreading",
+  ];
+
+  // Helper functions
+
   const isOwnPost = (post: StudentProfilePost): boolean => {
-    if (!user || !post.student) {
-      return false;
-    }
+    if (!user || !post.student) return false;
+
     const userId = user.ID || user.id || user.user_id;
+
     const studentUserId = post.student.UserID || post.student.user_id;
+
     return userId === studentUserId;
   };
 
-  // ดึงข้อมูลโพสต์จาก API
+  // API function
+
   const fetchPosts = useCallback(async () => {
     try {
       setLoading(true);
+
       const response = await getStudentProfilePosts();
-      console.log('📄 Student posts response:', response);
+
       const postsData = response?.data || response || [];
+
       if (Array.isArray(postsData)) {
         setPosts(postsData);
+
         setFilteredPosts(postsData);
       } else {
-        console.error('Invalid posts data structure:', response);
         setPosts([]);
+
         setFilteredPosts([]);
       }
     } catch (error) {
-      console.error('Error fetching student posts:', error);
-      message.error('ไม่สามารถโหลดข้อมูลโพสต์ได้');
+      console.error("Error fetching student posts:", error);
+
+      message.error("ไม่สามารถโหลดข้อมูลโพสต์ได้");
+
       setPosts([]);
+
       setFilteredPosts([]);
     } finally {
       setLoading(false);
@@ -2315,157 +2368,94 @@ const StudentFeedPage: React.FC = () => {
     fetchPosts();
   }, [fetchPosts]);
 
-  // ✅ อัปเดตการค้นหาให้รองรับฟิลด์ใหม่
+  // อัปเดตฟังก์ชันการค้นหา และกรองให้รองรับประเภทงาน
+
+  const applyFilters = useCallback(() => {
+    let filtered = posts;
+
+    // กรองด้วยคำค้นหา
+
+    if (searchTerm.trim()) {
+      const searchLower = searchTerm.toLowerCase();
+
+      filtered = filtered.filter((post) => {
+        const studentName = post.student
+          ? `${post.student.first_name || ""} ${
+              post.student.last_name || ""
+            }`.toLowerCase()
+          : "";
+
+        const title = post.title?.toLowerCase() || "";
+
+        const skills = post.skills?.toLowerCase() || "";
+
+        const content = post.content?.toLowerCase() || "";
+
+        const introduction = post.introduction?.toLowerCase() || "";
+
+        const jobType = post.job_type?.toLowerCase() || "";
+
+        return (
+          studentName.includes(searchLower) ||
+          title.includes(searchLower) ||
+          skills.includes(searchLower) ||
+          content.includes(searchLower) ||
+          introduction.includes(searchLower) ||
+          jobType.includes(searchLower)
+        );
+      });
+    }
+
+    // กรองด้วยประเภทงาน
+
+    if (selectedJobType) {
+      filtered = filtered.filter((post) =>
+        post.job_type?.toLowerCase().includes(selectedJobType.toLowerCase())
+      );
+    }
+
+    setFilteredPosts(filtered);
+
+    setCurrentPage(1);
+  }, [posts, searchTerm, selectedJobType]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [applyFilters]);
+
   const handleSearch = useCallback((value: string) => {
     setSearchTerm(value);
-    setCurrentPage(1);
-    if (!value.trim()) {
-      setFilteredPosts(posts);
-      return;
-    }
+  }, []);
 
-    const searchLower = value.toLowerCase();
-    const filtered = posts.filter(post => {
-      const studentName = post.student ?
-        `${post.student.first_name || ''} ${post.student.last_name || ''}`.toLowerCase() : '';
-      const facultyName = post.faculty?.Name?.toLowerCase() || post.student?.faculty?.toLowerCase() || '';
-      const departmentName = post.department?.Name?.toLowerCase() || '';
-      
-      // ✅ ค้นหาในฟิลด์ใหม่และเก่า
-      const title = post.title?.toLowerCase() || '';
-      const skills = post.skills?.toLowerCase() || '';
-      const content = post.content?.toLowerCase() || '';
-      const availability = post.availability?.toLowerCase() || '';
-      const preferredLocation = post.preferred_location?.toLowerCase() || '';
-      const expectedCompensation = post.expected_compensation?.toLowerCase() || '';
-      const introduction = post.introduction?.toLowerCase() || '';
-      const jobType = post.job_type?.toLowerCase() || '';
+  // ฟังก์ชันจัดการการเลือกประเภทงาน
 
-      return (
-        studentName.includes(searchLower) ||
-        facultyName.includes(searchLower) ||
-        departmentName.includes(searchLower) ||
-        title.includes(searchLower) ||
-        skills.includes(searchLower) ||
-        content.includes(searchLower) ||
-        availability.includes(searchLower) ||
-        preferredLocation.includes(searchLower) ||
-        expectedCompensation.includes(searchLower) ||
-        introduction.includes(searchLower) ||
-        jobType.includes(searchLower)
-      );
-    });
-    setFilteredPosts(filtered);
-  }, [posts]);
-
-  // ลบโพสต์
-  const handleDeletePost = async (postId: number) => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8080/api/student-profile-posts/${postId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
-        try {
-          const errorData = await response.text();
-          try {
-            const jsonError = JSON.parse(errorData);
-            errorMessage = jsonError.error || jsonError.message || errorMessage;
-          } catch {
-            errorMessage = errorData || errorMessage;
-          }
-        } catch (parseError) {
-          console.log('Could not parse error response');
-        }
-        throw new Error(errorMessage);
-      }
-
-      message.success('ลบโพสต์สำเร็จ!');
-      setPosts(posts.filter(p => p.ID !== postId));
-      setFilteredPosts(filteredPosts.filter(p => p.ID !== postId));
-    } catch (error: any) {
-      console.error('Error deleting post:', error);
-      message.error(error.message || 'เกิดข้อผิดพลาดในการลบโพสต์');
+  const handleJobTypeClick = (jobType: string) => {
+    if (selectedJobType === jobType) {
+      setSelectedJobType("");
+    } else {
+      setSelectedJobType(jobType);
     }
   };
 
-  // ✅ แก้ไขโพสต์ - อัปเดตให้รองรับฟิลด์ใหม่
-  const handleEditPost = (post: StudentProfilePost) => {
-    setEditingPost(post);
-    setEditModalVisible(true);
-    
-    // ✅ แปลง skills string เป็น array สำหรับ tags mode
-    const skillsArray = post.skills ? post.skills.split(',').map(s => s.trim()).filter(Boolean) : [];
-    
-    editForm.setFieldsValue({
-      title: post.title,
-      job_type: post.job_type,
-      skills: skillsArray, // ✅ ส่งเป็น array
-      availability: post.availability,
-      preferred_location: post.preferred_location,
-      expected_compensation: post.expected_compensation,
-      content: post.content,
-      // Backward compatibility
-      introduction: post.introduction,
-      portfolio_url: post.portfolio_url,
-    });
+  // ฟังก์ชันแสดงทั้งหมด
+
+  const showAllPosts = () => {
+    setSearchTerm("");
+
+    setSelectedJobType("");
   };
 
-  // บันทึกการแก้ไข
-  const handleSaveEdit = async (values: any) => {
-    try {
-      const token = localStorage.getItem('token');
-      
-      // ✅ จัดการ skills - ถ้าเป็น array ให้ join เป็น string
-      const skillsString = Array.isArray(values.skills) 
-        ? values.skills.join(', ') 
-        : values.skills;
-      
-      const updateData = {
-        ...values,
-        skills: skillsString
-      };
-
-      const response = await fetch(`http://localhost:8080/api/student-profile-posts/${editingPost!.ID}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(updateData)
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to update post');
-      }
-
-      const updatedPost = await response.json();
-      message.success('แก้ไขโพสต์สำเร็จ!');
-      setPosts(posts.map(p => p.ID === editingPost!.ID ? updatedPost.data : p));
-      setFilteredPosts(filteredPosts.map(p => p.ID === editingPost!.ID ? updatedPost.data : p));
-      setEditModalVisible(false);
-      setEditingPost(null);
-      editForm.resetFields();
-    } catch (error: any) {
-      console.error('Error updating post:', error);
-      message.error(error.message || 'เกิดข้อผิดพลาดในการแก้ไขโพสต์');
-    }
-  };
+  // Modal and navigation functions
 
   const showPostDetail = (post: StudentProfilePost) => {
     setSelectedPost(post);
+
     setIsModalVisible(true);
   };
 
   const closeModal = () => {
     setIsModalVisible(false);
+
     setSelectedPost(null);
   };
 
@@ -2483,60 +2473,141 @@ const StudentFeedPage: React.FC = () => {
 
   const handleCreatePostSuccess = () => {
     fetchPosts();
+
     setIsCreatePostModalVisible(false);
-    message.success('โพสต์ของคุณถูกสร้างสำเร็จแล้ว!');
+
+    message.success("โพสต์ของคุณถูกสร้างสำเร็จแล้ว!");
   };
 
-  // คำนวณข้อมูลสำหรับ Pagination
+  // Edit and delete functions (simplified)
+
+  const handleEditPost = (post: StudentProfilePost) => {
+    setEditingPost(post);
+
+    setEditModalVisible(true);
+
+    const skillsArray = post.skills
+      ? post.skills
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : [];
+
+    editForm.setFieldsValue({
+      title: post.title,
+
+      job_type: post.job_type,
+
+      skills: skillsArray,
+
+      availability: post.availability,
+
+      preferred_location: post.preferred_location,
+
+      expected_compensation: post.expected_compensation,
+
+      content: post.content,
+
+      introduction: post.introduction,
+
+      portfolio_url: post.portfolio_url,
+    });
+  };
+
+  const handleDeletePost = async (postId: number) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        `http://localhost:8080/api/student-profile-posts/${postId}`,
+        {
+          method: "DELETE",
+
+          headers: {
+            Authorization: `Bearer ${token}`,
+
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete post");
+      }
+
+      message.success("ลบโพสต์สำเร็จ!");
+
+      setPosts(posts.filter((p) => p.ID !== postId));
+
+      setFilteredPosts(filteredPosts.filter((p) => p.ID !== postId));
+    } catch (error: any) {
+      console.error("Error deleting post:", error);
+
+      message.error("เกิดข้อผิดพลาดในการลบโพสต์");
+    }
+  };
+
+  // Pagination
+
   const startIndex = (currentPage - 1) * pageSize;
+
   const endIndex = startIndex + pageSize;
+
   const currentPosts = filteredPosts.slice(startIndex, endIndex);
 
   if (loading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '60vh' 
-      }}>
+      <div style={{ textAlign: "center", padding: "50px" }}>
         <Spin size="large" />
-        <div style={{ marginLeft: '16px', fontSize: '16px' }}>
-          กำลังโหลดข้อมูลโพสต์...
-        </div>
+
+        <div style={{ marginTop: "16px" }}>กำลังโหลดข้อมูลโพสต์...</div>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: '24px' }}>
-      {/* Header - เลย์เอาต์เดิม */}
-      <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          maxWidth: '1200px',
-          margin: '0 auto'
-        }}>
-          <div style={{ textAlign: 'left' }}>
-            <Title level={2} style={{ margin: 0, color: '#1890ff' }}>
+    <div
+      style={{
+        padding: "24px",
+        backgroundColor: "#f5f5f5",
+        minHeight: "100vh",
+      }}
+    >
+      {/* Header */}
+
+      <div style={{ textAlign: "center", marginBottom: "32px" }}>
+        <div
+          style={{
+            display: "flex",
+
+            justifyContent: "space-between",
+
+            alignItems: "center",
+
+            maxWidth: "1200px",
+
+            margin: "0 auto",
+          }}
+        >
+          <div style={{ flex: 1 }}>
+            <Title level={2} style={{ margin: "0 0 8px 0", color: "#1890ff" }}>
               โพสต์หางานของนักศึกษา
             </Title>
-            <Text style={{ fontSize: '16px', color: '#666', marginTop: '8px', display: 'block' }}>
+
+            <Text type="secondary" style={{ fontSize: "16px" }}>
               ค้นหานักศึกษาที่เหมาะสมสำหรับงานของคุณ
             </Text>
           </div>
 
-          {/* ปุ่มโพสต์ - แสดงเฉพาะนักศึกษา */}
           {isStudent && (
             <Button
               type="primary"
               icon={<PlusOutlined />}
               onClick={openCreatePostModal}
               style={{
-                borderRadius: '8px',
-                fontWeight: '500'
+                borderRadius: "8px",
+
+                fontWeight: "500",
               }}
             >
               สร้างโพสต์หางาน
@@ -2545,54 +2616,241 @@ const StudentFeedPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Search Bar - เลย์เอาต์เดิม */}
-      <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+      {/* Search Bar */}
+
+      <div style={{ textAlign: "center", marginBottom: "20px" }}>
         <Search
-          placeholder="ค้นหาโพสต์งาน, ทักษะ, สำนักวิชา, ประเภทงาน..."
+          placeholder="ค้นหาโดยชื่อ, ทักษะ, ประเภทงาน หรือคำแนะนำตัว..."
           prefix={<SearchOutlined />}
           size="large"
+          value={searchTerm}
           onSearch={handleSearch}
-          onChange={(e) => !e.target.value && handleSearch('')}
-          style={{ maxWidth: '600px', display: 'block', margin: '0 auto' }}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{ maxWidth: "600px", display: "block", margin: "0 auto" }}
         />
-        
-        <div style={{ marginTop: '16px' }}>
-          <Text>
-            พบ {filteredPosts.length} โพสต์{searchTerm && ` จาก "${searchTerm}"`}
-          </Text>
+      </div>
+
+      {/* ✅ Job Type Filter Bar - ปรับให้ไม่เลื่อนได้ */}
+
+      <div style={{ marginBottom: "24px" }}>
+        <div
+          style={{
+            maxWidth: "1200px",
+
+            margin: "0 auto",
+
+            padding: "0 16px",
+
+            display: "flex",
+
+            justifyContent: "center",
+          }}
+        >
+          {/* ✅ Fixed Filter Bar - ไม่เลื่อนได้ใช้ flex-wrap */}
+
+          <div
+            style={{
+              marginBottom: "16px",
+
+              maxWidth: "900px",
+
+              width: "100%",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+
+                gap: "12px",
+
+                justifyContent: "center",
+
+                // ✅ เพิ่ม flex-wrap เพื่อให้ปุ่มขึ้นบรรทัดใหม่เมื่อหน้าจอเล็ก
+
+                flexWrap: "wrap",
+
+                // ✅ ลบ overflow-x ออกเพื่อไม่ให้เลื่อนได้
+
+                alignItems: "center",
+              }}
+            >
+              {jobTypeOptions.map((option) => (
+                <Button
+                  key={option.value}
+                  onClick={() => handleJobTypeClick(option.value)}
+                  style={{
+                    minWidth: "120px",
+
+                    height: "40px",
+
+                    borderRadius: "20px",
+
+                    fontSize: "14px",
+
+                    fontWeight: "500",
+
+                    whiteSpace: "nowrap",
+
+                    backgroundColor:
+                      selectedJobType === option.value ? "#1890ff" : "white",
+
+                    color: selectedJobType === option.value ? "white" : "#666",
+
+                    borderColor:
+                      selectedJobType === option.value ? "#1890ff" : "#d9d9d9",
+
+                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+
+                    transition: "all 0.3s ease",
+
+                    // ✅ เพิ่ม margin สำหรับการ wrap
+
+                    marginBottom: "8px",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (selectedJobType !== option.value) {
+                      e.currentTarget.style.backgroundColor = "#f0f8ff";
+
+                      e.currentTarget.style.borderColor = "#1890ff";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (selectedJobType !== option.value) {
+                      e.currentTarget.style.backgroundColor = "white";
+
+                      e.currentTarget.style.borderColor = "#d9d9d9";
+                    }
+                  }}
+                >
+                  {option.label}
+                </Button>
+              ))}
+
+              {/* ปุ่ม "ทั้งหมด" */}
+
+              <Button
+                icon={<AppstoreOutlined />}
+                onClick={showAllPosts}
+                style={{
+                  minWidth: "100px",
+
+                  height: "40px",
+
+                  borderRadius: "20px",
+
+                  fontSize: "14px",
+
+                  fontWeight: "500",
+
+                  backgroundColor:
+                    !selectedJobType && !searchTerm ? "#1890ff" : "white",
+
+                  color: !selectedJobType && !searchTerm ? "white" : "#666",
+
+                  borderColor:
+                    !selectedJobType && !searchTerm ? "#1890ff" : "#d9d9d9",
+
+                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+
+                  transition: "all 0.3s ease",
+
+                  // ✅ เพิ่ม margin สำหรับการ wrap
+
+                  marginBottom: "8px",
+                }}
+                onMouseEnter={(e) => {
+                  if (selectedJobType || searchTerm) {
+                    e.currentTarget.style.backgroundColor = "#f0f8ff";
+
+                    e.currentTarget.style.borderColor = "#1890ff";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (selectedJobType || searchTerm) {
+                    e.currentTarget.style.backgroundColor = "white";
+
+                    e.currentTarget.style.borderColor = "#d9d9d9";
+                  }
+                }}
+              >
+                ทั้งหมด
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Posts Grid - เลย์เอาต์เดิม แต่เพิ่มข้อมูลใหม่ */}
+      {/* Results Summary */}
+
+      <div style={{ textAlign: "center", marginBottom: "24px" }}>
+        <Space direction="vertical" size={4}>
+          <Text type="secondary">
+            พบ{" "}
+            <Text strong style={{ color: "#1890ff" }}>
+              {filteredPosts.length}
+            </Text>{" "}
+            โพสต์
+            {searchTerm && (
+              <>
+                {" "}
+                จากการค้นหา "<Text strong>{searchTerm}</Text>"
+              </>
+            )}
+          </Text>
+
+          {selectedJobType && (
+            <div>
+              <Text type="secondary" style={{ fontSize: "12px" }}>
+                ประเภทงาน:{" "}
+              </Text>
+
+              <Tag color="blue" size="small" style={{ fontSize: "11px" }}>
+                {selectedJobType}
+              </Tag>
+            </div>
+          )}
+        </Space>
+      </div>
+
+      {/* Posts Grid */}
+
       {currentPosts.length > 0 ? (
         <>
-          <Row gutter={[16, 16]} style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <Row
+            gutter={[24, 24]}
+            style={{ maxWidth: "1200px", margin: "0 auto" }}
+          >
             {currentPosts.map((post) => {
-              const studentName = post.student ?
-                `${post.student.first_name || ''} ${post.student.last_name || ''}`.trim() || 'ไม่ระบุชื่อ'
-                : 'ไม่ระบุชื่อ';
-              const facultyName = post.faculty?.Name || post.student?.faculty || 'ไม่ระบุคณะ';
-              const departmentName = post.department?.Name || 'ไม่ระบุสาขา';
-              const skillsArray = post.skills ? post.skills.split(',').map(s => s.trim()).filter(Boolean) : [];
+              const studentName = post.student
+                ? `${post.student.first_name || ""} ${
+                    post.student.last_name || ""
+                  }`.trim() || "ไม่ระบุชื่อ"
+                : "ไม่ระบุชื่อ";
+
+              const skillsArray = post.skills
+                ? post.skills
+                    .split(",")
+                    .map((s) => s.trim())
+                    .filter(Boolean)
+                : [];
+
               const isOwn = isOwnPost(post);
 
               // เมนูตัวเลือกสำหรับโพสต์ของตัวเอง
+
               const moreOptionsMenu = (
                 <Menu>
-                  <Menu.Item 
-                    key="edit" 
+                  <Menu.Item
+                    key="edit"
                     icon={<EditOutlined />}
                     onClick={() => handleEditPost(post)}
                   >
                     แก้ไขโพสต์
                   </Menu.Item>
-                  <Menu.Item 
-                    key="delete" 
-                    icon={<DeleteOutlined />} 
-                    danger
-                  >
+
+                  <Menu.Item key="delete" icon={<DeleteOutlined />} danger>
                     <Popconfirm
-                      title="คุณแน่ใจว่าต้องการลบโพสต์นี้?"
+                      title="คุณแน่ใจหรือไม่ที่จะลบโพสต์นี้?"
                       onConfirm={() => handleDeletePost(post.ID)}
                       okText="ลบ"
                       cancelText="ยกเลิก"
@@ -2605,57 +2863,82 @@ const StudentFeedPage: React.FC = () => {
               );
 
               return (
-                <Col xs={24} sm={12} lg={8} xl={6} key={post.ID}>
+                <Col key={post.ID} xs={24} sm={12} md={8} lg={6}>
                   <Card
                     hoverable
+                    style={{
+                      borderRadius: "12px",
+
+                      overflow: "hidden",
+
+                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+
+                      transition: "all 0.3s ease",
+
+                      position: "relative",
+
+                      height: "100%",
+                    }}
                     cover={
-                      <div style={{
-                        height: '120px',
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        position: 'relative'
-                      }}>
+                      <div
+                        style={{
+                          padding: "16px",
+
+                          background:
+                            "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+
+                          textAlign: "center",
+
+                          position: "relative",
+                        }}
+                      >
                         <Avatar
                           size={64}
-                          icon={<UserOutlined />}
                           src={post.student?.profile_image_url}
-                          style={{ border: '3px solid white' }}
+                          icon={<UserOutlined />}
+                          style={{
+                            border: "3px solid white",
+
+                            marginBottom: "8px",
+                          }}
                         />
-                        
-                        {/* ✅ แสดงหัวข้อโพสต์ (ข้อมูลใหม่) หรือ job_type */}
-                        <div style={{
-                          position: 'absolute',
-                          bottom: '8px',
-                          left: '12px',
-                          right: '12px'
-                        }}>
-                          <Tag color="blue" style={{ 
-                            fontSize: '12px', 
-                            fontWeight: '600',
-                            maxWidth: '100%',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                            display: 'block',
-                            textAlign: 'center'
-                          }}>
-                            {post.title || post.job_type || 'ไม่ระบุ'}
-                          </Tag>
+
+                        <div style={{ color: "white", fontWeight: "bold" }}>
+                          {studentName}
                         </div>
 
+                        <Tag
+                          color="orange"
+                          style={{
+                            marginTop: "8px",
+
+                            border: "none",
+
+                            fontWeight: "500",
+                          }}
+                        >
+                          {post.title || post.job_type || "ไม่ระบุ"}
+                        </Tag>
+
                         {/* ปุ่มตัวเลือกสำหรับโพสต์ของตัวเอง */}
+
                         {isOwn && (
-                          <Dropdown overlay={moreOptionsMenu} trigger={['click']}>
+                          <Dropdown
+                            overlay={moreOptionsMenu}
+                            trigger={["click"]}
+                          >
                             <Button
                               icon={<MoreOutlined />}
                               style={{
-                                position: 'absolute',
-                                top: '8px',
-                                right: '8px',
-                                background: 'rgba(255, 255, 255, 0.9)',
-                                border: 'none'
+                                position: "absolute",
+
+                                top: "8px",
+
+                                right: "8px",
+
+                                background: "rgba(255, 255, 255, 0.9)",
+
+                                border: "none",
                               }}
                               size="small"
                             />
@@ -2665,73 +2948,122 @@ const StudentFeedPage: React.FC = () => {
                     }
                     actions={[
                       <Button
-                        type="text"
+                        type="link"
                         icon={<EyeOutlined />}
                         onClick={() => showPostDetail(post)}
+                        style={{ color: "#1890ff" }}
                       >
                         ดูรายละเอียด
                       </Button>,
+
                       <Button
-                        type="text"
+                        type="link"
                         icon={<UserOutlined />}
-                        onClick={() => goToProfile(post.student?.ID || post.student?.id || 0)}
+                        onClick={() =>
+                          goToProfile(post.student?.ID || post.student?.id || 0)
+                        }
+                        style={{ color: "#52c41a" }}
                       >
                         ดูโปรไฟล์
-                      </Button>
+                      </Button>,
                     ]}
                   >
-                    <div style={{ minHeight: '180px' }}>
-                      <Title level={5} style={{ margin: '0 0 8px 0', color: '#1890ff' }}>
-                        {studentName}
-                      </Title>
-                      
-                      <Text style={{ color: '#666', fontSize: '13px', display: 'block', marginBottom: '4px' }}>
-                        🏛️ {facultyName}
-                      </Text>
-                      
-                      <Text style={{ color: '#666', fontSize: '13px', display: 'block', marginBottom: '12px' }}>
-                        📚 {departmentName} • ปีที่ {post.year || post.student?.year || 'N/A'}
-                      </Text>
+                    <div style={{ padding: "0 8px" }}>
+                      {/* ข้อความแนะนำตัว */}
 
-                      {/* ✅ แสดงข้อมูลใหม่ - เวลาและสถานที่ */}
-                      <div style={{ marginBottom: '8px' }}>
-                        {post.availability && (
-                          <Tag icon={<ClockCircleOutlined />} color="orange" size="small" style={{ marginBottom: '4px', fontSize: '10px' }}>
-                            {post.availability}
-                          </Tag>
-                        )}
-                        {post.preferred_location && (
-                          <Tag icon={<EnvironmentOutlined />} color="cyan" size="small" style={{ marginBottom: '4px', fontSize: '10px' }}>
-                            {post.preferred_location}
-                          </Tag>
-                        )}
+                      <div style={{ marginBottom: "16px" }}>
+                        <div
+                          style={{
+                            fontSize: "14px",
+
+                            color: "#666",
+
+                            marginBottom: "6px",
+
+                            fontWeight: "500",
+                          }}
+                        >
+                          แนะนำตัว:
+                        </div>
+
+                        <Paragraph
+                          style={{
+                            margin: 0,
+
+                            fontSize: "15px",
+
+                            lineHeight: "1.4",
+
+                            color: "#333",
+
+                            fontWeight: "500",
+
+                            background: "#f8f9fa",
+
+                            padding: "12px",
+
+                            borderRadius: "8px",
+
+                            border: "1px solid #e9ecef",
+                          }}
+                          ellipsis={{ rows: 3, tooltip: true }}
+                        >
+                          {post.content ||
+                            post.introduction ||
+                            "ไม่มีการแนะนำตัว"}
+                        </Paragraph>
                       </div>
 
-                      {/* ✅ แสดง content ใหม่ หรือ introduction เก่า */}
-                      <Paragraph 
-                        ellipsis={{ rows: 2 }} 
-                        style={{ marginBottom: '12px', fontSize: '13px' }}
-                      >
-                        {post.content || post.introduction || 'ไม่มีการแนะนำตัว'}
-                      </Paragraph>
+                      {/* ทักษะ */}
 
                       <div>
-                        <Text style={{ fontSize: '12px', color: '#666', fontWeight: '500' }}>🛠️ ทักษะ: </Text>
-                        <div style={{ marginTop: '4px' }}>
+                        <div
+                          style={{
+                            fontSize: "12px",
+
+                            color: "#666",
+
+                            marginBottom: "8px",
+
+                            fontWeight: "500",
+                          }}
+                        >
+                          🛠️ ทักษะหลัก:
+                        </div>
+
+                        <div>
                           {skillsArray.length > 0 ? (
-                            skillsArray.slice(0, 2).map((skill, index) => (
-                              <Tag key={index} size="small" style={{ marginBottom: '2px', fontSize: '10px' }}>
+                            skillsArray.slice(0, 3).map((skill, index) => (
+                              <Tag
+                                key={index}
+                                color="blue"
+                                style={{
+                                  marginBottom: "4px",
+
+                                  fontSize: "11px",
+
+                                  border: "none",
+                                }}
+                              >
                                 {skill}
                               </Tag>
                             ))
                           ) : (
-                            <Tag size="small" color="default">
+                            <Tag color="default" style={{ fontSize: "11px" }}>
                               ไม่มีทักษะระบุ
                             </Tag>
                           )}
-                          {skillsArray.length > 2 && (
-                            <Tag size="small" color="blue">
-                              +{skillsArray.length - 2} อื่นๆ
+
+                          {skillsArray.length > 3 && (
+                            <Tag
+                              color="default"
+                              style={{
+                                fontSize: "11px",
+
+                                fontStyle: "italic",
+                              }}
+                            >
+                              +{skillsArray.length - 3} อื่นๆ
                             </Tag>
                           )}
                         </div>
@@ -2743,8 +3075,9 @@ const StudentFeedPage: React.FC = () => {
             })}
           </Row>
 
-          {/* Pagination - เลย์เอาต์เดิม */}
-          <div style={{ textAlign: 'center', marginTop: '32px' }}>
+          {/* Pagination */}
+
+          <div style={{ textAlign: "center", marginTop: "32px" }}>
             <Pagination
               current={currentPage}
               total={filteredPosts.length}
@@ -2759,159 +3092,221 @@ const StudentFeedPage: React.FC = () => {
           </div>
         </>
       ) : (
-        <Empty
-          description={
-            <div>
-              <Title level={4}>
-                {searchTerm ?
-                  `ไม่พบโพสต์ที่ตรงกับ "${searchTerm}"` :
-                  "ยังไม่มีโพสต์หางานจากนักศึกษา"
-                }
-              </Title>
-              <Text>
-                {isStudent ? 'เริ่มต้นสร้างโพสต์หางานแรกของคุณเลย!' : 'กลับมาดูใหม่ในภายหลัง'}
-              </Text>
-            </div>
-          }
-        >
-          {/* ปุ่มสร้างโพสต์ใน Empty State */}
-          {isStudent && !searchTerm && (
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={openCreatePostModal}
-              size="large"
-            >
-              สร้างโพสต์หางานแรกของคุณ
-            </Button>
-          )}
-        </Empty>
+        <div style={{ textAlign: "center" }}>
+          <Empty
+            description={
+              <Space direction="vertical">
+                <span style={{ fontSize: "16px", color: "#666" }}>
+                  {searchTerm || selectedJobType
+                    ? "🔍 ไม่พบโพสต์ที่ตรงกับเงื่อนไขการค้นหา"
+                    : "📝 ยังไม่มีโพสต์หางานจากนักศึกษา"}
+                </span>
+
+                {(searchTerm || selectedJobType) && (
+                  <Button
+                    type="link"
+                    onClick={showAllPosts}
+                    style={{ padding: 0 }}
+                  >
+                    แสดงโพสต์ทั้งหมด
+                  </Button>
+                )}
+              </Space>
+            }
+            style={{ margin: "50px 0" }}
+          >
+            {isStudent && !searchTerm && !selectedJobType && (
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={openCreatePostModal}
+                size="large"
+              >
+                สร้างโพสต์หางานแรกของคุณ
+              </Button>
+            )}
+          </Empty>
+        </div>
       )}
 
-      {/* ✅ Detail Modal - อัปเดตเพิ่มข้อมูลใหม่ */}
+      {/* Detail Modal - same as before */}
+
       <Modal
-        title="รายละเอียดโพสต์หางาน"
+        title={
+          <div style={{ textAlign: "center" }}>
+            <Avatar
+              size={48}
+              src={selectedPost?.student?.profile_image_url}
+              style={{ marginBottom: "8px" }}
+            />
+
+            <div style={{ fontSize: "18px", fontWeight: "bold" }}></div>
+          </div>
+        }
         open={isModalVisible}
         onCancel={closeModal}
         footer={[
           <Button
-            type="primary"
             key="profile"
+            type="primary"
             onClick={() => {
               if (selectedPost) {
                 closeModal();
-                goToProfile(selectedPost.student?.ID || selectedPost.student?.id || 0);
+
+                goToProfile(
+                  selectedPost.student?.ID || selectedPost.student?.id || 0
+                );
               }
             }}
           >
             ดูโปรไฟล์เต็ม
           </Button>,
+
           <Button key="close" onClick={closeModal}>
             ปิด
-          </Button>
+          </Button>,
         ]}
-        width={600}
+        width={700}
         centered
       >
         {selectedPost && (
           <div>
             {/* Student Info */}
-            <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+
+            <div style={{ textAlign: "center", marginBottom: "24px" }}>
               <Avatar
                 size={80}
-                icon={<UserOutlined />}
                 src={selectedPost.student?.profile_image_url}
+                icon={<UserOutlined />}
+                style={{ marginBottom: "12px" }}
               />
-              <Title level={4} style={{ margin: '8px 0 4px 0' }}>
-                {selectedPost.student ?
-                  `${selectedPost.student.first_name || ''} ${selectedPost.student.last_name || ''}`.trim() || 'ไม่ระบุชื่อ'
-                  : 'ไม่ระบุชื่อ'
-                }
+
+              <Title level={4} style={{ margin: "0 0 8px 0" }}>
+                {selectedPost.student
+                  ? `${selectedPost.student.first_name || ""} ${
+                      selectedPost.student.last_name || ""
+                    }`.trim() || "ไม่ระบุชื่อ"
+                  : "ไม่ระบุชื่อ"}
               </Title>
-              <Text>
-                คณะ/สาขา: {selectedPost.faculty?.Name || selectedPost.student?.faculty || 'ไม่ระบุ'} / {selectedPost.department?.Name || 'ไม่ระบุ'}
+
+              <Text type="secondary">
+                🏛️{" "}
+                {selectedPost.faculty?.Name ||
+                  selectedPost.student?.faculty ||
+                  "ไม่ระบุคณะ"}{" "}
+                • 📚 {selectedPost.department?.Name || "ไม่ระบุสาขา"}
               </Text>
+
               <br />
-              <Text>
-                ชั้นปี: {selectedPost.year || selectedPost.student?.year || 'ไม่ระบุ'}
+
+              <Text type="secondary">
+                📅 ชั้นปีที่{" "}
+                {selectedPost.year || selectedPost.student?.year || "ไม่ระบุ"}
               </Text>
             </div>
 
             <Divider />
 
-            {/* ✅ หัวข้อโพสต์ (ข้อมูลใหม่) */}
+            {/* รายละเอียดโพสต์ */}
+
             {selectedPost.title && (
-              <div style={{ marginBottom: '16px' }}>
-                <Text strong>
-                  <TagOutlined /> หัวข้อโพสต์:
-                </Text>
-                <div style={{ marginTop: '8px' }}>
-                  <Tag color="blue" style={{ fontSize: '14px', padding: '4px 12px' }}>
-                    {selectedPost.title}
-                  </Tag>
-                </div>
+              <div style={{ marginBottom: "16px" }}>
+                <Title level={5}>📝 หัวข้อโพสต์:</Title>
+
+                <Tag
+                  color="blue"
+                  style={{ fontSize: "14px", padding: "4px 12px" }}
+                >
+                  {selectedPost.title}
+                </Tag>
               </div>
             )}
 
-            {/* Job Type */}
-            <div style={{ marginBottom: '16px' }}>
-              <Text strong>ประเภทงานที่ต้องการ:</Text>
-              <div style={{ marginTop: '8px' }}>
-                <Tag color="green">{selectedPost.job_type || 'ไม่ระบุ'}</Tag>
-              </div>
+            <div style={{ marginBottom: "16px" }}>
+              <Title level={5}>💼 ประเภทงานที่ต้องการ:</Title>
+
+              <Tag
+                color="green"
+                style={{ fontSize: "14px", padding: "4px 12px" }}
+              >
+                {selectedPost.job_type || "ไม่ระบุ"}
+              </Tag>
             </div>
 
-            {/* ✅ ข้อมูลใหม่ - เวลาและสถานที่ */}
-            <Row gutter={16} style={{ marginBottom: '16px' }}>
-              {selectedPost.availability && (
-                <Col span={12}>
-                  <Text strong>
-                    <ClockCircleOutlined /> เวลาที่สะดวก:
-                  </Text>
-                  <div style={{ marginTop: '8px' }}>
-                    <Tag color="orange">{selectedPost.availability}</Tag>
-                  </div>
-                </Col>
-              )}
-              {selectedPost.preferred_location && (
-                <Col span={12}>
-                  <Text strong>
-                    <EnvironmentOutlined /> สถานที่ที่สะดวก:
-                  </Text>
-                  <div style={{ marginTop: '8px' }}>
-                    <Tag color="cyan">{selectedPost.preferred_location}</Tag>
-                  </div>
-                </Col>
-              )}
-            </Row>
+            {selectedPost.availability && (
+              <div style={{ marginBottom: "16px" }}>
+                <Title level={5}>⏰ เวลาที่สะดวก:</Title>
 
-            {/* ✅ ค่าตอบแทน (ข้อมูลใหม่) */}
+                <Tag
+                  color="orange"
+                  style={{ fontSize: "14px", padding: "4px 12px" }}
+                >
+                  {selectedPost.availability}
+                </Tag>
+              </div>
+            )}
+
+            {selectedPost.preferred_location && (
+              <div style={{ marginBottom: "16px" }}>
+                <Title level={5}>📍 สถานที่ที่สะดวก:</Title>
+
+                <Tag
+                  color="cyan"
+                  style={{ fontSize: "14px", padding: "4px 12px" }}
+                >
+                  {selectedPost.preferred_location}
+                </Tag>
+              </div>
+            )}
+
             {selectedPost.expected_compensation && (
-              <div style={{ marginBottom: '16px' }}>
-                <Text strong>
-                  <DollarOutlined /> ค่าตอบแทนที่คาดหวัง:
-                </Text>
-                <div style={{ marginTop: '8px' }}>
-                  <Tag color="red">{selectedPost.expected_compensation}</Tag>
-                </div>
+              <div style={{ marginBottom: "16px" }}>
+                <Title level={5}>💰 ค่าตอบแทนที่คาดหวัง:</Title>
+
+                <Tag
+                  color="gold"
+                  style={{ fontSize: "14px", padding: "4px 12px" }}
+                >
+                  {selectedPost.expected_compensation}
+                </Tag>
               </div>
             )}
 
-            {/* ✅ รายละเอียด - แสดง content หรือ introduction */}
-            <div style={{ marginBottom: '16px' }}>
-              <Text strong>รายละเอียด:</Text>
-              <Paragraph style={{ marginTop: '8px' }}>
-                {selectedPost.content || selectedPost.introduction || 'ไม่มีการแนะนำตัว'}
-              </Paragraph>
+            <div style={{ marginBottom: "16px" }}>
+              <Title level={5}>💭 รายละเอียด:</Title>
+
+              <div
+                style={{
+                  background: "#f8f9fa",
+
+                  padding: "16px",
+
+                  borderRadius: "8px",
+
+                  border: "1px solid #e9ecef",
+
+                  fontSize: "14px",
+
+                  lineHeight: "1.6",
+                }}
+              >
+                {selectedPost.content ||
+                  selectedPost.introduction ||
+                  "ไม่มีการแนะนำตัว"}
+              </div>
             </div>
 
-            {/* Skills */}
-            <div style={{ marginBottom: '16px' }}>
-              <Text strong>ทักษะ:</Text>
-              <div style={{ marginTop: '8px' }}>
+            <div style={{ marginBottom: "16px" }}>
+              <Title level={5}>🛠️ ทักษะ:</Title>
+
+              <div>
                 {selectedPost.skills ? (
-                  selectedPost.skills.split(',').map((skill, index) => (
-                    <Tag key={index} style={{ marginBottom: '4px' }}>
+                  selectedPost.skills.split(",").map((skill, index) => (
+                    <Tag
+                      key={index}
+                      color="blue"
+                      style={{ marginBottom: "4px" }}
+                    >
                       {skill.trim()}
                     </Tag>
                   ))
@@ -2921,54 +3316,64 @@ const StudentFeedPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Portfolio */}
             {selectedPost.portfolio_url && (
-              <div style={{ marginBottom: '16px' }}>
-                <Text strong>ผลงาน:</Text>
-                <div style={{ marginTop: '8px' }}>
-                  <Button 
-                    type="link" 
-                    href={selectedPost.portfolio_url} 
-                    target="_blank"
-                    style={{ padding: 0 }}
-                  >
-                    ดูผลงาน
-                  </Button>
-                </div>
+              <div style={{ marginBottom: "16px" }}>
+                <Title level={5}>🎨 ผลงาน:</Title>
+
+                <Button
+                  type="link"
+                  href={selectedPost.portfolio_url}
+                  target="_blank"
+                  style={{ padding: 0 }}
+                >
+                  ดูผลงาน →
+                </Button>
               </div>
             )}
 
-            {/* Contact Info */}
-            <div style={{ marginBottom: '16px' }}>
-              <Text strong>ข้อมูลติดต่อ:</Text>
-              <div style={{ marginTop: '8px' }}>
-                {selectedPost.student?.email && (
-                  <div style={{ marginBottom: '4px' }}>
-                    <MailOutlined style={{ color: '#1890ff', marginRight: '8px' }} />
-                    <Text>{selectedPost.student.email}</Text>
-                  </div>
-                )}
-                {selectedPost.student?.phone && (
-                  <div style={{ marginBottom: '4px' }}>
-                    <PhoneOutlined style={{ color: '#52c41a', marginRight: '8px' }} />
-                    <Text>{selectedPost.student.phone}</Text>
-                  </div>
-                )}
-                {!selectedPost.student?.email && !selectedPost.student?.phone && (
-                  <Text type="secondary">ไม่มีข้อมูลติดต่อในโพสต์นี้</Text>
-                )}
-              </div>
+            <div style={{ marginBottom: "16px" }}>
+              <Title level={5}>📞 ข้อมูลติดต่อ:</Title>
+
+              {selectedPost.student?.email && (
+                <div style={{ marginBottom: "4px" }}>
+                  <MailOutlined
+                    style={{ marginRight: "8px", color: "#1890ff" }}
+                  />
+
+                  <Text copyable>{selectedPost.student.email}</Text>
+                </div>
+              )}
+
+              {selectedPost.student?.phone && (
+                <div>
+                  <PhoneOutlined
+                    style={{ marginRight: "8px", color: "#52c41a" }}
+                  />
+
+                  <Text copyable>{selectedPost.student.phone}</Text>
+                </div>
+              )}
+
+              {!selectedPost.student?.email && !selectedPost.student?.phone && (
+                <Text type="secondary">ไม่มีข้อมูลติดต่อในโพสต์นี้</Text>
+              )}
             </div>
 
-            {/* Created Date */}
-            <div style={{ textAlign: 'center', paddingTop: '16px', borderTop: '1px solid #f0f0f0' }}>
-              <Text type="secondary">
-                โพสต์เมื่อ: {new Date(selectedPost.CreatedAt).toLocaleDateString('th-TH', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
+            <Divider />
+
+            <div style={{ textAlign: "center" }}>
+              <Text type="secondary" style={{ fontSize: "12px" }}>
+                📅 โพสต์เมื่อ:{" "}
+                {new Date(selectedPost.CreatedAt).toLocaleDateString("th-TH", {
+                  year: "numeric",
+
+                  month: "long",
+
+                  day: "numeric",
+
+                  hour: "2-digit",
+
+                  minute: "2-digit",
                 })}
               </Text>
             </div>
@@ -2977,137 +3382,12 @@ const StudentFeedPage: React.FC = () => {
       </Modal>
 
       {/* Create Post Modal */}
+
       <CreateStudentPostModal
         visible={isCreatePostModalVisible}
         onClose={closeCreatePostModal}
         onSuccess={handleCreatePostSuccess}
       />
-
-      {/* ✅ Edit Modal - อัปเดตให้รองรับฟิลด์ใหม่ */}
-      <Modal
-        title="แก้ไขโพสต์หางาน"
-        open={editModalVisible}
-        onCancel={() => {
-          setEditModalVisible(false);
-          setEditingPost(null);
-          editForm.resetFields();
-        }}
-        footer={null}
-        width={600}
-        centered
-      >
-        <Form
-          form={editForm}
-          layout="vertical"
-          onFinish={handleSaveEdit}
-          style={{ marginTop: '24px' }}
-        >
-          <Form.Item
-            label="หัวข้อโพสต์"
-            name="title"
-          >
-            <Input placeholder="เช่น รับงานพิมพ์รายงาน" />
-          </Form.Item>
-
-          {/* ✅ ประเภทงาน - อัปเดตตัวเลือกใหม่ */}
-          <Form.Item
-            label="ประเภทงาน"
-            name="job_type"
-            rules={[{ required: true, message: 'กรุณาเลือกประเภทงาน' }]}
-          >
-            <Select placeholder="เลือกประเภทงาน">
-              <Option value="งานประจำ">งานประจำ</Option>
-              <Option value="งานพาร์ทไทม์">งานพาร์ทไทม์</Option>
-              <Option value="ฟรีแลนซ์">ฟรีแลนซ์</Option>
-              <Option value="ฝึกงาน">ฝึกงาน</Option>
-              <Option value="งานชั่วคราว">งานชั่วคราว</Option>
-              <Option value="งานโครงการ">งานโครงการ</Option>
-            </Select>
-          </Form.Item>
-
-          {/* ✅ ทักษะ - เปลี่ยนเป็น tags mode */}
-          <Form.Item
-            label="ทักษะ"
-            name="skills"
-            rules={[{ required: true, message: 'กรุณาเลือกทักษะอย่างน้อย 1 อย่าง' }]}
-          >
-            <Select
-              mode="tags"
-              placeholder="เลือกทักษะหรือพิมพ์เพิ่มเติม..."
-              style={{ width: '100%' }}
-              maxTagCount={5}
-              showSearch
-              filterOption={(input, option) =>
-                (option?.children as unknown as string)?.toLowerCase().includes(input.toLowerCase())
-              }
-            >
-              {skillOptions.map(skill => (
-                <Option key={skill} value={skill}>{skill}</Option>
-              ))}
-            </Select>
-          </Form.Item>
-
-          {/* ✅ เวลาที่สะดวก - เปลี่ยนเป็น Input */}
-          <Form.Item
-            label="เวลาที่สะดวก"
-            name="availability"
-            rules={[{ required: true, message: 'กรุณาระบุเวลาที่สะดวก' }]}
-          >
-            <Input placeholder='เช่น "ว่าง จ.-ศ. หลัง 5 โมง", "เสาร์-อาทิตย์"' />
-          </Form.Item>
-
-          {/* ✅ สถานที่ที่สะดวก - เปลี่ยนเป็น Input */}
-          <Form.Item
-            label="สถานที่ที่สะดวก"
-            name="preferred_location"
-            rules={[{ required: true, message: 'กรุณาระบุสถานที่ที่สะดวก' }]}
-          >
-            <Input placeholder='เช่น "หอสมุด", "Online", "ตึกวิศวะ"' />
-          </Form.Item>
-
-          {/* ค่าตอบแทน */}
-          <Form.Item
-            label="ค่าตอบแทนที่คาดหวัง (ไม่บังคับ)"
-            name="expected_compensation"
-          >
-            <Input placeholder='เช่น "50 บาท/ชั่วโมง", "ตามตกลง"' />
-          </Form.Item>
-
-          {/* รายละเอียด */}
-          <Form.Item
-            label="รายละเอียดโพสต์"
-            name="content"
-            rules={[{ required: true, message: 'กรุณาเขียนรายละเอียด' }]}
-          >
-            <TextArea rows={4} placeholder="แนะนำตัวและรายละเอียดเพิ่มเติม..." />
-          </Form.Item>
-
-          {/* URL ผลงาน */}
-          <Form.Item
-            label="URL ผลงาน (ไม่บังคับ)"
-            name="portfolio_url"
-          >
-            <Input placeholder="https://..." />
-          </Form.Item>
-
-          <div style={{ textAlign: 'right', marginTop: '24px' }}>
-            <Space>
-              <Button
-                onClick={() => {
-                  setEditModalVisible(false);
-                  setEditingPost(null);
-                  editForm.resetFields();
-                }}
-              >
-                ยกเลิก
-              </Button>
-              <Button type="primary" htmlType="submit">
-                บันทึกการแก้ไข
-              </Button>
-            </Space>
-          </div>
-        </Form>
-      </Modal>
     </div>
   );
 };

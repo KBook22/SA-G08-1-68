@@ -673,7 +673,294 @@
 // };
 
 // export default CreateStudentPostModal;
+// src/components/CreateStudentPostModal.tsx
+// import React, { useState } from 'react';
+// import {
+//   Modal,
+//   Form,
+//   Input,
+//   Select,
+//   Button,
+//   message,
+//   Space,
+//   Row,
+//   Col,
+//   Typography,
+//   Divider,
+//   Card,
+//   Upload
+// } from 'antd';
+// import {
+//   BulbOutlined,
+//   ClockCircleOutlined,
+//   EnvironmentOutlined,
+//   DollarOutlined,
+//   UserOutlined,
+//   TagOutlined,
+//   InboxOutlined
+// } from '@ant-design/icons';
+// import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
+// import SkillSelect from './SkillSelect'; // Make sure this component exists
 
+// const { TextArea } = Input;
+// const { Option } = Select;
+// const { Title, Text } = Typography;
+// const { Dragger } = Upload;
+
+// interface CreateStudentPostModalProps {
+//   visible: boolean;
+//   onClose: () => void;
+//   onSuccess: () => void;
+// }
+
+// // Helper for Ant Design's Upload component in a Form
+// const normFile = (e: any) => {
+//   if (Array.isArray(e)) {
+//     return e;
+//   }
+//   return e?.fileList;
+// };
+
+
+// const CreateStudentPostModal: React.FC<CreateStudentPostModalProps> = ({
+//   visible,
+//   onClose,
+//   onSuccess
+// }) => {
+//   const [form] = Form.useForm();
+//   const [loading, setLoading] = useState(false);
+//   const [fileList, setFileList] = useState<UploadFile[]>([]);
+
+//   const jobTypes = [
+//     'งานประจำ',
+//     'งานพาร์ทไทม์',
+//     'ฟรีแลนซ์',
+//     'ฝึกงาน',
+//     'งานชั่วคราว',
+//     'งานโครงการ'
+//   ];
+
+//   const handleSubmit = async (values: any) => {
+//     // Note: The 'attachment' value from the form will contain the file list.
+//     // You would handle the actual file upload logic here.
+//     console.log('Form Values:', values);
+    
+//     try {
+//       setLoading(true);
+//       const token = localStorage.getItem('token');
+
+//       const skillsString = Array.isArray(values.skills)
+//         ? values.skills.join(', ')
+//         : values.skills;
+
+//       const postData = {
+//         title: values.title,
+//         job_type: values.jobType,
+//         skills: skillsString,
+//         availability: values.availability,
+//         preferred_location: values.preferredLocation,
+//         expected_compensation: values.expectedCompensation || '',
+//         content: values.content,
+//         portfolio_url: values.portfolio_url || ''
+//       };
+
+//       const response = await fetch('http://localhost:8080/api/student-profile-posts', {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//           'Authorization': `Bearer ${token}`
+//         },
+//         body: JSON.stringify(postData)
+//       });
+
+//       if (!response.ok) {
+//         const errorData = await response.json();
+//         throw new Error(errorData.error || 'ไม่สามารถสร้างโพสต์ได้');
+//       }
+
+//       message.success('สร้างโพสต์สำเร็จ!');
+//       form.resetFields();
+//       setFileList([]);
+//       onSuccess();
+//       onClose();
+//     } catch (error: any) {
+//       console.error('Error creating post:', error);
+//       message.error(error.message || 'เกิดข้อผิดพลาดในการสร้างโพสต์');
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const handleCancel = () => {
+//     form.resetFields();
+//     setFileList([]);
+//     if (onClose) {
+//       onClose();
+//     }
+//   };
+  
+//   const uploadProps: UploadProps = {
+//     onRemove: () => {
+//       setFileList([]);
+//     },
+//     beforeUpload: (file) => {
+//       setFileList([file]);
+//       return false; // Prevent automatic upload
+//     },
+//     fileList,
+//     maxCount: 1,
+//   };
+
+//   return (
+//     <Modal
+//       title={
+//         <div style={{ textAlign: 'center', padding: '20px 0' }}>
+//           <Title level={3} style={{ margin: 0, color: '#1890ff' }}>
+//             สร้างโพสต์หางานของคุณ
+//           </Title>
+//           <Text type="secondary">
+//             กรอกข้อมูลเพื่อให้ผู้ว่าจ้างรู้จักคุณมากขึ้น
+//           </Text>
+//         </div>
+//       }
+//       open={visible}
+//       onCancel={handleCancel}
+//       footer={null}
+//       width={700}
+//       centered
+//       destroyOnHidden={true}
+//       style={{ borderRadius: '20px' }}
+//     >
+//       <Form
+//         form={form}
+//         layout="vertical"
+//         onFinish={handleSubmit}
+//         style={{ padding: '0 20px' }}
+//       >
+//         {/* ... other form items like title, jobType, etc. ... */}
+//         <Form.Item
+//           label={<span><BulbOutlined style={{ color: '#faad14', marginRight: '8px' }} />หัวข้อโพสต์</span>}
+//           name="title"
+//           rules={[{ required: true, message: 'กรุณาใส่หัวข้อโพสต์' }, { min: 10, message: 'หัวข้อควรมีอย่างน้อย 10 ตัวอักษร' }]}
+//         >
+//           <Input placeholder="เช่น นักศึกษาหางานพาร์ทไทม์ร้านกาแฟ" />
+//         </Form.Item>
+
+//         <Row gutter={16}>
+//           <Col xs={24} sm={12}>
+//             <Form.Item
+//               label={<span><TagOutlined style={{ color: '#722ed1', marginRight: '8px' }} />ประเภทงานที่สนใจ</span>}
+//               name="jobType"
+//               rules={[{ required: true, message: 'กรุณาเลือกประเภทงาน' }]}
+//             >
+//               <Select placeholder="เลือกประเภทงาน" showSearch>
+//                 {jobTypes.map(type => (<Option key={type} value={type}>{type}</Option>))}
+//               </Select>
+//             </Form.Item>
+//           </Col>
+//           <Col xs={24} sm={12}>
+//             <Form.Item
+//               label={<span><UserOutlined style={{ color: '#722ed1', marginRight: '8px' }} />ทักษะที่มี</span>}
+//               name="skills"
+//               rules={[{ required: true, message: 'กรุณาเลือกทักษะอย่างน้อย 1 อย่าง' }]}
+//             >
+//               <SkillSelect placeholder="เลือกทักษะหรือพิมพ์เพิ่ม..." />
+//             </Form.Item>
+//           </Col>
+//         </Row>
+
+//         <Row gutter={16}>
+//           <Col xs={24} sm={12}>
+//             <Form.Item
+//               label={<span><ClockCircleOutlined style={{ color: '#52c41a', marginRight: '8px' }} />เวลาที่สะดวก</span>}
+//               name="availability"
+//               rules={[{ required: true, message: 'กรุณาระบุเวลาที่สะดวก' }]}
+//             >
+//               <Input placeholder="เช่น จันทร์-ศุกร์ หลัง 18:00 น." />
+//             </Form.Item>
+//           </Col>
+//           <Col xs={24} sm={12}>
+//             <Form.Item
+//               label={<span><EnvironmentOutlined style={{ color: '#1890ff', marginRight: '8px' }} />สถานที่ที่สะดวก</span>}
+//               name="preferredLocation"
+//               rules={[{ required: true, message: 'กรุณาระบุสถานที่ที่สะดวก' }]}
+//             >
+//               <Input placeholder="เช่น ใกล้ ม.เทคโนโลยีสุรนารี" />
+//             </Form.Item>
+//           </Col>
+//         </Row>
+
+//         <Form.Item
+//           label={<span><DollarOutlined style={{ color: '#faad14', marginRight: '8px' }} />ค่าตอบแทนที่คาดหวัง (ไม่บังคับ)</span>}
+//           name="expectedCompensation"
+//         >
+//           <Input placeholder="เช่น 120-150 บาท/ชั่วโมง หรือตามตกลง" />
+//         </Form.Item>
+
+//         <Form.Item
+//           label={<span><BulbOutlined style={{ color: '#fa8c16', marginRight: '8px' }} />รายละเอียดเกี่ยวกับตัวคุณ</span>}
+//           name="content"
+//           rules={[{ required: true, message: 'กรุณาใส่รายละเอียด' }, { min: 50, message: 'รายละเอียดควรมีอย่างน้อย 50 ตัวอักษร' }]}
+//         >
+//           <TextArea rows={4} placeholder="แนะนำตัวเอง ประสบการณ์ การศึกษา หรือสิ่งที่ต้องการให้นายจ้างรู้..." />
+//         </Form.Item>
+
+
+//         <Divider>แนบไฟล์ หรือ ลิงก์ผลงาน (เลือกอย่างใดอย่างหนึ่ง)</Divider>
+        
+//         {/* ✅ FIXED: Added 'name' and 'getValueFromEvent' props */}
+//         <Form.Item
+//           name="attachment"
+//           label="อัปโหลดไฟล์ (Resume, Portfolio)"
+//           valuePropName="fileList"
+//           getValueFromEvent={normFile}
+//         >
+//           <Dragger {...uploadProps} disabled={!!form.getFieldValue('portfolio_url')}>
+//             <p className="ant-upload-drag-icon">
+//               <InboxOutlined />
+//             </p>
+//             <p className="ant-upload-text">คลิก หรือ ลากไฟล์มาวางที่นี่เพื่ออัปโหลด</p>
+//             <p className="ant-upload-hint">
+//               รองรับการอัปโหลดเพียงไฟล์เดียว (PDF, DOCX, JPG, PNG)
+//             </p>
+//           </Dragger>
+//         </Form.Item>
+
+//         <Form.Item
+//           label="หรือวางลิงก์ผลงาน"
+//           name="portfolio_url"
+//           rules={[{ type: 'url', message: 'กรุณาใส่ URL ที่ถูกต้อง' }]}
+//         >
+//           <Input 
+//             placeholder="https://your-portfolio.com" 
+//             disabled={fileList.length > 0} 
+//           />
+//         </Form.Item>
+
+//         <Divider />
+
+//         <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+//           <Space size="large">
+//             <Button size="large" onClick={handleCancel} style={{ minWidth: '120px' }}>
+//               ยกเลิก
+//             </Button>
+//             <Button type="primary" size="large" htmlType="submit" loading={loading} style={{ minWidth: '120px' }}>
+//               {loading ? 'กำลังโพสต์...' : 'โพสต์หางาน'}
+//             </Button>
+//           </Space>
+//         </div>
+//         <Card size="small" style={{ backgroundColor: '#f6ffed', marginBottom: '20px' }}>
+//           <Text type="secondary" style={{ fontSize: '12px' }}>
+//             💡 เคล็ดลับ: เขียนหัวข้อให้น่าสนใจ ระบุทักษะที่มีให้ชัดเจน และแนบลิงก์ผลงานจะช่วยเพิ่มโอกาสในการถูกติดต่อกลับมากขึ้น
+//           </Text>
+//         </Card>
+//       </Form>
+//     </Modal>
+//   );
+// };
+
+// export default CreateStudentPostModal;
+// src/components/CreateStudentPostModal.tsx
 // src/components/CreateStudentPostModal.tsx
 import React, { useState } from 'react';
 import {
@@ -683,12 +970,14 @@ import {
   Select,
   Button,
   message,
-  Space,
   Row,
   Col,
   Typography,
+  Space,
+  Upload,
+  Card,
   Divider,
-  Card
+  Alert
 } from 'antd';
 import {
   BulbOutlined,
@@ -696,13 +985,19 @@ import {
   EnvironmentOutlined,
   DollarOutlined,
   UserOutlined,
-  TagOutlined
+  TagOutlined,
+  InboxOutlined,
+  LinkOutlined,
+  FileOutlined,
+  CloudUploadOutlined
 } from '@ant-design/icons';
-import SkillSelect from './SkillSelect'; // ✅ เพิ่ม import
+import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
+import { createStudentPost } from '../services/studentPostService';
 
 const { TextArea } = Input;
 const { Option } = Select;
 const { Title, Text } = Typography;
+const { Dragger } = Upload;
 
 interface CreateStudentPostModalProps {
   visible: boolean;
@@ -717,8 +1012,9 @@ const CreateStudentPostModal: React.FC<CreateStudentPostModalProps> = ({
 }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [attachmentMethod, setAttachmentMethod] = useState<'file' | 'url' | null>(null);
 
-  // อัปเดตประเภทงาน
   const jobTypes = [
     'งานประจำ',
     'งานพาร์ทไทม์',
@@ -728,42 +1024,95 @@ const CreateStudentPostModal: React.FC<CreateStudentPostModalProps> = ({
     'งานโครงการ'
   ];
 
+  // ✅ Upload Props สำหรับไฟล์แนบ
+  const uploadProps: UploadProps = {
+    name: 'file',
+    action: 'http://localhost:8080/api/upload',
+    headers: {
+      authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+    multiple: false,
+    maxCount: 1,
+    fileList,
+    accept: '.pdf,.doc,.docx,.jpg,.jpeg,.png',
+    beforeUpload: (file) => {
+      const isValidType = ['application/pdf', 'application/msword', 
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'image/jpeg', 'image/jpg', 'image/png'].includes(file.type);
+      
+      if (!isValidType) {
+        message.error('สามารถอัปโหลดไฟล์ PDF, DOC, DOCX, JPG, PNG เท่านั้น');
+        return false;
+      }
+      
+      const isLt10M = file.size / 1024 / 1024 < 10;
+      if (!isLt10M) {
+        message.error('ขนาดไฟล์ต้องไม่เกิน 10MB');
+        return false;
+      }
+      
+      return true;
+    },
+    onChange: (info) => {
+      setFileList(info.fileList);
+      
+      if (info.file.status === 'uploading') {
+        return;
+      }
+      
+      if (info.file.status === 'done') {
+        message.success(`${info.file.name} อัปโหลดสำเร็จ`);
+        // เก็บ URL ที่ได้จาก server
+        const uploadedUrl = info.file.response?.url;
+        if (uploadedUrl) {
+          form.setFieldsValue({
+            attachment_url: uploadedUrl,
+            attachment_name: info.file.name,
+            attachment_type: info.file.type
+          });
+        }
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} อัปโหลดไม่สำเร็จ`);
+      }
+    },
+    onRemove: () => {
+      form.setFieldsValue({
+        attachment_url: '',
+        attachment_name: '',
+        attachment_type: ''
+      });
+      setFileList([]);
+    }
+  };
+
   const handleSubmit = async (values: any) => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-
-      // จัดการ skills - ถ้าเป็น array ให้ join เป็น string
-      const skillsString = Array.isArray(values.skills)
-        ? values.skills.join(', ')
-        : values.skills;
-
+      
+      // ✅ เตรียมข้อมูลส่ง API
       const postData = {
         title: values.title,
         job_type: values.jobType,
-        skills: skillsString,
+        skills: Array.isArray(values.skills) 
+          ? values.skills.join(', ') 
+          : values.skills,
         availability: values.availability,
         preferred_location: values.preferredLocation,
         expected_compensation: values.expectedCompensation || '',
-        content: values.content
+        introduction: values.introduction,
+        portfolio_url: values.portfolio_url || '',
+        // ✅ เพิ่มข้อมูลไฟล์แนบ
+        attachment_url: values.attachment_url || '',
+        attachment_name: values.attachment_name || '',
+        attachment_type: values.attachment_type || ''
       };
 
-      const response = await fetch('http://localhost:8080/api/student-profile-posts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(postData)
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'ไม่สามารถสร้างโพสต์ได้');
-      }
-
+      await createStudentPost(postData);
+      
       message.success('สร้างโพสต์สำเร็จ!');
       form.resetFields();
+      setFileList([]);
+      setAttachmentMethod(null);
       onSuccess();
       onClose();
     } catch (error: any) {
@@ -776,149 +1125,113 @@ const CreateStudentPostModal: React.FC<CreateStudentPostModalProps> = ({
 
   const handleCancel = () => {
     form.resetFields();
-    onClose();
+    setFileList([]);
+    setAttachmentMethod(null);
+    if (onClose) {
+      onClose();
+    }
   };
 
   return (
     <Modal
       title={
-        <div style={{ textAlign: 'center', padding: '20px 0' }}>
-          <Title level={3} style={{ margin: 0, color: '#1890ff' }}>
-            🚀 สร้างโพสต์หางานของคุณ
-          </Title>
-          <Text type="secondary">
-            กรอกข้อมูลเพื่อให้ผู้ว่าจ้างรู้จักคุณมากขึ้น
-          </Text>
-        </div>
+        <Space>
+          <BulbOutlined style={{ color: '#1890ff' }} />
+          <span>สร้างโพสต์หางานของคุณ</span>
+        </Space>
       }
       open={visible}
       onCancel={handleCancel}
       footer={null}
-      width={700}
+      width={800}
       centered
       destroyOnClose={true}
       style={{ borderRadius: '20px' }}
     >
+      <Text type="secondary" style={{ display: 'block', marginBottom: '24px' }}>
+        กรอกข้อมูลเพื่อให้ผู้ว่าจ้างรู้จักคุณมากขึ้น
+      </Text>
+
       <Form
         form={form}
         layout="vertical"
         onFinish={handleSubmit}
-        style={{ padding: '0 20px' }}
+        requiredMark={false}
       >
-        {/* หัวข้อโพสต์ */}
-        <Form.Item
-          label={
-            <span>
-              <BulbOutlined style={{ color: '#faad14', marginRight: '8px' }} />
-              หัวข้อโพสต์
-            </span>
-          }
-          name="title"
-          rules={[
-            { required: true, message: 'กรุณาใส่หัวข้อโพสต์' },
-            { min: 10, message: 'หัวข้อควรมีอย่างน้อย 10 ตัวอักษร' }
-          ]}
-        >
-          <Input placeholder="เช่น นักศึกษาหางานพาร์ทไทม์ร้านกาแฟ" />
-        </Form.Item>
-
-        {/* ประเภทงานและทักษะ */}
         <Row gutter={16}>
-          <Col xs={24} sm={12}>
+          <Col span={24}>
             <Form.Item
-              label={
-                <span>
-                  <TagOutlined style={{ color: '#722ed1', marginRight: '8px' }} />
-                  ประเภทงานที่สนใจ
-                </span>
-              }
+              label={<><TagOutlined /> หัวข้อโพสต์</>}
+              name="title"
+              rules={[
+                { required: true, message: 'กรุณาใส่หัวข้อโพสต์' },
+                { min: 10, message: 'หัวข้อควรมีอย่างน้อย 10 ตัวอักษร' }
+              ]}
+            >
+              <Input placeholder="เช่น นักศึกษาวิศวะ หางานพาร์ทไทม์" />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              label={<><BulbOutlined /> ประเภทงานที่สนใจ</>}
               name="jobType"
               rules={[{ required: true, message: 'กรุณาเลือกประเภทงาน' }]}
             >
-              <Select
-                placeholder="เลือกประเภทงาน"
-                showSearch
-                filterOption={(input, option) =>
-                  (option?.children as unknown as string)?.toLowerCase().includes(input.toLowerCase())
-                }
-              >
+              <Select placeholder="เลือกประเภทงาน">
                 {jobTypes.map(type => (
                   <Option key={type} value={type}>{type}</Option>
                 ))}
               </Select>
             </Form.Item>
           </Col>
-          <Col xs={24} sm={12}>
+          <Col span={12}>
             <Form.Item
-              label={
-                <span>
-                  <UserOutlined style={{ color: '#722ed1', marginRight: '8px' }} />
-                  ทักษะที่มี
-                </span>
-              }
-              name="skills"
-              rules={[{ required: true, message: 'กรุณาเลือกทักษะอย่างน้อย 1 อย่าง' }]}
-            >
-              {/* ✅ ใช้ SkillSelect แทน hardcoded Select */}
-              <SkillSelect placeholder="เลือกทักษะหรือพิมพ์เพิ่มเติム..." />
-            </Form.Item>
-          </Col>
-        </Row>
-
-        {/* เวลาที่สะดวกและสถานที่ */}
-        <Row gutter={16}>
-          <Col xs={24} sm={12}>
-            <Form.Item
-              label={
-                <span>
-                  <ClockCircleOutlined style={{ color: '#52c41a', marginRight: '8px' }} />
-                  เวลาที่สะดวก
-                </span>
-              }
+              label={<><ClockCircleOutlined /> เวลาที่สะดวก</>}
               name="availability"
               rules={[{ required: true, message: 'กรุณาระบุเวลาที่สะดวก' }]}
             >
-              <Input placeholder="เช่น จันทร์-ศุกร์ หลัง 18:00 น." />
-            </Form.Item>
-          </Col>
-          <Col xs={24} sm={12}>
-            <Form.Item
-              label={
-                <span>
-                  <EnvironmentOutlined style={{ color: '#1890ff', marginRight: '8px' }} />
-                  สถานที่ที่สะดวก
-                </span>
-              }
-              name="preferredLocation"
-              rules={[{ required: true, message: 'กรุณาระบุสถานที่ที่สะดวก' }]}
-            >
-              <Input placeholder="เช่น ใกล้ ม.เทคโนโลยีสุรนารี" />
+              <Input placeholder="เช่น หลัง 18:00, วันหยุด" />
             </Form.Item>
           </Col>
         </Row>
 
-        {/* ค่าตอบแทน */}
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              label={<><EnvironmentOutlined /> สถานที่ที่สะดวก</>}
+              name="preferredLocation"
+              rules={[{ required: true, message: 'กรุณาระบุสถานที่ที่สะดวก' }]}
+            >
+              <Input placeholder="เช่น กรุงเทพ, ออนไลน์" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label={<><DollarOutlined /> ค่าตอบแทนที่คาดหวัง (ไม่บังคับ)</>}
+              name="expectedCompensation"
+            >
+              <Input placeholder="เช่น 15,000 บาท/เดือน" />
+            </Form.Item>
+          </Col>
+        </Row>
+
         <Form.Item
-          label={
-            <span>
-              <DollarOutlined style={{ color: '#faad14', marginRight: '8px' }} />
-              ค่าตอบแทนที่คาดหวัง (ไม่บังคับ)
-            </span>
-          }
-          name="expectedCompensation"
+          label="ทักษะที่มี"
+          name="skills"
+          rules={[{ required: true, message: 'กรุณาระบุทักษะอย่างน้อย 1 อย่าง' }]}
         >
-          <Input placeholder="เช่น 120-150 บาท/ชั่วโมง หรือตามตกลง" />
+          <TextArea 
+            rows={2} 
+            placeholder="เช่น React, Node.js, Photoshop (คั่นด้วยเครื่องหมายจุลภาค)" 
+          />
         </Form.Item>
 
-        {/* รายละเอียดโพสต์ */}
         <Form.Item
-          label={
-            <span>
-              <BulbOutlined style={{ color: '#fa8c16', marginRight: '8px' }} />
-              รายละเอียดเกี่ยวกับตัวคุณ
-            </span>
-          }
-          name="content"
+          label={<><UserOutlined /> รายละเอียดเกี่ยวกับตัวคุณ</>}
+          name="introduction"
           rules={[
             { required: true, message: 'กรุณาใส่รายละเอียด' },
             { min: 50, message: 'รายละเอียดควรมีอย่างน้อย 50 ตัวอักษร' }
@@ -926,41 +1239,121 @@ const CreateStudentPostModal: React.FC<CreateStudentPostModalProps> = ({
         >
           <TextArea 
             rows={4} 
-            placeholder="แนะนำตัวเอง ประสบการณ์ การศึกษา หรือสิ่งที่ต้องการให้นายจ้างรู้..."
+            placeholder="แนะนำตัวเอง ประสบการณ์ที่มี และสิ่งที่คุณสนใจ..." 
           />
         </Form.Item>
 
-        <Divider />
+        <Form.Item
+          label={<><LinkOutlined /> ลิงก์ผลงาน/โปรไฟล์ (ไม่บังคับ)</>}
+          name="portfolio_url"
+          rules={[{ type: 'url', message: 'กรุณาใส่ URL ที่ถูกต้อง' }]}
+        >
+          <Input placeholder="https://github.com/yourusername หรือ LinkedIn Profile" />
+        </Form.Item>
 
-        {/* ปุ่มกดส่ง */}
-        <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-          <Space size="large">
+        <Divider orientation="left">
+          <FileOutlined /> แนบไฟล์หรือลิงก์เพิ่มเติม (ไม่บังคับ)
+        </Divider>
+
+        {/* ✅ ตัวเลือกวิธีการแนบ */}
+        <div style={{ marginBottom: '16px' }}>
+          <Space>
             <Button 
-              size="large" 
-              onClick={handleCancel}
-              style={{ minWidth: '120px' }}
+              type={attachmentMethod === 'file' ? 'primary' : 'default'}
+              onClick={() => setAttachmentMethod('file')}
+              icon={<CloudUploadOutlined />}
             >
+              อัปโหลดไฟล์
+            </Button>
+            <Button 
+              type={attachmentMethod === 'url' ? 'primary' : 'default'}
+              onClick={() => setAttachmentMethod('url')}
+              icon={<LinkOutlined />}
+            >
+              ใส่ลิงก์
+            </Button>
+            {attachmentMethod && (
+              <Button onClick={() => setAttachmentMethod(null)}>
+                ยกเลิก
+              </Button>
+            )}
+          </Space>
+        </div>
+
+        {/* ✅ แสดงการอัปโหลดไฟล์ */}
+        {attachmentMethod === 'file' && (
+          <Card size="small" style={{ marginBottom: '16px' }}>
+            <Dragger {...uploadProps}>
+              <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p className="ant-upload-text">คลิก หรือ ลากไฟล์มาวางที่นี่</p>
+              <p className="ant-upload-hint">
+                รองรับ: PDF, DOC, DOCX, JPG, PNG (ไม่เกิน 10MB)
+                <br />
+                เช่น Resume, CV, Portfolio, ใบรับรอง
+              </p>
+            </Dragger>
+          </Card>
+        )}
+
+        {/* ✅ แสดงการใส่ลิงก์ */}
+        {attachmentMethod === 'url' && (
+          <Card size="small" style={{ marginBottom: '16px' }}>
+            <Form.Item
+              label="ลิงก์ไฟล์หรือเอกสาร"
+              name="attachment_url"
+              rules={[{ type: 'url', message: 'กรุณาใส่ URL ที่ถูกต้อง' }]}
+            >
+              <Input placeholder="https://drive.google.com/... หรือ https://dropbox.com/..." />
+            </Form.Item>
+            <Form.Item
+              label="ชื่อไฟล์/เอกสาร"
+              name="attachment_name"
+            >
+              <Input placeholder="เช่น Resume_2025.pdf, Portfolio" />
+            </Form.Item>
+          </Card>
+        )}
+
+        {/* Hidden fields สำหรับเก็บข้อมูลไฟล์ที่อัปโหลด */}
+        <Form.Item name="attachment_url" hidden>
+          <Input />
+        </Form.Item>
+        <Form.Item name="attachment_name" hidden>
+          <Input />
+        </Form.Item>
+        <Form.Item name="attachment_type" hidden>
+          <Input />
+        </Form.Item>
+
+        <Alert
+          message="เคล็ดลับการแนบไฟล์"
+          description="การแนบ Resume, CV หรือ Portfolio จะช่วยให้ผู้ว่าจ้างเข้าใจความสามารถของคุณได้ดีขึ้น และเพิ่มโอกาสในการได้รับการติดต่อกลับ"
+          type="info"
+          showIcon
+          style={{ marginBottom: '24px' }}
+        />
+
+        <Row justify="end" style={{ marginTop: '24px' }}>
+          <Space>
+            <Button onClick={handleCancel} size="large">
               ยกเลิก
             </Button>
             <Button 
               type="primary" 
-              size="large" 
               htmlType="submit" 
-              loading={loading}
-              style={{ minWidth: '120px' }}
+              loading={loading} 
+              size="large"
+              style={{
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                border: 'none'
+              }}
             >
               {loading ? 'กำลังโพสต์...' : 'โพสต์หางาน'}
             </Button>
           </Space>
-        </div>
-
-        {/* Tips Card */}
-        <Card size="small" style={{ backgroundColor: '#f6ffed', marginBottom: '20px' }}>
-          <Text type="secondary" style={{ fontSize: '12px' }}>
-            💡 เคล็ดลับ: เขียนหัวข้อให้น่าสนใจ ระบุทักษะที่มีให้ชัดเจน
-            และแจ้งเวลา/สถานที่ที่สะดวกให้ครบถ้วน จะช่วยให้ได้รับการติดต่อกลับมากขึ้น
-          </Text>
-        </Card>
+        </Row>
       </Form>
     </Modal>
   );
