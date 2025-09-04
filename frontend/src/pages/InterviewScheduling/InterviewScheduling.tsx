@@ -242,7 +242,7 @@ const InterviewScheduling: React.FC = () => {
         </Row>
       </div>
 
-      <Modal open={showAddTimeModal} footer={null} closable={false} centered width={500} bodyStyle={{ padding: 0 }}>
+      <Modal open={showAddTimeModal} footer={null} closable={false} centered width={500} styles={{ body: { padding: 0} }}>
         <div className="modal-centered-content">
           <div className="modal-inner-content">
             <CloseOutlined className="modal-close-button" onClick={() => { setShowAddTimeModal(false); setSelectedTimeRange(null); form.resetFields() }} />
@@ -260,7 +260,7 @@ const InterviewScheduling: React.FC = () => {
         </div>
       </Modal>
 
-      <Modal open={showDeleteModal} footer={null} closable={false} centered width={500} bodyStyle={{ padding: 0 }}>
+      <Modal open={showDeleteModal} footer={null} closable={false} centered width={500} styles={{ body: { padding: 0} }}>
         <div className="modal-centered-content">
           <div className="modal-inner-content">
             <CloseOutlined className="modal-close-button" onClick={() => { setShowDeleteModal(false); setSelectedTimeSlotForDeletion(null) }} />
@@ -276,7 +276,7 @@ const InterviewScheduling: React.FC = () => {
         </div>
       </Modal>
 
-      <Modal open={showSuccessModal} footer={null} closable={false} centered width={400} bodyStyle={{ padding: 0 }}>
+      <Modal open={showSuccessModal} footer={null} closable={false} centered width={400} styles={{ body: { padding: 0} }}>
         <div className="modal-centered-content">
           <div className="success-modal-inner-content">
             <CloseOutlined className="modal-close-button" onClick={() => { setShowSuccessModal(false); setSelectedTimeSlotForDeletion(null) }} />
