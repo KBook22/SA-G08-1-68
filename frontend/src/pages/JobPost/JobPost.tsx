@@ -331,6 +331,8 @@ import {
   employmentTypeAPI,
 } from "../../services/https";
 import type { CreateJobpost } from "../../interfaces/jobpost";
+import defaultLogo from "../../assets/profile.svg";
+
 
 const { TextArea } = Input;
 
@@ -413,8 +415,8 @@ const JobPost: React.FC = () => {
         job_category_id: values.job_category_id,
         employment_type_id: values.employmentTypeId,
         salary_type_id: values.salaryTypeId,
-        image_url: imagePreview || null,
         employer_id: Number(user?.id), // จาก context
+        image_url: imagePreview || defaultLogo,
       };
       console.log("ส่งไป backend:", payload);
       const res = await jobPostAPI.create(payload);
@@ -596,7 +598,7 @@ const JobPost: React.FC = () => {
             <input type="file" accept="image/*" onChange={handleImageChange} />
             {imagePreview && (
               <img
-                src={imagePreview}
+                src={imagePreview || defaultLogo}
                 alt="preview"
                 style={{ marginTop: 10, width: 120, borderRadius: 8 }}
               />

@@ -84,6 +84,10 @@ func main() {
 		auth.POST("/student-profile-posts", controller.CreateStudentProfilePost)
 		auth.GET("/profile", controller.GetMyProfile)
 
+		// --- Job Applications ---
+		auth.GET("/jobapplications/init/:id", controller.InitJobApplication)
+		auth.POST("/jobapplications", controller.CreateJobApplication)
+
 		// --- Tickets ---
 		auth.POST("/tickets", controller.CreateRequestTicket)
 		auth.GET("/tickets", controller.GetMyRequestTickets)

@@ -160,7 +160,7 @@ export const jobPostAPI = {
   getAll: () => Get("/api/jobposts"),
   getById: (id: number) => Get(`/api/jobposts/${id}`),
   update: (id: number, data: Partial<Jobpost>) =>
-    Update(`/api/jobposts/${id}`, data),
+  Update(`/api/jobposts/${id}`, data),
   delete: (id: number) => Delete(`/api/jobposts/${id}`),
   getMyPosts: () => Get("/api/employer/myposts"), // ใช้ token จาก localStorage
 
@@ -174,8 +174,19 @@ export const jobPostAPI = {
   },
 };
 
-// Job Category APIs
 
+// Job Application APIs
+export const jobApplicationAPI = {
+  init: (jobpost_id: number) => Get(`/api/jobapplications/init/${jobpost_id}`),
+  create: (data: any) => Post(`/api/jobapplications`, data),
+  getMyApplications: () => Get(`/api/jobapplications/me`),
+  getByJobPost: (jobpost_id: number) => Get(`/api/jobapplications/job/${jobpost_id}`),
+  updateStatus: (id: number, status: string) => Update(`/api/jobapplications/${id}/status`, { status }),
+
+}
+
+
+// Job Category APIs
 export const jobCategoryAPI = {
   getAll: () => Get("/api/jobcategories", false),
   getById: (id: number) => Get(`/api/jobcategories/${id}`, false),

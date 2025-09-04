@@ -309,7 +309,7 @@ const PostLayout: React.FC = () => {
                       alt={selectedPost.title}
                     />
                     <p className="post-subtitle-detail">
-                      {selectedPost.employer?.company_name || "ไม่ระบุบริษัท"}
+                      {selectedPost.Employer?.company_name || "ไม่ระบุบริษัท"}
                     </p>
                   </div>
                 </div>

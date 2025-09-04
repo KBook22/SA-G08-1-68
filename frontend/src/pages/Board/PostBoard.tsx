@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Empty, Spin } from "antd";
 import PageHeader from "../../components/PageHeader";
 import "./PostBoard.css";
-import lahui from "../../assets/lahui.svg"; // รูป default
+import lahui from "../../assets/profile.svg"; // รูป default
 import { jobPostAPI } from "../../services/https"; //  import api
 import { message } from "antd";
+
 
 interface Post {
   ID: number;
@@ -112,8 +113,8 @@ const PostBoard: React.FC = () => {
                   {/* ฝั่งขวา */}
                   <div className="job-right">
                     <img
-                      src={post.image_url || lahui}
-                      alt={post.title || "default-logo"}
+                      src={post.image_url}
+                      alt={post.title }
                     />
                   </div>
                 </div>
