@@ -40,7 +40,7 @@ const updateTimeSlots = async (newSlots: Record<string, InterviewSlot[]>) => {
   return Promise.resolve(newSlots)
 }
 
-const EmployerSchedule: React.FC = () => {
+const InterviewScheduling: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null)
   const [currentMonth, setCurrentMonth] = useState<Dayjs>(dayjs("2024-12-01"))
   const [showAddTimeModal, setShowAddTimeModal] = useState<boolean>(false)
@@ -280,4 +280,4 @@ const EmployerSchedule: React.FC = () => {
   )
 }
 
-export default EmployerSchedule
+export default InterviewScheduling
