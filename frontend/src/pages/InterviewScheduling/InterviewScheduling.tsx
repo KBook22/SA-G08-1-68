@@ -3,7 +3,7 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import { Button, Card, Typography, Space, Row, Col, Modal, TimePicker, Form, message } from "antd"
-import { LeftOutlined, RightOutlined, CheckCircleOutlined, CloseOutlined } from "@ant-design/icons"
+import { LeftOutlined, RightOutlined, CheckCircleOutlined, CloseOutlined, DeleteOutlined } from "@ant-design/icons"
 import type { Dayjs } from "dayjs"
 import dayjs from "dayjs"
 import "dayjs/locale/th"
@@ -204,13 +204,28 @@ const InterviewScheduling: React.FC = () => {
                     {getCurrentDateSlots().map((slot) => {
                       const isSelected = selectedTimeSlotForDeletion === slot.id
                       let pillClassName = "time-slot-pill"
+                      // ตรรกะของ pillClassName ยังคงเหมือนเดิม เพื่อให้ pill ที่ถูกเลือกเปลี่ยนสีได้
                       if (isSelected) pillClassName += " time-slot-pill-selected"
                       else if (slot.status === "available") pillClassName += " time-slot-pill-available"
                       else pillClassName += " time-slot-pill-booked"
+
                       return (
                         <div key={slot.id} className="time-slot-item">
                           <Text strong>{slot.startTime} - {slot.endTime}</Text>
-                          <div className={pillClassName} onClick={() => handleTimeSlotClick(slot.id)} />
+
+                          {/* เพิ่มส่วนนี้เข้ามา: จะแสดงไอคอนและ pill คู่กัน */}
+                          <div className="time-slot-actions">
+                            {/* เงื่อนไข: จะแสดงไอคอนถังขยะก็ต่อเมื่อ status ไม่ใช่ "booked" */}
+                            {slot.status !== "booked" && (
+                              <DeleteOutlined
+                                className="delete-icon" // เพิ่ม class ไว้สำหรับ styling
+                                onClick={() => handleTimeSlotClick(slot.id)} // ย้าย onClick มาไว้ที่นี่
+                              />
+                            )}
+
+                            {/* Pill จะทำหน้าที่แค่แสดงสถานะ ไม่มี onClick แล้ว */}
+                            <div className={pillClassName} />
+                          </div>
                         </div>
                       )
                     })}

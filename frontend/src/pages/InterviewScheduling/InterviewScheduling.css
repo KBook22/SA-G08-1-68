@@ -140,6 +140,23 @@
   font-weight: bold;
 }
 
+.time-slot-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* เพิ่มระยะห่างระหว่างไอคอนกับ pill */
+}
+
+.delete-icon {
+  font-size: 16px;
+  color: #8c8c8c; /* สีเทาปกติ */
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.delete-icon:hover {
+  color: #f5222d; /* เปลี่ยนเป็นสีแดงเมื่อเอาเมาส์ไปชี้ */
+}
+
 .time-slot-pill {
   width: 60px;
   height: 20px;
