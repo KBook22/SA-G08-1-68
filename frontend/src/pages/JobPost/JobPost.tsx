@@ -1,15 +1,11 @@
 import React from "react";
-import { Form, Input, Upload } from "antd";
+import { Form, Input, Upload, Button, Modal, Result } from "antd";
+import { useState } from "react";
 import JobTypeSelector from "./JobTypeSelector";
 import Location from "./Location";
 import WorkTimeAndDeadline from "./WorkTimeAndDeadline";
 import JobPostingSection from "./JobPostingSection";
-<<<<<<< HEAD
-import "./JobPost.css"; // import CSS ปกติ
-import PageHeader from "../../components/PageHeader"; 
 
-const JobPost: React.FC = () => {
-=======
 import "./JobPost.css";
 import PageHeader from "../../components/PageHeader";
 import lahui from "../../assets/lahui.svg"; // ✅ default logo
@@ -53,7 +49,6 @@ const JobPost: React.FC = () => {
     }
   };
 
->>>>>>> main
   return (
 
     <div 
@@ -89,9 +84,7 @@ const JobPost: React.FC = () => {
         <Location />
         <WorkTimeAndDeadline />
         <JobPostingSection />
-<<<<<<< HEAD
-      </Form>
-=======
+
 
         {/* upload รูป */}
         <Form.Item label="เลือกรูปโลโก้ร้าน (ถ้ามี)">
@@ -139,7 +132,6 @@ const JobPost: React.FC = () => {
           }
         />
       </Modal>
->>>>>>> main
     </div>
   );
 };

@@ -231,8 +231,6 @@ func SeedDatabase() {
 
 	//Netnaphat
 }
-<<<<<<< HEAD
-=======
 
 func ConnectDB() {
 	database, err := gorm.Open(sqlite.Open("system_analysis.db"), &gorm.Config{})
@@ -265,4 +263,3 @@ func ConnectDB() {
 
 	db = database
 }
->>>>>>> main

@@ -49,13 +49,9 @@
    ========================= */
 
 #root {
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
-<<<<<<< HEAD
-  padding: 2rem;
-=======
   /* padding: 2rem; */
->>>>>>> main
   text-align: center;
 }
 

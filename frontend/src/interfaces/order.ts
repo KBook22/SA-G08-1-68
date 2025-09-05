@@ -9,8 +9,8 @@ export interface Order {
     amount: number;
     service_start_date: Date;
     service_end_date: Date;
-    add_on_service_id: number;
-    add_on_service?: Addonservice;
+    addon_services_id: number;
+    addon_service?: Addonservice;
     employer_id: number;
     employer?: Employer;
 }

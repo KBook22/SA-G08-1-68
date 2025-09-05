@@ -1,9 +1,4 @@
 // src/App.tsx
-<<<<<<< HEAD
-
-import './App.css';
-=======
->>>>>>> main
 import React from 'react';
 import AllRoutes from './routes';
 import { AuthProvider } from './context/AuthContext'; // 👈 1. import AuthProvider

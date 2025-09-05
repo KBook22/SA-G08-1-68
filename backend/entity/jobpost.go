@@ -24,9 +24,8 @@ type Jobpost struct {
 	Salary				int				`json:"salary"`
 
 	//FK
-
 	EmployerID			uint    		`gorm:"not null" json:"employer_id"`
-    Employer   			Employer 		`gorm:"foreignKey:EmployerID;references:ID"`
+    Employer   			*Employer 		`gorm:"foreignKey:EmployerID;references:ID"`
 
 	JobCategoryID		uint			`gorm:"not null" json:"job_category_id"`
 	JobCategory   		JobCategory 	`gorm:"foreignKey:JobCategoryID;references:ID"`
@@ -41,5 +40,8 @@ type Jobpost struct {
 	SalaryType			SalaryType		`gorm:"foreignKey:SalaryTypeID;references:ID"`
 
 	StudentID			uint			`json:"student_id"`
-	Student				*Student		`gorm:"foreignKey: student_id" json:"student"`
+	Student				*Student		`gorm:"foreignKey: StudentID;references:ID" json:"student"`
+
+	// เผื่อได้ Preload
+	BillableItem 	   *BillableItems 	`gorm:"foreignKey:OrderID;references:ID" json:"billable_item,omitempty"`
 }

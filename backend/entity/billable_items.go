@@ -7,7 +7,7 @@ type BillableItems struct {
 	Description string `json:"description"`
 	Amount      float32   `json:"amount"`
 	JobpostID	*uint	`json:"jobpost_id"`
-	Jobpost		*Jobpost `gorm:"foreignKey: jobpost_id" json:"jobpost,omitempty"`
+	Jobpost		*Jobpost `gorm:"foreignKey:JobpostID;references:ID" json:"jobpost,omitempty"`
 	OrderID		*uint	`json:"order_id"`
-	Order		*Orders `gorm:"foreignKey: order_id" json:"order,omitempty"`
+	Order		*Orders `gorm:"foreignKey:OrderID;references:ID" json:"order,omitempty"`
 }
