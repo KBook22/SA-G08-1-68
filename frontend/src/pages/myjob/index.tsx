@@ -10,7 +10,7 @@ import {
   Space,
 } from "antd";
 import { useNavigate } from "react-router-dom";
-import { jobpostAPI } from "../../services/https/index";
+import { jobPostAPI } from "../../services/https/index";
 import type { Jobpost } from "../../interfaces/jobpost";
 
 import "./myjob.css";
@@ -26,7 +26,7 @@ const MyJobPage: React.FC = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await jobpostAPI.getAll();
+        const response = await jobPostAPI.getAll();
         if (response && response.data) {
           setJobs(response.data);
         } else {

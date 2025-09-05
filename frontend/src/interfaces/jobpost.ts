@@ -6,7 +6,10 @@ import type { EmploymentType } from "./employment_type";
 import type { SalaryType } from "./salary_type";
 
 export interface Jobpost {
-    id: number;
+    ID: number;
+    CreatedAt: string;  // เพิ่มตรงนี้
+    UpdatedAt: string;  // เผื่อใช้
+    DeletedAt?: string | null;
     title: string;
     description: string;
     deadline: Date;
@@ -20,12 +23,32 @@ export interface Jobpost {
     employer?: Employer;
     job_category_id: number;
     job_category?: JobCategory;
-    location_id: number;
-    location: Location;
+    locationjob: string;
+     Employer?: {
+    company_name: string;
+  };
+
     employment_type_id: number;
     employment_type?: EmploymentType;
     salary_type_id: number;
     salary_type?: SalaryType;
     student_id: number;
     student?: Student;
+}
+
+// interfaces/jobpost.ts
+
+export interface CreateJobpost {
+  title: string;
+  description: string;
+  salary: number;
+  locationjob: string;
+  deadline: string;               // ✅ ส่งเป็น string (ISO format)
+  status: string;                 // ✅ ผู้ว่าจ้างเลือกเอง เช่น "Open"
+  portfolio_required: string;     // ✅ ผู้ว่าจ้างเลือกเอง "true"/"false"
+  job_category_id: number;
+  employment_type_id: number;
+  salary_type_id: number;
+  image_url?: string | null;
+  employer_id: number;
 }
