@@ -84,7 +84,7 @@ import React, { useEffect, useState } from "react";
 import { Card, Button, Empty, Spin, message } from "antd";
 import { jobPostAPI } from "../../services/https";
 import type { Jobpost } from "../../interfaces/jobpost";
-import "./MyPost.css";
+import "./Mypost.css";
 import lahui from "../../assets/lahui.svg"; // รูป default
 
 const MyPost: React.FC = () => {

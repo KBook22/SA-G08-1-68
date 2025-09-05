@@ -102,9 +102,6 @@ const Chat: React.FC = () => {
     }
   };
 
-  const selectedUserData = chatUsers.find(user => user.id === selectedUser);
-
-
   // Layout Page
   const selectedUserData = chatRooms.find((user) => user.id === selectedUser)
 

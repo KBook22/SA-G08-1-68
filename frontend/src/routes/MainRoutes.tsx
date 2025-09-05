@@ -219,7 +219,7 @@ import StudentFeedPage from '../pages/StudentFeed/StudentFeedPage';
 import Board from "../pages/Board/Board";
 import JobDetail from "../pages/Board/JobDetail";
 import Chat from '../pages/Chat/Chat';
-import StudentListPage from "../pages/worklog/StudentListPage";
+import StudentListPage from "../pages/StudentListpage/StudentListPage";
 import Reportpage from '../pages/Reportpage/report';
 import JobsPage from '../pages/myjob';
 import PaymentReportPage from '../pages/paymentreport';

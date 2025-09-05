@@ -27,7 +27,7 @@ func CORSMiddleware() gin.HandlerFunc {
 			return
 		}
 		c.Next()
-	}SetupDatabase
+	}
 }
 func main() {
 	config.SetupDatabase()
@@ -52,7 +52,7 @@ func main() {
 		// protected.Use(middleware.Authorizes())
 		// {
 			// JobPost (actions)
-			jobpostRoutes := protected.Group("/jobposts")
+			jobpost := protected.Group("/jobposts")
 			{
 				jobpost.GET("", controller.ListJobPosts)
 				jobpost.GET("/:id", controller.GetJobPostByID)

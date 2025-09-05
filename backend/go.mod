@@ -1,14 +1,15 @@
 module github.com/KBook22/System-Analysis-and-Design
 
-go 1.25.0
+go 1.24.6
 
 require (
 	github.com/gin-contrib/cors v1.7.6
 	github.com/gin-gonic/gin v1.10.1
 	github.com/golang-jwt/jwt/v5 v5.3.0
+	github.com/google/uuid v1.6.0
 	golang.org/x/crypto v0.41.0
 	gorm.io/driver/sqlite v1.6.0
-	gorm.io/gorm v1.30.1
+	gorm.io/gorm v1.30.3
 )
 
 require (
