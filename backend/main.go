@@ -3,11 +3,13 @@ package main
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/KBook22/System-Analysis-and-Design/config"
 	"github.com/KBook22/System-Analysis-and-Design/controller"
 	"github.com/KBook22/System-Analysis-and-Design/entity"
 	"github.com/KBook22/System-Analysis-and-Design/middleware"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -15,10 +17,8 @@ import (
 func main() {
 	// ✅ 1. เชื่อมต่อฐานข้อมูลก่อน
 	config.ConnectionDB()
-
 	// ✅ 2. เรียก entity.SetupDatabase() สำหรับ Faculty และ Department
 	entity.SetupDatabase(config.DB())
-
 	// ✅ 3. เรียก config.SeedDatabase() สำหรับ Skills และข้อมูลอื่นๆ
 	config.SeedDatabase()
 
@@ -34,19 +34,38 @@ func main() {
 	// ✅ 5. ตั้งค่า Gin router
 	r := gin.Default()
 
-	// Setup CORS using middleware for better handling
+	// ✅ แก้ไข CORS configuration
 	configCORS := cors.DefaultConfig()
-	configCORS.AllowOrigins = []string{"http://localhost:5173"}
-	configCORS.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"}
-	configCORS.AllowHeaders = []string{"Origin", "Content-Type", "Authorization"}
+	configCORS.AllowOrigins = []string{
+		"http://localhost:5173",
+		"http://localhost:3000",
+	}
+	configCORS.AllowMethods = []string{
+		"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS",
+	}
+	configCORS.AllowHeaders = []string{
+		"Origin", "Content-Type", "Authorization", 
+		"Accept", "X-Requested-With", "Cache-Control",
+		"x-requested-with",
+	}
 	configCORS.AllowCredentials = true
+	configCORS.MaxAge = 12 * time.Hour
+
 	r.Use(cors.New(configCORS))
+
+	// ✅ เพิ่ม OPTIONS handler สำหรับ preflight requests
+	r.OPTIONS("/*path", func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Origin", "http://localhost:5173")
+		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS")
+		c.Header("Access-Control-Allow-Headers", "Origin, Content-Type, Authorization, Accept, X-Requested-With")
+		c.Header("Access-Control-Allow-Credentials", "true")
+		c.Status(204)
+	})
 
 	// API Routes
 	api := r.Group("/api")
 
 	// === PUBLIC ROUTES (No Authentication Required) ===
-
 	// Authentication & Registration
 	authRoutes := api.Group("/")
 	{
@@ -58,7 +77,6 @@ func main() {
 
 	// File Upload (for registration)
 	api.POST("/upload", controller.UploadToSupabase)
-	
 
 	// Job Posts (Public viewing)
 	jobRoutes := api.Group("/jobposts")
@@ -70,8 +88,8 @@ func main() {
 	// Student Posts (Public viewing)
 	studentPostRoutes := api.Group("/student-posts")
 	{
-		studentPostRoutes.GET("", controller.GetStudentPosts)           // ✅ ดูโพสต์ทั้งหมด
-		studentPostRoutes.GET("/:id", controller.GetStudentPostByID)   // ✅ ดูโพสต์เดียว
+		studentPostRoutes.GET("", controller.GetStudentPosts) // ✅ ดูโพสต์ทั้งหมด
+		studentPostRoutes.GET("/:id", controller.GetStudentPostByID) // ✅ ดูโพสต์เดียว
 	}
 
 	// Reviews (Public viewing)
@@ -133,9 +151,9 @@ func main() {
 	// Student Posts Management (For Students)
 	protectedStudentPostRoutes := protected.Group("/student-posts")
 	{
-		protectedStudentPostRoutes.POST("", controller.CreateStudentPost)         // ✅ สร้างโพสต์ใหม่
-		protectedStudentPostRoutes.PUT("/:id", controller.UpdateStudentPost)     // ✅ แก้ไขโพสต์
-		protectedStudentPostRoutes.DELETE("/:id", controller.DeleteStudentPost)  // ✅ ลบโพสต์
+		protectedStudentPostRoutes.POST("", controller.CreateStudentPost) // ✅ สร้างโพสต์ใหม่
+		protectedStudentPostRoutes.PUT("/:id", controller.UpdateStudentPost) // ✅ แก้ไขโพสต์
+		protectedStudentPostRoutes.DELETE("/:id", controller.DeleteStudentPost) // ✅ ลบโพสต์
 	}
 
 	// My Posts (ดูโพสต์ของตัวเอง)
@@ -195,7 +213,7 @@ func main() {
 	// Health Check Endpoint
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"status": "healthy",
+			"status":   "healthy",
 			"database": "connected",
 		})
 	})
@@ -205,6 +223,5 @@ func main() {
 	log.Println("📚 API Documentation available at: http://localhost:8080")
 	log.Println("💾 Database: SQLite (sa-project.db)")
 	log.Println("🌐 CORS enabled for: http://localhost:5173")
-	
 	r.Run(":8080")
 }

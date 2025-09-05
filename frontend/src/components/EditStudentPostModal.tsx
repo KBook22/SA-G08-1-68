@@ -1,437 +1,3 @@
-// // src/components/EditStudentPostModal.tsx
-// import React, { useState, useEffect } from 'react';
-// import {
-//   Modal,
-//   Form,
-//   Input,
-//   Select,
-//   Button,
-//   message,
-//   Row,
-//   Col
-// } from 'antd';
-
-// const { TextArea } = Input;
-// const { Option } = Select;
-
-// interface EditStudentPostModalProps {
-//   visible: boolean;
-//   onClose: () => void;
-//   onSuccess: () => void;
-//   post: any;
-// }
-
-// const EditStudentPostModal: React.FC<EditStudentPostModalProps> = ({
-//   visible,
-//   onClose,
-//   onSuccess,
-//   post
-// }) => {
-//   const [form] = Form.useForm();
-//   const [loading, setLoading] = useState(false);
-
-//   useEffect(() => {
-//     if (visible && post) {
-//       form.setFieldsValue({
-//         introduction: post.introduction,
-//         job_type: post.job_type,
-//         skills: post.skills,
-//         portfolio_url: post.portfolio_url,
-//         phone: post.phone,
-//         email: post.email,
-//       });
-//     }
-//   }, [visible, post, form]);
-
-//   const handleSubmit = async (values: any) => {
-//     setLoading(true);
-//     try {
-//       const token = localStorage.getItem('token');
-//       const response = await fetch(`http://localhost:8080/api/student-profile-posts/${post.ID}`, {
-//         method: 'PUT',
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'Authorization': `Bearer ${token}`
-//         },
-//         body: JSON.stringify(values)
-//       });
-
-//       if (!response.ok) {
-//         const errorData = await response.json();
-//         throw new Error(errorData.error || 'Failed to update post');
-//       }
-
-//       message.success('แก้ไขโพสต์สำเร็จ!');
-//       form.resetFields();
-//       onSuccess();
-//       onClose();
-//     } catch (error: any) {
-//       console.error('Error updating post:', error);
-//       message.error(error.message || 'เกิดข้อผิดพลาดในการแก้ไขโพสต์');
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const handleCancel = () => {
-//     form.resetFields();
-//     onClose();
-//   };
-
-//   return (
-//     <Modal
-//       title="แก้ไขโพสต์หางาน"
-//       open={visible}
-//       onCancel={handleCancel}
-//       footer={null}
-//       width={700}
-//       centered
-//     >
-//       <Form
-//         form={form}
-//         layout="vertical"
-//         onFinish={handleSubmit}
-//       >
-//         <Row gutter={16}>
-//           <Col span={12}>
-//             <Form.Item
-//               name="job_type"
-//               label="ประเภทงานที่ต้องการ"
-//               rules={[{ required: true, message: 'กรุณาเลือกประเภทงาน' }]}
-//             >
-//               <Select placeholder="เลือกประเภทงาน">
-//                 <Option value="ฝึกงาน">ฝึกงาน</Option>
-//                 <Option value="งานพาร์ทไทม์">งานพาร์ทไทม์</Option>
-//                 <Option value="งานประจำ">งานประจำ</Option>
-//                 <Option value="ฟรีแลนซ์">ฟรีแลนซ์</Option>
-//               </Select>
-//             </Form.Item>
-//           </Col>
-//           <Col span={12}>
-//             <Form.Item
-//               name="portfolio_url"
-//               label="ลิงก์ผลงาน (Portfolio)"
-//             >
-//               <Input placeholder="https://..." />
-//             </Form.Item>
-//           </Col>
-//         </Row>
-
-//         <Form.Item
-//           name="introduction"
-//           label="แนะนำตัว"
-//           rules={[{ required: true, message: 'กรุณาแนะนำตัว' }]}
-//         >
-//           <TextArea
-//             rows={4}
-//             placeholder="เล่าเกี่ยวกับตัวคุณ และสิ่งที่คุณสนใจ..."
-//             showCount
-//             maxLength={500}
-//           />
-//         </Form.Item>
-
-//         <Form.Item
-//           name="skills"
-//           label="ทักษะ"
-//           rules={[{ required: true, message: 'กรุณาระบุทักษะ' }]}
-//         >
-//           <Input
-//             placeholder="เช่น React, Node.js, Python, Design (คั่นด้วยเครื่องหมายจุลภาค)"
-//           />
-//         </Form.Item>
-
-//         <Row gutter={16}>
-//           <Col span={12}>
-//             <Form.Item
-//               name="email"
-//               label="อีเมลติดต่อ"
-//               rules={[
-//                 { type: 'email', message: 'รูปแบบอีเมลไม่ถูกต้อง' }
-//               ]}
-//             >
-//               <Input placeholder="example@email.com" />
-//             </Form.Item>
-//           </Col>
-//           <Col span={12}>
-//             <Form.Item
-//               name="phone"
-//               label="เบอร์โทรติดต่อ"
-//             >
-//               <Input placeholder="08X-XXX-XXXX" />
-//             </Form.Item>
-//           </Col>
-//         </Row>
-
-//         <Form.Item style={{ textAlign: 'right', marginBottom: 0 }}>
-//           <Button 
-//             onClick={handleCancel} 
-//             style={{ marginRight: 8 }}
-//           >
-//             ยกเลิก
-//           </Button>
-//           <Button 
-//             type="primary" 
-//             htmlType="submit" 
-//             loading={loading}
-//             style={{
-//               background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-//               border: 'none'
-//             }}
-//           >
-//             บันทึกการแก้ไข
-//           </Button>
-//         </Form.Item>
-//       </Form>
-//     </Modal>
-//   );
-// };
-
-// export default EditStudentPostModal;
-
-// src/components/EditStudentPostModal.tsx
-// src/components/EditStudentPostModal.tsx
-// import React, { useState, useEffect } from 'react';
-// import {
-//   Modal,
-//   Form,
-//   Input,
-//   Select,
-//   Button,
-//   message,
-//   Row,
-//   Col,
-//   Typography
-// } from 'antd';
-// import {
-//   BulbOutlined,
-//   ClockCircleOutlined,
-//   EnvironmentOutlined,
-//   DollarOutlined,
-//   TagOutlined,
-//   LinkOutlined,
-//   UserOutlined
-// } from '@ant-design/icons';
-// // สมมติว่าคุณมีคอมโพเนนต์ SkillSelect อยู่ที่เดียวกับ CreateStudentPostModal
-// // หากไม่มี ให้ใช้ <Select mode="tags" /> แทนได้
-// import SkillSelect from './SkillSelect'; 
-
-// const { TextArea } = Input;
-// const { Option } = Select;
-// const { Title, Text } = Typography;
-
-// // Interface สำหรับ props
-// interface StudentProfilePost {
-//     ID: number;
-//     title?: string;
-//     job_type: string;
-//     skills: string;
-//     availability?: string;
-//     preferred_location?: string;
-//     expected_compensation?: string;
-//     content?: string;
-//     portfolio_url?: string;
-// }
-  
-// interface EditStudentPostModalProps {
-//   visible: boolean;
-//   onClose: () => void;
-//   onSuccess: () => void;
-//   post: StudentProfilePost | null; // กำหนด Type ให้ชัดเจน
-// }
-
-// const EditStudentPostModal: React.FC<EditStudentPostModalProps> = ({
-//   visible,
-//   onClose,
-//   onSuccess,
-//   post
-// }) => {
-//   const [form] = Form.useForm();
-//   const [loading, setLoading] = useState(false);
-
-//   const jobTypes = [
-//     'งานประจำ',
-//     'งานพาร์ทไทม์',
-//     'ฟรีแลนซ์',
-//     'ฝึกงาน',
-//     'งานชั่วคราว',
-//     'งานโครงการ'
-//   ];
-
-//   // ตั้งค่าข้อมูลในฟอร์มเมื่อ Modal เปิดและมีข้อมูล post
-//   useEffect(() => {
-//     if (visible && post) {
-//       const skillsArray = post.skills ? post.skills.split(',').map(s => s.trim()) : [];
-//       form.setFieldsValue({
-//         title: post.title,
-//         jobType: post.job_type,
-//         skills: skillsArray,
-//         availability: post.availability,
-//         preferredLocation: post.preferred_location,
-//         expectedCompensation: post.expected_compensation,
-//         content: post.content,
-//         portfolio_url: post.portfolio_url,
-//       });
-//     } else {
-//         form.resetFields();
-//     }
-//   }, [visible, post, form]);
-
-//   const handleSubmit = async (values: any) => {
-//     if (!post) {
-//         message.error("ไม่พบข้อมูลโพสต์ที่ต้องการแก้ไข");
-//         return;
-//     }
-
-//     setLoading(true);
-//     try {
-//       const token = localStorage.getItem('token');
-      
-//       // แปลง array ของ skills กลับเป็น string
-//       const skillsString = Array.isArray(values.skills) ? values.skills.join(', ') : values.skills;
-
-//       const updatedData = {
-//         ...values,
-//         skills: skillsString,
-//       };
-
-//       const response = await fetch(`http://localhost:8080/api/student-profile-posts/${post.ID}`, {
-//         method: 'PUT',
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'Authorization': `Bearer ${token}`
-//         },
-//         body: JSON.stringify(updatedData)
-//       });
-
-//       if (!response.ok) {
-//         const errorData = await response.json();
-//         throw new Error(errorData.error || 'Failed to update post');
-//       }
-
-//       message.success('แก้ไขโพสต์สำเร็จ!');
-//       onSuccess(); // เรียก onSuccess เพื่อ refresh ข้อมูลหน้า feed
-//       onClose(); // ปิด Modal
-//     } catch (error: any) {
-//       console.error('Error updating post:', error);
-//       message.error(error.message || 'เกิดข้อผิดพลาดในการแก้ไขโพสต์');
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <Modal
-//       title={
-//         <div style={{ textAlign: 'center' }}>
-//           <Title level={4} style={{ margin: 0 }}>
-//             แก้ไขโพสต์หางาน
-//           </Title>
-//         </div>
-//       }
-//       open={visible}
-//       onCancel={onClose}
-//       footer={null}
-//       width={700}
-//       centered
-//       destroyOnClose={true}
-//     >
-//       <Form
-//         form={form}
-//         layout="vertical"
-//         onFinish={handleSubmit}
-//         style={{ paddingTop: '20px' }}
-//       >
-//         <Form.Item
-//           label={<span><BulbOutlined /> หัวข้อโพสต์</span>}
-//           name="title"
-//           rules={[{ required: true, message: 'กรุณาใส่หัวข้อโพสต์' }]}
-//         >
-//           <Input placeholder="เช่น นักศึกษาหางานพาร์ทไทม์ร้านกาแฟ" />
-//         </Form.Item>
-
-//         <Row gutter={16}>
-//           <Col xs={24} sm={12}>
-//             <Form.Item
-//               label={<span><TagOutlined /> ประเภทงาน</span>}
-//               name="jobType"
-//               rules={[{ required: true, message: 'กรุณาเลือกประเภทงาน' }]}
-//             >
-//               <Select placeholder="เลือกประเภทงาน">
-//                 {jobTypes.map(type => (<Option key={type} value={type}>{type}</Option>))}
-//               </Select>
-//             </Form.Item>
-//           </Col>
-//           <Col xs={24} sm={12}>
-//             <Form.Item
-//               label={<span><UserOutlined /> ทักษะ</span>}
-//               name="skills"
-//               rules={[{ required: true, message: 'กรุณาระบุทักษะ' }]}
-//             >
-//               <SkillSelect placeholder="เลือกหรือเพิ่มทักษะ..." />
-//             </Form.Item>
-//           </Col>
-//         </Row>
-        
-//         <Row gutter={16}>
-//           <Col xs={24} sm={12}>
-//             <Form.Item
-//               label={<span><ClockCircleOutlined /> เวลาที่สะดวก</span>}
-//               name="availability"
-//               rules={[{ required: true, message: 'กรุณาระบุเวลา' }]}
-//             >
-//               <Input placeholder="เช่น จันทร์-ศุกร์ หลัง 18:00 น." />
-//             </Form.Item>
-//           </Col>
-//           <Col xs={24} sm={12}>
-//             <Form.Item
-//               label={<span><EnvironmentOutlined /> สถานที่ที่สะดวก</span>}
-//               name="preferredLocation"
-//               rules={[{ required: true, message: 'กรุณาระบุสถานที่' }]}
-//             >
-//               <Input placeholder="เช่น ใกล้ มทส." />
-//             </Form.Item>
-//           </Col>
-//         </Row>
-
-//         <Form.Item
-//           label={<span><DollarOutlined /> ค่าตอบแทนที่คาดหวัง</span>}
-//           name="expectedCompensation"
-//         >
-//           <Input placeholder="เช่น 120-150 บาท/ชั่วโมง" />
-//         </Form.Item>
-
-//         <Form.Item
-//           label={<span><BulbOutlined /> รายละเอียด</span>}
-//           name="content"
-//           rules={[{ required: true, message: 'กรุณาใส่รายละเอียด' }]}
-//         >
-//           <TextArea rows={4} placeholder="แนะนำตัวเอง ประสบการณ์..." />
-//         </Form.Item>
-
-//         <Form.Item
-//           label={<span><LinkOutlined /> ลิงก์ผลงาน</span>}
-//           name="portfolio_url"
-//           rules={[{ type: 'url', message: 'กรุณาใส่ URL ที่ถูกต้อง' }]}
-//         >
-//           <Input placeholder="https://your-portfolio.com" />
-//         </Form.Item>
-
-//         <Form.Item style={{ textAlign: 'right', marginBottom: 0, marginTop: '24px' }}>
-//           <Button onClick={onClose} style={{ marginRight: 8 }}>
-//             ยกเลิก
-//           </Button>
-//           <Button type="primary" htmlType="submit" loading={loading}>
-//             บันทึกการแก้ไข
-//           </Button>
-//         </Form.Item>
-//       </Form>
-//     </Modal>
-//   );
-// };
-
-// export default EditStudentPostModal;
-
-// src/components/EditStudentPostModal.tsx
 import React, { useState, useEffect } from 'react';
 import {
   Modal,
@@ -443,7 +9,8 @@ import {
   Row,
   Col,
   Typography,
-  Space
+  Upload,
+  Space,
 } from 'antd';
 import {
   BulbOutlined,
@@ -451,42 +18,41 @@ import {
   EnvironmentOutlined,
   DollarOutlined,
   TagOutlined,
-  UserOutlined
+  LinkOutlined,
+  UserOutlined,
+  UploadOutlined,
 } from '@ant-design/icons';
-import { updateStudentPost } from '../services/studentPostService'; // ✅ แก้ไข import
+import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
+import { createStudentPost } from '../services/studentPostService';
+import { useAuth } from '../context/AuthContext';
+import SkillSelect from './SkillSelect';
 
+const { Title } = Typography;
 const { TextArea } = Input;
 const { Option } = Select;
-const { Title } = Typography;
 
-// Interface สำหรับ props
-interface StudentPost {
-  ID: number;
-  title: string;
-  job_type: string;
-  skills: string;
-  availability: string;
-  preferred_location: string;
-  expected_compensation?: string;
-  introduction: string;
-  portfolio_url?: string;
+interface Attachment {
+  url: string;
+  name: string;
+  type: string;
 }
 
-interface EditStudentPostModalProps {
+interface CreateStudentPostModalProps {
   visible: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  post: StudentPost | null;
 }
 
-const EditStudentPostModal: React.FC<EditStudentPostModalProps> = ({
+const CreateStudentPostModal: React.FC<CreateStudentPostModalProps> = ({
   visible,
   onClose,
   onSuccess,
-  post
 }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const { user } = useAuth();
 
   const jobTypes = [
     'งานประจำ',
@@ -497,70 +63,137 @@ const EditStudentPostModal: React.FC<EditStudentPostModalProps> = ({
     'งานโครงการ'
   ];
 
-  // ตั้งค่าข้อมูลในฟอร์มเมื่อ Modal เปิดและมีข้อมูล post
+  // ✅ แก้ไข Upload Props
+  const handleUpload: UploadProps = {
+    name: 'file',
+    action: 'http://localhost:8080/api/upload',
+    method: 'POST',
+    withCredentials: false,
+    beforeUpload: (file: File) => {
+      console.log('🔍 Before upload:', file.name, file.type, file.size);
+      const isValidType = [
+        'image/',
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      ].some(type => file.type.startsWith(type) || file.type.includes(type));
+      
+      if (!isValidType) {
+        message.error('รองรับเฉพาะไฟล์ประเภท: รูปภาพ, PDF, DOC, DOCX');
+        return false;
+      }
+
+      const isLt10M = file.size / 1024 / 1024 < 10;
+      if (!isLt10M) {
+        message.error('ขนาดไฟล์ต้องไม่เกิน 10MB');
+        return false;
+      }
+
+      return true;
+    },
+    onChange: (info: any) => {
+      console.log('📤 Upload info:', info);
+      setFileList([...info.fileList]);
+      
+      if (info.file.status === 'uploading') {
+        console.log('⏳ Uploading...');
+      }
+
+      if (info.file.status === 'done') {
+        const response = info.file.response;
+        console.log('✅ Upload response:', response);
+        
+        if (response && response.url) {
+          const newAttachment: Attachment = {
+            url: response.url,
+            name: info.file.name,
+            type: info.file.type || 'application/octet-stream',
+          };
+          setAttachments(prev => [...prev, newAttachment]);
+          message.success(`${info.file.name} อัปโหลดสำเร็จ`);
+        } else {
+          message.error('เกิดข้อผิดพลาดในการอัปโหลด: ' + (response?.error || 'Unknown error'));
+        }
+      } else if (info.file.status === 'error') {
+        console.error('❌ Upload error:', info.file.error);
+        message.error(`${info.file.name} อัปโหลดล้มเหลว: ${info.file.error?.message || 'Unknown error'}`);
+      }
+    },
+    onError: (error: any) => {
+      console.error('❌ Upload error:', error);
+      message.error('เกิดข้อผิดพลาดในการอัปโหลด');
+    },
+    onRemove: (file: UploadFile) => {
+      setAttachments(prev => prev.filter(att => att.name !== file.name));
+    },
+  };
+
   useEffect(() => {
-    if (visible && post) {
-      form.setFieldsValue({
-        title: post.title,
-        jobType: post.job_type,
-        skills: post.skills,
-        availability: post.availability,
-        preferredLocation: post.preferred_location,
-        expectedCompensation: post.expected_compensation,
-        introduction: post.introduction,
-        portfolio_url: post.portfolio_url,
-      });
-    } else {
-      form.resetFields();
-    }
-  }, [visible, post, form]);
+    console.log('🔧 Modal mounted');
+    console.log('🌐 Backend URL:', 'http://localhost:8080/api/upload');
+  }, []);
 
   const handleSubmit = async (values: any) => {
-    if (!post) {
-      message.error("ไม่พบข้อมูลโพสต์ที่ต้องการแก้ไข");
+    if (!user) {
+      message.error('กรุณาเข้าสู่ระบบก่อนสร้างโพสต์');
       return;
     }
 
     setLoading(true);
     try {
-      // ✅ แปลงข้อมูลให้ตรงกับ Backend API
-      const updatedData = {
+      // ✅ แก้ไขการส่งข้อมูล skills ให้เป็น array
+      const postData = {
         title: values.title,
         job_type: values.jobType,
-        skills: values.skills,
+        skills: Array.isArray(values.skills) ? values.skills : [values.skills], // ✅ ส่งเป็น array
         availability: values.availability,
         preferred_location: values.preferredLocation,
         expected_compensation: values.expectedCompensation,
         introduction: values.introduction,
-        portfolio_url: values.portfolio_url
+        portfolio_url: values.portfolio_url || '',
+        // ✅ เพิ่มข้อมูลไฟล์แนบ
+        attachment_url: attachments.length > 0 ? attachments[0].url : '',
+        attachment_name: attachments.length > 0 ? attachments[0].name : '',
+        attachment_type: attachments.length > 0 ? attachments[0].type : '',
       };
 
-      // ✅ เรียก API ใหม่
-      await updateStudentPost(post.ID, updatedData);
+      console.log('📝 Creating post with data:', postData);
+      await createStudentPost(postData);
       
-      message.success('แก้ไขโพสต์สำเร็จ!');
+      message.success('สร้างโพสต์ของคุณสำเร็จแล้ว!');
+      form.resetFields();
+      setFileList([]);
+      setAttachments([]);
       onSuccess();
-      onClose();
     } catch (error: any) {
-      console.error('Error updating post:', error);
-      message.error(error.message || 'เกิดข้อผิดพลาดในการแก้ไขโพสต์');
+      console.error('❌ Failed to create post:', error);
+      message.error(error.message || 'เกิดข้อผิดพลาดในการสร้างโพสต์');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCancel = () => {
+    form.resetFields();
+    setFileList([]);
+    setAttachments([]);
+    onClose();
   };
 
   return (
     <Modal
       title={
         <Space>
-          <BulbOutlined style={{ color: '#1890ff' }} />
-          <span>แก้ไขโพสต์หางาน</span>
+          <UserOutlined />
+          <Title level={4} style={{ margin: 0 }}>
+            📝 สร้างโพสต์หางานใหม่
+          </Title>
         </Space>
       }
       open={visible}
-      onCancel={onClose}
+      onCancel={handleCancel}
       footer={null}
-      width={700}
+      width={800}
       centered
       destroyOnClose={true}
     >
@@ -568,16 +201,16 @@ const EditStudentPostModal: React.FC<EditStudentPostModalProps> = ({
         form={form}
         layout="vertical"
         onFinish={handleSubmit}
-        requiredMark={false}
+        scrollToFirstError
       >
         <Row gutter={16}>
           <Col span={24}>
             <Form.Item
-              label={<><TagOutlined /> หัวข้อโพสต์</>}
+              label={<Space><BulbOutlined />หัวข้อโพสต์</Space>}
               name="title"
               rules={[{ required: true, message: 'กรุณาใส่หัวข้อโพสต์' }]}
             >
-              <Input placeholder="หัวข้อโพสต์" />
+              <Input placeholder="เช่น หาคนทำงานพาร์ทไทม์ร้านกาแฟ" />
             </Form.Item>
           </Col>
         </Row>
@@ -585,24 +218,27 @@ const EditStudentPostModal: React.FC<EditStudentPostModalProps> = ({
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
-              label={<><BulbOutlined /> ประเภทงาน</>}
+              label={<Space><TagOutlined />ประเภทงาน</Space>}
               name="jobType"
               rules={[{ required: true, message: 'กรุณาเลือกประเภทงาน' }]}
             >
-              <Select>
+              <Select placeholder="เลือกประเภทงาน">
                 {jobTypes.map(type => (
-                  <Option key={type} value={type}>{type}</Option>
+                  <Option key={type} value={type}>
+                    {type}
+                  </Option>
                 ))}
               </Select>
             </Form.Item>
           </Col>
+
           <Col span={12}>
             <Form.Item
-              label={<><ClockCircleOutlined /> เวลาที่สะดวก</>}
+              label={<Space><ClockCircleOutlined />เวลาที่สะดวก</Space>}
               name="availability"
               rules={[{ required: true, message: 'กรุณาระบุเวลา' }]}
             >
-              <Input placeholder="เวลาที่สะดวก" />
+              <Input placeholder="เช่น จ-ศ 09:00-17:00" />
             </Form.Item>
           </Col>
         </Row>
@@ -610,65 +246,92 @@ const EditStudentPostModal: React.FC<EditStudentPostModalProps> = ({
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
-              label={<><EnvironmentOutlined /> สถานที่ที่สะดวก</>}
+              label={<Space><EnvironmentOutlined />สถานที่ที่สะดวก</Space>}
               name="preferredLocation"
               rules={[{ required: true, message: 'กรุณาระบุสถานที่' }]}
             >
-              <Input placeholder="สถานที่ที่สะดวก" />
+              <Input placeholder="เช่น ใกล้ มทส. หรือ ออนไลน์" />
             </Form.Item>
           </Col>
+
           <Col span={12}>
             <Form.Item
-              label={<><DollarOutlined /> ค่าตอบแทนที่คาดหวัง</>}
+              label={<Space><DollarOutlined />ค่าตอบแทนที่คาดหวัง</Space>}
               name="expectedCompensation"
             >
-              <Input placeholder="ค่าตอบแทนที่คาดหวัง" />
+              <Input placeholder="เช่น 150 บาท/ชั่วโมง" />
             </Form.Item>
           </Col>
         </Row>
 
+        {/* ✅ ใช้ SkillSelect แทน Input */}
         <Form.Item
-          label="ทักษะ"
+          label={<Space><TagOutlined />ทักษะ</Space>}
           name="skills"
           rules={[{ required: true, message: 'กรุณาระบุทักษะ' }]}
         >
-          <TextArea rows={2} placeholder="ระบุทักษะ (คั่นด้วยเครื่องหมายจุลภาค)" />
+          <SkillSelect />
         </Form.Item>
 
         <Form.Item
-          label={<><UserOutlined /> รายละเอียด</>}
+          label={<Space><UserOutlined />รายละเอียด</Space>}
           name="introduction"
           rules={[{ required: true, message: 'กรุณาใส่รายละเอียด' }]}
         >
-          <TextArea rows={4} placeholder="รายละเอียดเกี่ยวกับตัวคุณ" />
+          <TextArea
+            rows={4}
+            placeholder="แนะนำตัว, ประสบการณ์, และรายละเอียดที่สำคัญอื่นๆ"
+          />
         </Form.Item>
 
         <Form.Item
-          label="ลิงก์ผลงาน"
+          label={<Space><LinkOutlined />ลิงก์ผลงาน (ถ้ามี)</Space>}
           name="portfolio_url"
           rules={[{ type: 'url', message: 'กรุณาใส่ URL ที่ถูกต้อง' }]}
         >
-          <Input placeholder="https://..." />
+          <Input placeholder="https://portfolio.example.com" />
         </Form.Item>
 
-        <Row justify="end" style={{ marginTop: '24px' }}>
-          <Space>
-            <Button onClick={onClose} size="large">
-              ยกเลิก
+        <Form.Item
+          label={<Space><UploadOutlined />ไฟล์แนบ (Resume, CV, Portfolio)</Space>}
+        >
+          <Upload
+            {...handleUpload}
+            fileList={fileList}
+            listType="text"
+          >
+            <Button icon={<UploadOutlined />} style={{ width: '100%' }}>
+              คลิก หรือ ลากไฟล์มาวางที่นี่
             </Button>
-            <Button 
-              type="primary" 
-              htmlType="submit" 
-              loading={loading} 
-              size="large"
-            >
-              บันทึกการแก้ไข
-            </Button>
-          </Space>
+            <div style={{ marginTop: 8, fontSize: '12px', color: '#666' }}>
+              รองรับ: PDF, DOC, DOCX, JPG, PNG (ไม่เกิน 10MB)
+            </div>
+            <div style={{ fontSize: '12px', color: '#999' }}>
+              เช่น Resume, CV, Portfolio, ใบรับรอง
+            </div>
+          </Upload>
+        </Form.Item>
+
+        <Row>
+          <Col span={24} style={{ textAlign: 'right' }}>
+            <Space>
+              <Button onClick={handleCancel}>
+                ยกเลิก
+              </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={loading}
+                icon={<UserOutlined />}
+              >
+                สร้างโพสต์
+              </Button>
+            </Space>
+          </Col>
         </Row>
       </Form>
     </Modal>
   );
 };
 
-export default EditStudentPostModal;
+export default CreateStudentPostModal;

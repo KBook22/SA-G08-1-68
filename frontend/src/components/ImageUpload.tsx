@@ -11,11 +11,11 @@ interface ImageUploadProps {
   showUploadList?: boolean;
 }
 
-const ImageUpload: React.FC<ImageUploadProps> = ({ 
-  value, 
-  onChange, 
+const ImageUpload: React.FC<ImageUploadProps> = ({
+  value,
+  onChange,
   size = 120,
-  showUploadList = false 
+  showUploadList = false
 }) => {
   const [loading, setLoading] = useState(false);
 
@@ -23,46 +23,44 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     name: 'file',
     action: 'http://localhost:8080/api/upload',
     method: 'POST',
-    // ✅ ลบ authorization header ชั่วคราวสำหรับ public route
-    // headers: {
-    //   authorization: `Bearer ${localStorage.getItem('token')}`,
-    // },
+    withCredentials: false, // ✅ เพิ่มบรรทัดนี้
     showUploadList,
     accept: 'image/*',
     beforeUpload: (file) => {
       console.log('🔍 Uploading file:', file.name, file.type, file.size);
-      
       const isImage = file.type.startsWith('image/');
       if (!isImage) {
         message.error('คุณสามารถอัปโหลดไฟล์รูปภาพเท่านั้น!');
         return false;
       }
+
       const isLt10M = file.size / 1024 / 1024 < 10;
       if (!isLt10M) {
         message.error('ขนาดไฟล์ต้องไม่เกิน 10MB!');
         return false;
       }
+
       return true;
     },
     onChange: (info) => {
       console.log('📤 Upload status:', info.file.status, info.file);
-      
       if (info.file.status === 'uploading') {
         setLoading(true);
         return;
       }
+
       if (info.file.status === 'done') {
         setLoading(false);
         const response = info.file.response;
         console.log('✅ Upload response:', response);
-        
-        if (response && response.url) {
+        if (response && response.success && response.url) {
           message.success('อัปโหลดรูปภาพสำเร็จ!');
           onChange?.(response.url);
         } else {
-          message.error('เกิดข้อผิดพลาดในการอัปโหลด');
+          message.error('เกิดข้อผิดพลาดในการอัปโหลด: ' + (response?.error || 'Unknown error'));
         }
       }
+
       if (info.file.status === 'error') {
         setLoading(false);
         console.error('❌ Upload error:', info.file.error);
@@ -73,26 +71,25 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       console.error('❌ Upload error:', error);
       message.error('เกิดข้อผิดพลาดในการอัปโหลด');
       setLoading(false);
-    }
+    },
   };
 
   return (
-    <div style={{ textAlign: 'center' }}>
+    <div>
       <Avatar
-        size={size}
-        // ✅ แก้ไขปัญหา empty string - ใช้ undefined แทน empty string
-        src={value && value.trim() !== '' ? value : undefined}
+        src={value}
         icon={<UserOutlined />}
-        style={{ 
-          marginBottom: '16px', 
-          display: 'block', 
+        size={size}
+        style={{
+          marginBottom: '16px',
+          display: 'block',
           margin: '0 auto 16px',
           border: '2px solid #f0f0f0'
         }}
       />
       <Upload {...uploadProps}>
-        <Button 
-          icon={<UploadOutlined />} 
+        <Button
+          icon={<UploadOutlined />}
           loading={loading}
           size="small"
           style={{ borderRadius: '6px' }}
@@ -101,7 +98,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         </Button>
       </Upload>
       {value && value.trim() !== '' && (
-        <div style={{ marginTop: '8px', fontSize: '12px', color: '#666' }}>
+        <div style={{ marginTop: '8px', color: '#52c41a', fontSize: '12px' }}>
           ✅ รูปภาพถูกอัปโหลดแล้ว
         </div>
       )}
