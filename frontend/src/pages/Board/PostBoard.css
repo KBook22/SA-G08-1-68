@@ -1,128 +1,95 @@
-/* ---------------- พื้นหลังส่วนหัวบอร์ด ---------------- */
-/* .bg-gray {
+/* ---------------- พื้นหลัง ---------------- */
+.bg-gray {
   width: 100%;
   background-color: #f8f8f8;
-  padding: 0 0 40px 0; /* เผื่อพื้นที่ให้ footer */
-  /* box-sizing: border-box;
-} */ */
-
-.board-container {
-  width: 100%;
-  background: linear-gradient(90deg, #1976d3 0%, #64b5f6 100%);
-  padding: 40px 0;
-  display: flex;
-  justify-content: center;
+  padding: 0 0 40px 0;
   box-sizing: border-box;
-}
-
-.postboard-container {
-  margin-top: 20px; /* กัน header ทับ */
-}
-
-.pageHeader {
-  margin-top: 40px;
-  font-size: 28px;
-  font-weight: 600;
-  text-align: center;
-}
-
-.job-list {
-  margin-top: 32px;
-}
-
-/* ---------------- Layout & Footer ---------------- */
-.ant-layout {
-  min-height: 100vh; /* Layout เต็มหน้าจอ */
+  min-height: calc(100vh - 64px); /* เผื่อ header สูง 64px */
   display: flex;
-  flex-direction: column; /* เรียง header → content → footer */
+  flex-direction: column;
 }
 
-.ant-layout-content {
-  flex: 1; /* ขยาย content ดัน footer ลง */
-}
-
-.ant-layout-footer {
-  margin-top: auto; /* ดัน footer ไปท้ายสุด */
-  text-align: center;
-}
-
-/* ---------------- wrapper ด้านใน ---------------- */
 .container {
+  flex: 1;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 16px;
   box-sizing: border-box;
-  height: auto; /* กันไม่ให้ footer ทับ card ล่างสุด */
 }
 
-/* ---------------- การ์ดงาน ---------------- */
+/* ---------------- job card ---------------- */
 .job-card {
   background: #fff;
   border: 1px solid #e5e5e5;
-  border-radius: 10px;
-  padding: 16px;
+  border-radius: 12px;
+  padding: 24px;
   margin: 16px auto;
-  max-width: 800px;
-  width: 100%;
+  max-width: 900px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   transition: box-shadow 0.2s ease, border-color 0.2s ease;
-  font-family: "Kanit", sans-serif;
-  box-sizing: border-box;
+  cursor: pointer;
 }
 
 .job-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
   border-color: #d0d0d0;
 }
 
 /* ---------------- ข้อมูลฝั่งซ้าย ---------------- */
-.job-info {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.job-left {
   flex: 1;
   text-align: left;
 }
 
 .job-title {
-  font-size: 24px;
-  font-weight: 600;
-  color: #2d2d2d;
+  font-size: 28px;
+  font-weight: 700;
   margin: 0 0 8px 0;
-  margin-left: 30px;
+  color: #2D2D2D;
 }
 
 .company {
   font-size: 18px;
-  font-weight: 500;
-  color: #2d2d2d;
-  margin: 0 0 10px 0;
-  margin-left: 30px;
+  font-weight: 400;
+  color: #2D2D2D;
+  margin-bottom: 16px;
 }
 
-.job-meta {
+.job-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 100px;
+  font-size: 16px;
+  color: #2D2D2D;
+}
+
+.job-detail {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  font-size: 14px;
-  color: #2d2d2d;
-  margin-left: 30px;
+  
 }
 
-.job-meta span {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.job-detail span {
+  color: #666;
+  font-size: 16px;
+}
+
+.job-detail strong {
+  font-size: 16px;
+  font-weight: 300;
+  color: #2D2D2D;
+  margin-left: 15px;
 }
 
 /* ---------------- โลโก้ฝั่งขวา ---------------- */
-.job-logo img {
-  width: 120px;
-  height: auto;
+.job-right img {
+  width: 160px;
+  height: 160px;
   object-fit: contain;
+  margin-left: 40px;
 }
 
 /* ---------------- Responsive ---------------- */
@@ -132,43 +99,14 @@
     align-items: flex-start;
   }
 
-  .job-logo {
-    margin-top: 12px;
-    align-self: center;
+  .job-right img {
+    margin: 16px auto 0;
+    width: 120px;
+    height: 120px;
   }
 
-  .job-title {
-    font-size: 20px;
+  .job-details {
+    flex-direction: column;
+    gap: 12px;
   }
-
-  .company {
-    font-size: 16px;
-  }
-}
-
-@media (max-width: 480px) {
-  .job-title {
-    font-size: 18px;
-  }
-
-  .company {
-    font-size: 15px;
-  }
-
-  .job-meta {
-    font-size: 13px;
-  }
-
-  .job-logo img {
-    width: 90px;
-  }
-}
-
-/* ---------------- Global ---------------- */
-html,
-body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  overflow-x: hidden; /* กัน scroll ข้าง */
 }

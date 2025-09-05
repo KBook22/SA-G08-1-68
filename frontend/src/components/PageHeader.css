@@ -4,12 +4,14 @@
     width: 100%;
   }
   
-  .pageHeader {
-    text-align: center;
-    font-size: 28px;
-    font-weight: 500;
-    font-family: 'Kanit', 'Sarabun', sans-serif;
-    color: #1F2937;
-    margin-bottom: 10px;
-  }
-  
+
+.pageHeader {
+  margin-top: 40px;
+  font-size: 28px;
+  font-weight: 600;
+  text-align: center;
+  color: #1e3a5f; /* ✅ เพิ่มสีได้ */
+  font-family: "Kanit", sans-serif; /* ✅ ใส่ฟอนต์ไทยสวย ๆ ได้ */
+  letter-spacing: 1px; /* ✅ เพิ่ม spacing */
+}
+

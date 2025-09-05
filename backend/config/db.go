@@ -1,14 +1,14 @@
-
 // backend/config/db.go
 package config
 
 import (
-	"golang.org/x/crypto/bcrypt"
 	"github.com/KBook22/System-Analysis-and-Design/entity"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"time"
 )
+
 var db *gorm.DB
 
 func DB() *gorm.DB {
@@ -30,6 +30,12 @@ func SetupDatabase() {
 		&entity.Employer{},
 		&entity.Student{},
 		&entity.Jobpost{},
+		//add by Netnaphat
+		&entity.EmploymentType{},
+		&entity.SalaryType{},
+		&entity.JobCategory{},
+		&entity.JobApplication{},
+		//
 		&entity.Reviews{},
 		&entity.Ratingscores{},
 		&entity.Payments{},
@@ -46,6 +52,55 @@ func SetupDatabase() {
 
 func SeedDatabase() {
 	// --- Master Data (ข้อมูลหลัก) ---
+
+	//EmploymentType add by Netnaphat
+	employmentTypes := []entity.EmploymentType{
+		{Model: gorm.Model{ID: 1}, EmploymentTypeName: entity.FullTime},
+		{Model: gorm.Model{ID: 2}, EmploymentTypeName: entity.PartTime},
+		{Model: gorm.Model{ID: 3}, EmploymentTypeName: entity.Freelance},
+		{Model: gorm.Model{ID: 4}, EmploymentTypeName: entity.Contract},
+	}
+
+	for _, et := range employmentTypes {
+		db.FirstOrCreate(&et, et.ID)
+	}
+
+	// salaryTypes add by Netnaphat
+	salaryTypes := []entity.SalaryType{
+		{Model: gorm.Model{ID: 1}, SalaryTypeName: entity.Monthly},
+		{Model: gorm.Model{ID: 2}, SalaryTypeName: entity.Hourly},
+		{Model: gorm.Model{ID: 3}, SalaryTypeName: entity.Daily},
+		{Model: gorm.Model{ID: 4}, SalaryTypeName: entity.ProjectBased},
+	}
+
+	for _, st := range salaryTypes {
+		db.FirstOrCreate(&st, st.ID)
+	}
+
+	// jobCategories add by Netnaphat
+	jobCategories := []entity.JobCategory{
+		{Model: gorm.Model{ID: 1}, CategoryName: "ไอที / โปรแกรมมิ่ง / พัฒนาเว็บไซต์"},
+		{Model: gorm.Model{ID: 2}, CategoryName: "ออกแบบ / กราฟิก / สื่อสร้างสรรค์"},
+		{Model: gorm.Model{ID: 3}, CategoryName: "การตลาด / ขาย / โปรโมชัน"},
+		{Model: gorm.Model{ID: 4}, CategoryName: "งานบริการ / พนักงานร้านอาหาร / คาเฟ่"},
+		{Model: gorm.Model{ID: 5}, CategoryName: "ติวเตอร์ / สอนพิเศษ"},
+		{Model: gorm.Model{ID: 6}, CategoryName: "อีเวนท์ / Staff / MC / แจกใบปลิว"},
+		{Model: gorm.Model{ID: 7}, CategoryName: "พนักงานพาร์ทไทม์ห้างสรรพสินค้า"},
+		{Model: gorm.Model{ID: 8}, CategoryName: "แปลภาษา / ล่าม / พิมพ์งาน"},
+		{Model: gorm.Model{ID: 9}, CategoryName: "คอนเทนต์ครีเอเตอร์ / Social Media"},
+		{Model: gorm.Model{ID: 10}, CategoryName: "งานช่างภาพ / ตัดต่อวิดีโอ"},
+		{Model: gorm.Model{ID: 11}, CategoryName: "ธุรการ / เอกสาร / งานออฟฟิศ"},
+		{Model: gorm.Model{ID: 12}, CategoryName: "ขนส่ง / จัดส่งสินค้า / แกร็บ"},
+		{Model: gorm.Model{ID: 13}, CategoryName: "งานวิจัย / ร่วมทำโปรเจกต์"},
+		{Model: gorm.Model{ID: 14}, CategoryName: "ช่วยงานวิชาการ / ผู้ช่วยอาจารย์"},
+		{Model: gorm.Model{ID: 15}, CategoryName: "งานด้านสุขภาพ / พยาบาล / ผู้ช่วยแพทย์"},
+		{Model: gorm.Model{ID: 16}, CategoryName: "เกษตร / ฟาร์ม / งานกลางแจ้ง"},
+	}
+
+	for _, jc := range jobCategories {
+    db.FirstOrCreate(&jc, entity.JobCategory{Model: gorm.Model{ID: jc.ID}})
+}
+
 
 	// Genders
 	genders := []entity.Genders{
@@ -231,6 +286,16 @@ func SeedDatabase() {
 
 	//Netnaphat
 }
+
+//Pornsiri
+
+//Chompoo
+
+//Supanut
+
+//Kittisak
+
+//Netnaphat
 
 func ConnectDB() {
 	database, err := gorm.Open(sqlite.Open("system_analysis.db"), &gorm.Config{})

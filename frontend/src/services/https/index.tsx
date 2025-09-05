@@ -8,9 +8,10 @@ import type {
   FindReviewRequest,
 } from "../../interfaces/review";
 import type { Ratingscore } from "../../interfaces/ratingscore";
-import type { Jobpost } from "../../interfaces/jobpost";
+// import type { Jobpost } from "../../interfaces/jobpost";
+import type { Jobpost, CreateJobpost } from "../../interfaces/jobpost";
 
-const API_URL = import.meta.env.VITE_API_KEY || "http://localhost:8088";
+const API_URL = import.meta.env.VITE_API_KEY || "http://localhost:8080";
 
 const getCookie = (name: string): string | null => {
   const cookies = document.cookie.split("; ");
@@ -24,12 +25,16 @@ const getCookie = (name: string): string | null => {
   return null;
 };
 
-const getConfig = () => ({
-  headers: {
-    Authorization: `Bearer ${getCookie("auth_token")}`, // Using a generic cookie name
-    "Content-Type": "application/json",
-  },
-});
+
+const getConfig = () => {
+  const token = localStorage.getItem("token");
+  return {
+    headers: {
+      Authorization: token ? `Bearer ${token}` : "",
+      "Content-Type": "application/json",
+    },
+  };
+};
 
 const getConfigWithoutAuth = () => ({
   headers: {
@@ -47,10 +52,10 @@ export const Post = async (
     .post(`${API_URL}${url}`, data, config)
     .then((res) => res)
     .catch((error: AxiosError) => {
-      if (error?.response?.status === 401) {
-        localStorage.clear();
-        window.location.reload();
-      }
+      // if (error?.response?.status === 401) {
+      //   localStorage.clear();
+      //   window.location.reload();
+      // }
       return error.response;
     });
 };
@@ -67,10 +72,10 @@ export const Get = async (
       if (error?.message === "Network Error") {
         return error.response;
       }
-      if (error?.response?.status === 401) {
-        localStorage.clear();
-        window.location.reload();
-      }
+      // if (error?.response?.status === 401) {
+      //   localStorage.clear();
+      //   window.location.reload();
+      // }
       return error.response;
     });
 };
@@ -85,10 +90,10 @@ export const Update = async (
     .put(`${API_URL}${url}`, data, config)
     .then((res) => res.data)
     .catch((error: AxiosError) => {
-      if (error?.response?.status === 401) {
-        localStorage.clear();
-        window.location.reload();
-      }
+      // if (error?.response?.status === 401) {
+      //   localStorage.clear();
+      //   window.location.reload();
+      // }
       return error.response;
     });
 };
@@ -102,10 +107,10 @@ export const Delete = async (
     .delete(`${API_URL}${url}`, config)
     .then((res) => res.data)
     .catch((error: AxiosError) => {
-      if (error?.response?.status === 401) {
-        localStorage.clear();
-        window.location.reload();
-      }
+      // if (error?.response?.status === 401) {
+      //   localStorage.clear();
+      //   window.location.reload();
+      // }
       return error.response;
     });
 };
@@ -149,14 +154,62 @@ export const reviewAPI = {
 export const ratingScoreAPI = {
   getAll: (): Promise<Ratingscore[]> => Get("/ratingscores"),
 };
-
 // Job Post APIs
-export const jobpostAPI = {
-  create: (data: Jobpost) => Post("/jobposts", data),
-  getAll: () => Get("/jobposts"),
-  getById: (id: number) => Get(`/jobposts/${id}`),
-  update: (id: number, data: Partial<Jobpost>) => Update(`/jobposts/${id}`, data),
-  delete: (id: number) => Delete(`/jobposts/${id}`),
+export const jobPostAPI = {
+  create: (data: CreateJobpost) => Post("/api/jobposts", data),
+  getAll: () => Get("/api/jobposts"),
+  getById: (id: number) => Get(`/api/jobposts/${id}`),
+  update: (id: number, data: Partial<Jobpost>) =>
+  Update(`/api/jobposts/${id}`, data),
+  delete: (id: number) => Delete(`/api/jobposts/${id}`),
+  getMyPosts: () => Get("/api/employer/myposts"), // ใช้ token จาก localStorage
+
+
+  uploadPortfolio: (id: number, file: File) => {
+    const formData = new FormData();
+    formData.append("portfolio", file);
+    const token = localStorage.getItem("token");
+    return axios.post(
+    `${API_URL}/api/jobposts/upload-portfolio/${id}`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  },
+};
+
+
+// Job Application APIs
+export const jobApplicationAPI = {
+  init: (jobpost_id: number) => Get(`/api/jobapplications/init/${jobpost_id}`),
+  create: (data: any) => Post(`/api/jobapplications`, data),
+  getMyApplications: () => Get(`/api/jobapplications/me`),
+  getByJobPost: (jobpost_id: number) => Get(`/api/jobapplications/job/${jobpost_id}`),
+  updateStatus: (id: number, status: string) => Update(`/api/jobapplications/${id}/status`, { status }),
+
+}
+
+
+// Job Category APIs
+export const jobCategoryAPI = {
+  getAll: () => Get("/api/jobcategories", false),
+  getById: (id: number) => Get(`/api/jobcategories/${id}`, false),
+};
+
+// Job employmentType APIs
+export const employmentTypeAPI = {
+  getAll: () => Get("/api/employmenttypes", false), 
+  getById: (id: number) => Get(`/api/employmenttypes/${id}`, false),
+};
+
+// Salary Type APIs
+export const salaryTypeAPI = {
+  getAll: () => Get("/api/salarytype", false),
+  getById: (id: number) => Get(`/api/salarytype/${id}`, false),
 };
 
 // Payment APIs
