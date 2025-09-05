@@ -196,6 +196,7 @@ const navItems: MenuItem[] = [
     createMenuItem("Reportpage", "Report"), // แก้ไข path ให้ตรงกับ MainRoutes
     createMenuItem("feed", "Feed"),
     createMenuItem("help", "Help"), // แก้ไข path ให้ตรงกับ MainRoutes
+    createMenuItem("Interview-Schedule","Interview Schedule")
 ];
 
 
@@ -308,7 +309,7 @@ const FullLayout: React.FC = () => {
       <Content>
         <Outlet /> {/* ไม่จำเป็นต้องส่ง context ลงไป Outlet จะจัดการเอง */}
       </Content>
-      <Footer style={{ textAlign: "center" }}>
+      <Footer style={{ textAlign: "center" , minHeight: "auto"}}>
         SUT Career ©{new Date().getFullYear()} Created with Ant Design
       </Footer>
     </Layout>
