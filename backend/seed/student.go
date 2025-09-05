@@ -92,7 +92,7 @@ func SeedStudents(db *gorm.DB) {
 		user := entity.User{
 			Username: username,
 			Password: string(password),
-			Role:     "Student",
+			Role:     "student",
 		}
 		db.FirstOrCreate(&user, entity.User{Username: username})
 

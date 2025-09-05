@@ -168,9 +168,17 @@ export const jobPostAPI = {
   uploadPortfolio: (id: number, file: File) => {
     const formData = new FormData();
     formData.append("portfolio", file);
-    return axios.post(`${API_URL}/api/jobposts/upload-portfolio/${id}`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    const token = localStorage.getItem("token");
+    return axios.post(
+    `${API_URL}/api/jobposts/upload-portfolio/${id}`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
   },
 };
 
