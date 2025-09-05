@@ -10,6 +10,7 @@ type Admin struct{
 	Email		string  `json:"email"`
 	Phone		string	`json:"phone"`
 	Password    string  `json:"-"`
-	Report 	[]Report    `gorm:"foreignKey:AdminID"`
+
+	Report 	[]Report    `gorm:"foreignKey:AdminID" json:"admin_id"`
 
 }

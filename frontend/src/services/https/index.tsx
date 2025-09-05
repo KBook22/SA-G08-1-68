@@ -218,3 +218,12 @@ export const paymentAPI = {
   getById: (id: number) => Get(`/payment/${id}`),
   create: (data: any) => Post("/payment", data),
 };
+
+// report APIs
+export const reportAPI = {
+  create: (data: any) => Post("/api/reports", data),
+  getAll: () => Get("/api/reports"),
+  getById: (id: number) => Get(`/api reports/${id}`),
+  update: (id: number, data: Partial<any>) => Update(`/api/reports/${id}`, data),
+  delete: (id: number) => Delete(`/api/reports/${id}`),
+};

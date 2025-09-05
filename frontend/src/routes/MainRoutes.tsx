@@ -29,6 +29,7 @@ import EmployerFeedPage from '../pages/Employer/EmployerFeedPage';
 import StudentPostForm from '../pages/StudentPost/StudentPostForm';
 import RequestSentPage from '../pages/StudentPost/RequestSentPage'; // เพิ่ม import นี้
 import MyPost from '../pages/MyPost/Mypost'
+import WorklogPage from "../pages/worklog/worklog";
 
 // Helper components to pass context from Outlet
 const PostCreatorRoute = () => {
@@ -106,7 +107,8 @@ const MainRoutes: React.FC = () => {
             <Route path="/Interview-Schedule" element={<InterviewScheduling/>} />
             <Route path="/profile-v1" element={<ProfilePageV1 />} />
             <Route path="/review-page" element={<ReviewPage />} />
-            
+            <Route path="/worklog" element={<WorklogPage />} />
+
             {/* --- Feed Routes (now independent) --- */}
             <Route path="/feed" element={<EmployerFeedPage />} />
             <Route path="/feed/create" element={<StudentPostForm />} />

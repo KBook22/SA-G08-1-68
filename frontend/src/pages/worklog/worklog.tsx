@@ -3,24 +3,6 @@ import "./worklog.css";
 import React, { useState } from "react";
 
 
-
-// const StudentListPage: React.FC = () => {
-
-// return (
-//     <>
-
-//     <div className="title">
-//         <FaRegClock size={50}/>
-//         <h1>for title</h1>
-
-//     </div>
-
-//     <div className="">information of worklog</div>
-
-//     </>
-
-//   );
-// };
 const worklog = () => {
   const [student, setStudent] = useState("");
   const [date, setDate] = useState("");
@@ -51,36 +33,48 @@ const worklog = () => {
         <div className="form-section">
           <form onSubmit={handleSubmit}>
             <div className="form-row">
-              <div className="form-group">
-                <label>เลือกนักเรียน *</label>
-                <select
-                  value={student}
-                  onChange={(e) => setStudent(e.target.value)}
-                  required
-                >
-                  <option value="dfasd">
-                    เลือกนักเรียนที่ต้องการบันทึกชั่วโมง
-                  </option>
-                </select>
-              </div>
+              
 
               <div className="form-group">
-                <label>ประเภทงาน *</label>
+                <label>งานของฉัน</label>
                 <select
                   value={workType}
                   onChange={(e) => setWorkType(e.target.value)}
+                  onInvalidCapture={(e) => e.currentTarget.setCustomValidity('กรุณาเลือกงานง')}
                   required
                 >
-                  <option value="">เลือกประเภทงานที่นักเรียนปฏิบัติ</option>
+                  <option value="1">เลือกประเภทงานที่นักเรียนปฏิบัติ</option>
+                  <option value="2">ประเภทงาน 2</option>
+                  <option value="3">ประเภทงาน 3</option>
                   {/* Options will be mapped here */}
+                  
                 </select>
               </div>
+
+
+
+
+              <div className="form-group">
+                <label>เลือกนักเรียน</label>
+                <select
+                  value={student}
+                  onChange={(e) => setStudent(e.target.value)}
+                  onInvalidCapture={(e) => e.currentTarget.setCustomValidity('กรุณาเลือกนักเรียน')}
+                  required
+                >
+                  <option value="">เลือกนักเรียนที่ต้องการบันทึกชั่วโมง</option>
+                  <option value="1">นักเรียน 1</option>
+                  <option value="2">นักเรียน 2</option>
+                  <option value="3">นักเรียน 3</option>
+                </select>
+              </div>
+
             </div>
 
             <div className="form-row">
               <div className="from-group">
                 <div className="form-group">
-                  <label>วันที่ทำงาน *</label>
+                  <label>วันที่ทำงาน</label>
                   <input
                     type="date"
                     value={date}
@@ -91,7 +85,7 @@ const worklog = () => {
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label>จำนวนชั่วโมง *</label>
+                    <label>จำนวนชั่วโมง</label>
                     <input
                       type="number"
                       step="0.5"
@@ -118,13 +112,6 @@ const worklog = () => {
                   required
                 />
               </div>
-            </div>
-
-            <div className="checkbox-group">
-              <input type="checkbox" id="confirm" />
-              <label htmlFor="confirm">
-                ต้องการการอนุมัติจากผู้ให้คำปรึกษาสำหรับชั่วโมงที่อยู่ในเกณฑ์พิเศษ
-              </label>
             </div>
 
             <div className="form-actions">
