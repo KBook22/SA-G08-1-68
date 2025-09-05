@@ -10,9 +10,11 @@
   height: calc(100vh - 64px);  /* ความสูงเต็มหน้าจอลบ 64px (เช่น navbar) */
   gap: 20px;                   /* ช่องว่างระหว่างลูก flex 20px */
   background-color: #f8f8f8;   /* สีพื้นหลังเทาอ่อน */
-   padding-top: 10px;
-
+  padding-top: 10px;
+  margin-top: 64px;            /* เว้นช่องว่างด้านบน 64px */
 }
+
+
 
 html, body {
   height: 100%;                /* ความสูงเต็มหน้าจอ */

@@ -277,7 +277,7 @@ const MainRoutes: React.FC = () => {
         
         {/* รายงานและการจัดการ */}
         <Route path="/report" element={<Reportpage />} />
-        <Route path="/jobs" element={<JobsPage />} />
+        <Route path="/my-jobs" element={<JobsPage />} />
         <Route path="/payment-report" element={<PaymentReportPage />} />
         <Route path="/worklog" element={<StudentListPage />} />
         

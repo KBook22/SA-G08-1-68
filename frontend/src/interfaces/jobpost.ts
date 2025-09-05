@@ -17,7 +17,8 @@ export interface Jobpost {
     image_url: string;
     portfolio_required: string;
     salary: number;
-    billableitem_id: number;
+    // FK อยู่ฝั่ง billable_items.jobpost_id → ส่วนนี้เป็น backref เฉย ๆ
+    billableitem_id?: number;
     billableitem?: Billableitem;
     employer_id: number;
     employer?: Employer;
