@@ -89,7 +89,7 @@ func main() {
 		// {
 			// JobPost (actions)
 
-			jobpostRoutes := protected.Group("/jobposts")
+			jobpostRoutes := protected.Group("/myjobposts")
 			{
 				jobpostRoutes.POST("", controller.CreateJobPost)
 				jobpostRoutes.PUT("/:id", controller.UpdateJobPost)
