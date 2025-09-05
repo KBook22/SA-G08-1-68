@@ -141,7 +141,7 @@ const ApplyJob: React.FC = () => {
       {/* ส่วนรายละเอียดประกาศงาน */}
       <div className="apply-job-content">
         <img
-          src={post?.image}
+          src={post?.image_url}
           alt="Job"
           className="apply-job-image"
         />

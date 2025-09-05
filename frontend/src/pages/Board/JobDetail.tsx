@@ -304,7 +304,7 @@ const PostLayout: React.FC = () => {
                   <h2 className="title-detail">{selectedPost.title}</h2>
                   <div className="image-subtitle-row">
                     <img
-                      src={selectedPost.image_url || lahui}
+                      src={selectedPost.image_url}
                       className="post-detail-image"
                       alt={selectedPost.title}
                     />

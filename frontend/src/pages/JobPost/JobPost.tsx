@@ -471,10 +471,11 @@ const JobPost: React.FC = () => {
           name="salaryTypeId"
           rules={[{ required: true, message: "กรุณาเลือกประเภทเงินเดือน" }]}
         >
-          <Select placeholder="เลือกประเภท">
+          <Select placeholder="เลือกประเภท" onChange={(value)=>console.log("เลือก",value)}>
             {salarytype.map((s) => (
               <Select.Option key={s.id} value={s.id}>
                 {s.salary_type_name}
+                
               </Select.Option>
             ))}
           </Select>
