@@ -3,7 +3,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 import MainRoutes from './MainRoutes';
-import AdminRoutes from './AdminRoutes';
+//import AdminRoutes from './AdminRoutes';
 import LoginPage from '../pages/LoginPage2/LoginPage';
 import RegisterPage from '../pages/RegisterPage/RegisterPage';
 import RegisterPageEmployer from '../pages/RegisterPage/RegisterPageEmployer';
@@ -20,8 +20,8 @@ const AllRoutes: React.FC = () => {
       {/* --- vvvv 2. เพิ่ม Route สำหรับหน้าสมัครสมาชิกของ Admin vvvv --- */}
       <Route path="/register/admin" element={<RegisterPageAdmin />} />
 
-      {/* === ส่วนของ Admin Panel === */}
-      <Route path="/admin/*" element={<AdminRoutes />} />
+      {/* === ส่วนของ Admin Panel ===
+      <Route path="/admin/*" element={<AdminRoutes />} /> */}
 
       {/* === ส่วนของแอปพลิเคชันหลัก === */}
       <Route path="/*" element={<MainRoutes />} />

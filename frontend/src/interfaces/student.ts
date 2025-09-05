@@ -15,6 +15,7 @@ export interface Student {
     faculty: string;
     phone: string;
     skills: string;
+    
 
     user_id: number;
     user?: User;

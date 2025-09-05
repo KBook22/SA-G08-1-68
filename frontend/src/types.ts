@@ -1,21 +1,44 @@
 // src/types.ts
 
-// ===== Core Models =====
+/// ===== Core Models =====
+
 export interface User {
-  ID: number;
+  id: number;
   username: string;
   role: 'student' | 'employer' | 'admin';
 }
 
 // ===== Student Profile & Posts (ข้อมูลและโพสต์ของนักศึกษา) =====
+
 export interface Student {
-    first_name: string;
-    last_name: string;
-    email: string;
-    phone: string;
-    faculty: string;
-    year: string;
-    skills: string;
+  ID: number;
+  id?: number; // เพิ่มเพื่อ backward compatibility
+  first_name: string;
+  last_name: string;
+  email?: string;
+  phone?: string;
+  profile_image_url?: string;
+  faculty: string;
+  year?: number;
+  birthday?: string;
+  age?: number;
+  gpa?: number;
+  skills?: string;
+  user_id: number;
+  gender_id?: number;
+  bank_account?: string;
+  bank_id?: number;
+}
+
+export interface Faculty {
+  ID: number;
+  Name: string;
+}
+
+export interface Department {
+  ID: number;
+  Name: string;
+  FacultyID?: number;
 }
 
 export interface StudentProfilePost {
@@ -25,23 +48,30 @@ export interface StudentProfilePost {
   job_type: string;
   portfolio_url?: string;
   skills: string;
-  student: Student;
+  year?: number;
+  phone?: string;
+  email?: string;
+  student_id?: number;
+  student?: Student;
+  faculty_id?: number;
+  faculty?: Faculty;
+  department_id?: number;
+  department?: Department;
 }
 
-// ✨ แก้ไข Interface ที่นี่
+// Response รวมข้อมูลโปรไฟล์ + โพสต์
 export interface ProfileResponse {
-    student: Student; // เปลี่ยนจาก student_info -> student
-    posts: StudentProfilePost[];
+  student: Student;
+  posts: StudentProfilePost[];
 }
-
 
 // ===== Job Offers (ประกาศงานจากผู้ประกอบการ) =====
 export interface JobOffer {
-    ID: number;
-    title: string;
-    description: string;
-    deadline: string;
-    salary: number;
+  ID: number;
+  title: string;
+  description: string;
+  deadline: string;
+  salary: number;
 }
 
 // ===== Feed Posts & Comments (สำหรับฟีดข่าวทั่วไป) =====
@@ -53,7 +83,7 @@ export interface Comment {
   authorId: string;
   likes: number;
   isLiked: boolean;
-  feed_post_id: number; 
+  feed_post_id: number;
   parentId?: number;
   replies?: Comment[];
 }
@@ -74,7 +104,6 @@ export interface FeedPost {
   Comments: Comment[];
 }
 
-
 // ===== Q&A System (ระบบถาม-ตอบ และส่งคำร้อง) =====
 export interface FAQ {
   ID: number;
@@ -84,23 +113,22 @@ export interface FAQ {
 }
 
 export interface TicketReply {
-    ID: number;
-    CreatedAt: string;
-    message: string;
-    is_staff_reply: boolean;
-    author: User;
+  ID: number;
+  CreatedAt: string;
+  message: string;
+  is_staff_reply: boolean;
+  author: User;
 }
 
 export interface RequestTicket {
-    ID: number;
-    CreatedAt: string;
-    subject: string;
-    initial_message: string;
-    status: 'Open' | 'In Progress' | 'Awaiting Confirmation' | 'Resolved';
-    user: User;
-    replies: TicketReply[];
+  ID: number;
+  CreatedAt: string;
+  subject: string;
+  initial_message: string;
+  status: 'Open' | 'In Progress' | 'Awaiting Confirmation' | 'Resolved';
+  user: User;
+  replies: TicketReply[];
 }
-
 
 // ===== Notification & Report (การแจ้งเตือนและรายงาน) =====
 export interface Notification {

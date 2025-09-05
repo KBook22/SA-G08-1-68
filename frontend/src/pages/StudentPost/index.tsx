@@ -217,91 +217,91 @@
 
 // src/pages/StudentPost/index.tsx
 
-// src/pages/StudentPost/index.tsx
-import { useState, useEffect, useCallback } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
-import { message } from 'antd';
-import type { Post, Comment, FAQ, Report } from '../../types';
+// // src/pages/StudentPost/index.tsx
+// import { useState, useEffect, useCallback } from 'react';
+// import { Outlet, useNavigate } from 'react-router-dom';
+// import { message } from 'antd';
+// import type { Post, Comment, FAQ, Report } from '../../types';
 
-const API_URL = 'http://localhost:8080/api';
+// const API_URL = 'http://localhost:8080/api';
 
-const StudentPostManager: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [faqs, setFaqs] = useState<FAQ[]>([]);
-  const navigate = useNavigate();
+// const StudentPostManager: React.FC = () => {
+//   const [posts, setPosts] = useState<Post[]>([]);
+//   const [faqs, setFaqs] = useState<FAQ[]>([]);
+//   const navigate = useNavigate();
 
-  const fetchData = useCallback(async () => {
-    try {
-      // ✨ แก้ไข Endpoint จาก /posts -> /student-profile-posts
-      const [postsRes, faqsRes] = await Promise.all([
-        fetch(`${API_URL}/student-profile-posts`),
-        fetch(`${API_URL}/faqs`),
-      ]);
+//   const fetchData = useCallback(async () => {
+//     try {
+//       // ✨ แก้ไข Endpoint จาก /posts -> /student-profile-posts
+//       const [postsRes, faqsRes] = await Promise.all([
+//         fetch(`${API_URL}/student-profile-posts`),
+//         fetch(`${API_URL}/faqs`),
+//       ]);
       
-      if (!postsRes.ok || !faqsRes.ok) {
-          throw new Error('Network response was not ok');
-      }
+//       if (!postsRes.ok || !faqsRes.ok) {
+//           throw new Error('Network response was not ok');
+//       }
 
-      const postsData = await postsRes.json();
-      const faqsData = await faqsRes.json();
+//       const postsData = await postsRes.json();
+//       const faqsData = await faqsRes.json();
       
-      setPosts(postsData || []);
-      setFaqs(faqsData || []);
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-      message.error("ไม่สามารถเชื่อมต่อหรือดึงข้อมูลจากเซิร์ฟเวอร์ได้");
-    }
-  }, []);
+//       setPosts(postsData || []);
+//       setFaqs(faqsData || []);
+//     } catch (error) {
+//       console.error("Failed to fetch data:", error);
+//       message.error("ไม่สามารถเชื่อมต่อหรือดึงข้อมูลจากเซิร์ฟเวอร์ได้");
+//     }
+//   }, []);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+//   useEffect(() => {
+//     fetchData();
+//   }, [fetchData]);
 
-  const handleRequestSubmit = async (values: { subject: string; initialMessage: string; }) => {
-    try {
-        const response = await fetch(`${API_URL}/tickets`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(values),
-        });
+//   const handleRequestSubmit = async (values: { subject: string; initialMessage: string; }) => {
+//     try {
+//         const response = await fetch(`${API_URL}/tickets`, {
+//             method: 'POST',
+//             headers: { 'Content-Type': 'application/json' },
+//             body: JSON.stringify(values),
+//         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Failed to submit request');
-        }
+//         if (!response.ok) {
+//             const errorData = await response.json();
+//             throw new Error(errorData.error || 'Failed to submit request');
+//         }
         
-        navigate(`/help/request-sent`);
+//         navigate(`/help/request-sent`);
 
-    } catch (error) {
-        console.error("Error submitting request:", error);
-        message.error('เกิดข้อผิดพลาดในการส่งคำร้อง');
-        throw error;
-    }
-  };
+//     } catch (error) {
+//         console.error("Error submitting request:", error);
+//         message.error('เกิดข้อผิดพลาดในการส่งคำร้อง');
+//         throw error;
+//     }
+//   };
 
-  const handleAddPost = async (content: string, privacy: Post['privacy'], skills: string[]) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
-  const handleEditPost = async (postId: number, newContent: string, newSkills: string[]) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
-  const handleAddComment = async (postId: number, text: string) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
-  const handleLikePost = (id: number) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
-  const handleLikeComment = (postId: number, commentId: number) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
-  const handleDeletePost = (id: number) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
-  const onAddReport = (post: Post, reason: string, details: string) => { message.success("ขอบคุณสำหรับรายงาน"); };
+//   const handleAddPost = async (content: string, privacy: Post['privacy'], skills: string[]) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
+//   const handleEditPost = async (postId: number, newContent: string, newSkills: string[]) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
+//   const handleAddComment = async (postId: number, text: string) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
+//   const handleLikePost = (id: number) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
+//   const handleLikeComment = (postId: number, commentId: number) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
+//   const handleDeletePost = (id: number) => { message.info("ฟังก์ชันยังไม่ได้เชื่อมต่อกับ API"); };
+//   const onAddReport = (post: Post, reason: string, details: string) => { message.success("ขอบคุณสำหรับรายงาน"); };
 
-  const outletContext = {
-    posts,
-    faqs,
-    myRequests: [],
-    handleAddPost,
-    handleEditPost,
-    handleAddComment,
-    handleDeletePost,
-    handleLikePost,
-    onAddReport,
-    handleLikeComment,
-    handleRequestSubmit,
-  };
+//   const outletContext = {
+//     posts,
+//     faqs,
+//     myRequests: [],
+//     handleAddPost,
+//     handleEditPost,
+//     handleAddComment,
+//     handleDeletePost,
+//     handleLikePost,
+//     onAddReport,
+//     handleLikeComment,
+//     handleRequestSubmit,
+//   };
 
-  return <Outlet context={outletContext} />;
-};
+//   return <Outlet context={outletContext} />;
+// };
 
-export default StudentPostManager;
+// export default StudentPostManager;

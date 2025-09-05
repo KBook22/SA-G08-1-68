@@ -10,6 +10,8 @@ type Admin struct{
 	Email		string  `json:"email"`
 	Phone		string	`json:"phone"`
 	Password    string  `json:"-"`
+	UserID    *uint // 👈 เพิ่มบรรทัดนี้
+    User      User  `gorm:"references:id"` 
 
 	Report 	[]Report    `gorm:"foreignKey:AdminID"`
 
