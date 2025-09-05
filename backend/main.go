@@ -87,6 +87,9 @@ func main() {
 		// --- Job Applications ---
 		auth.GET("/jobapplications/init/:id", controller.InitJobApplication)
 		auth.POST("/jobapplications", controller.CreateJobApplication)
+		auth.GET("/jobapplications/me", controller.GetMyApplications)
+
+
 
 		// --- Tickets ---
 		auth.POST("/tickets", controller.CreateRequestTicket)

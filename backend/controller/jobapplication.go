@@ -66,3 +66,36 @@ func CreateJobApplication(c *gin.Context) {
 		"data":    app,
 	})
 }
+
+// GET /api/jobapplications/me
+func GetMyApplications(c *gin.Context) {
+    // ดึง userID จาก JWT middleware
+    userID, exists := c.Get("userID")
+    if !exists {
+        c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+        return
+    }
+
+    // หา student ที่ล็อกอินอยู่
+    var student entity.Student
+    if err := config.DB().
+        Where("user_id = ?", userID).
+        First(&student).Error; err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": "ไม่พบนักศึกษา"})
+        return
+    }
+
+    // ดึงใบสมัครของ student นี้
+    var applications []entity.JobApplication
+    if err := config.DB().
+        Preload("JobPost").
+        Preload("JobPost.Employer").
+        Where("student_id = ?", student.ID).
+        Order("created_at DESC").
+        Find(&applications).Error; err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "ดึงข้อมูลไม่สำเร็จ"})
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{"data": applications})
+}
