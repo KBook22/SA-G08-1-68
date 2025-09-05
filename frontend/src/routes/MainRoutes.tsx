@@ -239,6 +239,9 @@ import RequestThreadPage from '../pages/RequestThreadPage/RequestThreadPage';
 // ✅ Import Pages - Student Posts (เฉพาะที่ใช้งานจริง)
 import StudentPostForm from '../pages/StudentPost/StudentPostForm';
 
+import WorklogPage from "../pages/worklog/worklog";
+
+
 // Import Pages - Admin
 import DashboardPage from '../pages/Admin2/DashboardPage';
 import RequestsPage from '../pages/Admin2/RequestsPage';

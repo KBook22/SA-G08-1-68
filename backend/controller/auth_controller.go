@@ -389,8 +389,11 @@ func Login(c *gin.Context) {
 		return
 	}
 
+
 	// ตั้งค่าให้ Token มีอายุ 1 ปี (8760 ชั่วโมง) 1วันก็พอแล้ว 1ปีจะเอาเยอะไปไหน
 	expirationTime := time.Now().Add(24 * 1 * time.Hour)
+
+
 	claims := &middleware.Claims{
 		UserID:   foundUser.ID,
 		Username: foundUser.Username,
@@ -401,6 +404,7 @@ func Login(c *gin.Context) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	
 	tokenString, err := token.SignedString(middleware.JwtKey)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not generate token"})
