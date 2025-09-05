@@ -45,6 +45,7 @@ func SetupDatabase() {
 		&entity.ReportStatus{},//by supanut
 		&entity.Report{},
 		&entity.Admin{},
+		&entity.Worklog{},
 
 		
 		//=========================

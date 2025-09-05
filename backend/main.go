@@ -1,11 +1,12 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/KBook22/System-Analysis-and-Design/config"
 	"github.com/KBook22/System-Analysis-and-Design/controller"
-	"github.com/gin-gonic/gin"
-	"net/http"
 	"github.com/KBook22/System-Analysis-and-Design/middleware"
+	"github.com/gin-gonic/gin"
 )
 
 const PORT = "8080"
@@ -35,15 +36,25 @@ func main() {
 
 
 		//=====================================
-
+		//get report status
 		api.GET("/reportstatus",controller.GetReportstatus)
 
 		api.GET("/reports", controller.GetAllReports)
 		api.GET("/reports/:id", controller.GetReportByID)
 		api.GET("/reports/user/:user_id", controller.GetReportByUserID)
 		api.POST("/reports", controller.CreateReport)
+		
 		api.DELETE("/reports/:id", controller.DeleteReport)
 		api.PUT("/reports/:id", controller.UpdateReport)
+		
+		// worklog
+		api.POST("/worklogs", controller.CreateWorklog)
+		api.GET("/worklogs/student/:id", controller.GetWorklogStudent)
+		api.PUT("/worklogs/:id", controller.UpdateWorklogByID)
+		api.DELETE("/worklogs/:id", controller.DeleteWorklogID)
+		// // Extra
+		// api.GET("/jobposts/:id/students", controller.GetStudentInJobpost)
+		// api.GET("/users/:id", controller.GetUserByEmployerID)
 	
 
 		//=====================================
