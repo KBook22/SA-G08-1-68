@@ -12,7 +12,6 @@ import (
 func InitJobApplication(c *gin.Context) {
 	jobpostID := c.Param("id")
 	userID, _ := c.Get("userID")
-
 	// ดึงข้อมูลนักศึกษา + gender + bank
 	var student entity.Student
 	if err := config.DB().
@@ -24,7 +23,6 @@ func InitJobApplication(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "ไม่พบนักศึกษา"})
 		return
 	}
-
 	// ดึงข้อมูลประกาศงาน + employer + category + employment type + salary type
 	var jobpost entity.Jobpost
 	if err := config.DB().
@@ -37,7 +35,6 @@ func InitJobApplication(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "ไม่พบประกาศงาน"})
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"student": student,
 		"student_code": student.User.Username,
@@ -45,14 +42,12 @@ func InitJobApplication(c *gin.Context) {
 	})
 }
 
-// สมัครงาน
 func CreateJobApplication(c *gin.Context) {
 	var app entity.JobApplication
 	if err := c.ShouldBindJSON(&app); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 	app.ApplicationStatus = entity.StatusPending
 	app.LastUpdate = time.Now()
 
@@ -99,3 +94,28 @@ func GetMyApplications(c *gin.Context) {
 
     c.JSON(http.StatusOK, gin.H{"data": applications})
 }
+
+/// GET /api/jobapplications/job/:jobpost_id
+func GetApplicantsByJobPost(c *gin.Context) {
+    jobpostID := c.Param("jobpost_id")
+
+    var applications []entity.JobApplication
+    if err := config.DB().
+        Preload("Student").
+        Preload("Student.User").
+        Preload("Student.Gender").
+        Preload("Student.Bank").
+        Where("job_post_id = ?", jobpostID).
+        Find(&applications).Error; err != nil {
+
+        c.JSON(http.StatusInternalServerError, gin.H{
+            "error": "ไม่สามารถดึงข้อมูลผู้สมัครได้",
+        })
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{
+        "data": applications,
+    })
+}
+

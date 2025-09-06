@@ -86,10 +86,12 @@ import { jobPostAPI } from "../../services/https";
 import type { Jobpost } from "../../interfaces/jobpost";
 import "./Mypost.css";
 import lahui from "../../assets/lahui.svg"; // รูป default
+import { useNavigate } from "react-router-dom";
 
 const MyPost: React.FC = () => {
   const [posts, setPosts] = useState<Jobpost[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const fetchMyPosts = async () => {
     try {
@@ -163,7 +165,6 @@ const MyPost: React.FC = () => {
                 <img
                   src={post.image_url || lahui} // ถ้ามีรูปจริง ใช้, ถ้าไม่มี ใช้ lahui.svg
                   alt={post.title || "default-logo"}
-                  
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = lahui; // fallback ถ้ารูปโหลดไม่ได้
                   }}
@@ -178,7 +179,11 @@ const MyPost: React.FC = () => {
               <Button danger size="small" onClick={() => handleDelete(post.ID)}>
                 ลบโพสต์
               </Button>
-              <Button type="primary" size="small">
+              <Button
+                type="primary"
+                size="small"
+                onClick={() => navigate(`/job-ManageApplicants/${post.ID}`)}
+              >
                 ดูรายชื่อผู้สมัครงาน
               </Button>
             </div>

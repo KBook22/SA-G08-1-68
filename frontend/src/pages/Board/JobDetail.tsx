@@ -315,7 +315,7 @@ const PostLayout: React.FC = () => {
                 </div>
 
                 {/* ปุ่มยื่นสมัครงาน */}
-                {role === "Student" ? (
+                {role === "student" ? (
                   <Button
                     className="btn-Job-Application"
                     type="primary"
