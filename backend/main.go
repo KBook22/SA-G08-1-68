@@ -8,6 +8,9 @@ import (
 	"github.com/KBook22/System-Analysis-and-Design/middleware"
 	"github.com/KBook22/System-Analysis-and-Design/seed"
 	"github.com/gin-gonic/gin"
+
+	"log"
+	"os"
 )
 
 func CORSMiddleware() gin.HandlerFunc {
@@ -33,7 +36,13 @@ func main() {
 
 	// สร้าง router หลัก
 	r := gin.Default()
+
 	r.Use(CORSMiddleware())
+	
+	if err := os.MkdirAll("./static/payment_evidence", 0o755); err != nil {
+		log.Fatal(err)
+	}
+	r.Static("/static", "./static")
 
 	// Seed ข้อมูลนักศึกษา 30 คน
 	db := config.DB()
@@ -89,11 +98,11 @@ func main() {
 		// {
 			// JobPost (actions)
 
-			jobpostRoutes := protected.Group("/myjobposts")
+			jobpost := protected.Group("/myjobposts")
 			{
-				jobpostRoutes.POST("", controller.CreateJobPost)
-				jobpostRoutes.PUT("/:id", controller.UpdateJobPost)
-				jobpostRoutes.DELETE("/:id", controller.DeleteJobPost)
+				jobpost.GET("", controller.ListJobPosts)
+				jobpost.GET("/:id", controller.GetJobPostByID)
+				jobpost.GET("/employer/:id", controller.ListJobPostsByEmployerID)
 			}
 
 		// --- Salary Type ---

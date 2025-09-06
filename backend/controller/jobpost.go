@@ -9,6 +9,39 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// GET /jobposts
+// ดึงข้อมูลประกาศงานทั้งหมด
+func ListJobPosts(c *gin.Context) {
+	var jobposts []entity.Jobpost
+	if err := config.DB().Find(&jobposts).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": jobposts})
+}
+
+// GET /jobposts/:id
+// ดึงข้อมูลประกาศงานตาม ID
+func GetJobPostByID(c *gin.Context) {
+	var jobpost entity.Jobpost
+	id := c.Param("id")
+	if err := config.DB().First(&jobpost, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Job post not found"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": jobpost})
+}
+
+// GET /jobposts/employer/:id
+func ListJobPostsByEmployerID(c *gin.Context) {
+	var jobposts []entity.Jobpost
+	id := c.Param("id") 
+	if err := config.DB().Where("employer_id = ?", id).Find(&jobposts).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": jobposts})
+}
 // POST /jobposts
 func CreateJobPost(c *gin.Context) {
     //  ดึง employerID จาก context ที่ middleware set ไว้
@@ -29,37 +62,6 @@ func CreateJobPost(c *gin.Context) {
         return
     }
     c.JSON(http.StatusCreated, gin.H{"data": jobpost})
-}
-
-
-// GET /jobposts/:id
-// ดึงข้อมูลประกาศงานตาม ID
-func GetJobPostByID(c *gin.Context) {
-	var jobpost entity.Jobpost
-	id := c.Param("id")
-	if err := config.DB().Preload("Employer").First(&jobpost, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Job post not found"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"data": jobpost})
-}
-
-// GET /jobposts
-// ดึงข้อมูลประกาศงานทั้งหมด
-func ListJobPosts(c *gin.Context) {
-	var jobposts []entity.Jobpost
-	if err := config.DB().
-    Preload("Employer").
-	Preload("Employer.User").
-    Preload("JobCategory").
-    Preload("EmploymentType").
-    Preload("SalaryType").
-	Order("created_at DESC"). // เรียงใหม่ เก่า
-    Find(&jobposts).Error; err != nil {
-    c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-    return
-}
-	c.JSON(http.StatusOK, gin.H{"data": jobposts})
 }
 
 // PUT /jobposts/:id

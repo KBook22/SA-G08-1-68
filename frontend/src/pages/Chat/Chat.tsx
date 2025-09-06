@@ -93,15 +93,14 @@ const Chat: React.FC = () => {
         console.error("Failed to send message:", error)
       }
     }
-  }
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      handleSendMessage()
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
     }
-  }
-
+  };
 
   // Layout Page
   const selectedUserData = chatRooms.find((user) => user.id === selectedUser)
@@ -232,7 +231,7 @@ const Chat: React.FC = () => {
         )}
       </div>
     </Layout>
-  )
-}
+  );
+};
 
-export default Chat
+export default Chat;
