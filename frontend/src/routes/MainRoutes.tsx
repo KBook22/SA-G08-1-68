@@ -16,10 +16,7 @@ import JobDetail from "../pages/Board/JobDetail";
 import ApplyJob from "../pages/ApplyJob/ApplyJob";
 import Interview from "../pages/Interview/Interview";
 import Chat from "../pages/Chat/Chat";
-// ใช้อันนี้หากไฟล์ย้ายมาอยู่โฟลเดอร์ worklog
-// import StudentListPage from "../pages/worklog/StudentListPage";
-// ถ้าโปรเจกต์คุณยังอยู่ที่เดิม ให้เปลี่ยนเป็นบรรทัดด้านล่างแทน
-// import StudentListPage from "../pages/StudentListpage/StudentListPage";
+import StudentListPage from "../pages/StudentListpage/StudentListPage";
 import Reportpage from "../pages/Reportpage/report";
 import JobsPage from "../pages/myjob";
 import PaymentReportPage from "../pages/paymentreport";
@@ -35,11 +32,6 @@ import MyPost from '../pages/MyPost/Mypost'
 import WorklogPage from "../pages/worklog/worklog";
 
 // Helper components to pass context from Outlet
-const PostCreatorRoute = () => {
-  const { handleAddPost }: any = useOutletContext();
-  return <PostCreator onAddPost={handleAddPost} />;
-};
-
 // const PostCreatorRoute = () => {
 //   const { handleAddPost }: any = useOutletContext();
 //   return <PostCreator onAddPost={handleAddPost} />;

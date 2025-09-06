@@ -236,28 +236,28 @@ export const employerAPI = {
 };
 
 export const jobpostAPI = {
-  create: (data: Jobpost) => Post("/jobposts", data),
-  getAll: () => Get("/jobposts"),
+  create: (data: Jobpost) => Post("/api/myjobposts", data),
+  getAll: () => Get("/api/myjobposts"),
   getById: (id: number): Promise<{ data: Jobpost }> =>
-    Get<{ data: Jobpost }>(`/jobposts/${id}`),
+    Get<{ data: Jobpost }>(`/api/myjobposts/${id}`),
   getByEmployerId: (id: number): Promise<{ data: Jobpost[] }> =>
-    Get<{ data: Jobpost[] }>(`/jobposts/employer/${id}`),
-  update: (id: number, data: Partial<Jobpost>) => Update(`/jobposts/${id}`, data),
-  delete: (id: number) => DeleteReq(`/jobposts/${id}`),
+    Get<{ data: Jobpost[] }>(`/api/myjobposts/employer/${id}`),
+  update: (id: number, data: Partial<Jobpost>) => Update(`/api/myjobposts/${id}`, data),
+  delete: (id: number) => DeleteReq(`/api/myjobposts/${id}`),
 };
 
 export const paymentAPI = {
-  create: (data: CreatePaymentPayload) => Post("/payments", data),
+  create: (data: CreatePaymentPayload) => Post("/api/payments", data),
   getById: (id: number): Promise<{ data: Payment }> =>
-    Get(`/payments/${id}`, true, { silent404: true }),
+    Get(`/api/payments/${id}`, true, { silent404: true }),
   getByBillableItem: (billableId: number): Promise<{ data: Payment }> =>
-    Get(`/payments/billable/${billableId}`, true, { silent404: true }),
-  getByJobId: (jobId: number) => Get(`/payments/job/${jobId}`),
+    Get(`/api/payments/billable/${billableId}`, true, { silent404: true }),
+  getByJobId: (jobId: number) => Get(`/api/payments/job/${jobId}`),
   getByEmployerId: (employerId: number): Promise<{ data: Payment[] }> =>
-    Get(`/payments/employer/${employerId}`),
-  update: (id: number, data: Partial<Payment>) => Update(`/payments/${id}`, data),
+    Get(`/api/payments/employer/${employerId}`),
+  update: (id: number, data: Partial<Payment>) => Update(`/api/payments/${id}`, data),
   uploadEvidence: (paymentId: number, form: FormData) =>
-    axios.post(buildUrl(`/payments/${paymentId}/evidence`), form, {
+    axios.post(buildUrl(`/api/payments/${paymentId}/evidence`), form, {
       withCredentials: true,
       headers: {
         ...(getAuthToken() ? { Authorization: `Bearer ${getAuthToken()}` } : {}),
@@ -269,10 +269,10 @@ export const paymentAPI = {
 };
 
 export const paymentReportAPI = {
-  getMine: () => Get("/payment-reports/me"),
-  getByEmployerId: (id: number) => Get(`/payment-reports/employer/${id}`),
+  getMine: () => Get("/api/payment-reports/me"),
+  getByEmployerId: (id: number) => Get(`/api/payment-reports/employer/${id}`),
   upload: (form: FormData) =>
-    axios.post(buildUrl("/payment-reports/upload"), form, {
+    axios.post(buildUrl("/api/payment-reports/upload"), form, {
       headers: {
         "Content-Type": "multipart/form-data",
         ...(getAuthToken() ? { Authorization: `Bearer ${getAuthToken()}` } : {}),
@@ -281,14 +281,14 @@ export const paymentReportAPI = {
 };
 
 export const reviewAPI = {
-  create: (data: CreateReviewPayload) => Post("/reviews", data),
-  find: (data: FindReviewRequest) => Post("/reviews/find", data),
-  getForJob: (jobId: number) => Get(`/reviews/job/${jobId}`),
+  create: (data: CreateReviewPayload) => Post("/api/reviews", data),
+  find: (data: FindReviewRequest) => Post("/api/reviews/find", data),
+  getForJob: (jobId: number) => Get(`/api/reviews/job/${jobId}`),
 };
 
 export const ratingScoreAPI = {
   getAll: (): Promise<{ data: Ratingscore[] }> =>
-    Get<{ data: Ratingscore[] }>(`/reviews/scores`),
+    Get<{ data: Ratingscore[] }>(`/api/reviews/scores`),
 };
 // Job Post APIs
 export const jobPostAPI = {

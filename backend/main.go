@@ -155,7 +155,7 @@ func main() {
 		auth.POST("/tickets/:id/replies", controller.CreateTicketReply)
 
 		// --- Reviews ---
-		auth.POST("/reviews/new-rating", controller.CreateRating)
+		auth.POST("/reviews/new-rating", controller.CreateReview)
 		auth.GET("/reviews", controller.FindRatingsByJobPostID)
 
 		// --- Payments ---
