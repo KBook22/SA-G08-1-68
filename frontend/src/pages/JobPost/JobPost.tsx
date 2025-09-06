@@ -420,7 +420,7 @@ const JobPost: React.FC = () => {
       };
       console.log("ส่งไป backend:", payload);
       const res = await jobPostAPI.create(payload);
-      const jobpostId = res.data.data.ID;
+      const jobpostId = res.data.ID || res.data.data?.ID;
 
       // upload portfolio ถ้ามี สร้าง payload ที่ตรงกับ interface CreateJobpost
       if (portfolioFile) {
