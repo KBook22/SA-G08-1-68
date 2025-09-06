@@ -30,6 +30,9 @@ import StudentPostForm from '../pages/StudentPost/StudentPostForm';
 import RequestSentPage from '../pages/StudentPost/RequestSentPage'; // เพิ่ม import นี้
 import MyPost from '../pages/MyPost/Mypost'
 import WorklogPage from "../pages/worklog/worklog";
+import ManageApplicants from "../pages/ManageApplicants/ManageApplicants"; // เพิ่ม import นี้
+
+
 
 // Helper components to pass context from Outlet
 const PostCreatorRoute = () => {
@@ -96,6 +99,7 @@ const MainRoutes: React.FC = () => {
             <Route path="/Job/ApplyJob" element={<ApplyJob />} />
             <Route path="/Job/post-job" element={<JobPost />} />
             <Route path="/Job/Mypost-job" element={<MyPost />} />
+            <Route path="/job-ManageApplicants/:jobpost_id" element={<ManageApplicants />} />
             <Route path="/interview" element={<Interview />} />
             <Route path="/chat" element={<Chat />} />
             <Route path="/students" element={<StudentListPage />} />
